@@ -14,9 +14,10 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
+  font-family: 'chaney';
+  font-size: 60px;
   font-weight: bold;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 `;
 
 const Users = styled.div`
@@ -30,8 +31,7 @@ const App = () => {
 
   return (
     <Container>
-      <Title>참가 인원을 선택하세요</Title>
-      <Title>{attend.length}</Title>
+      <Title>PICK PHASE</Title>
       <Users>
         {users.map((user) => (
           <User
