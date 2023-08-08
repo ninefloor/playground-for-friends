@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.button`
   width: 96px;
   height: 120px;
   background-color: #ccc;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
   &.active {
     background-color: #eee;
+    transform: scale(101%) translateY(-5%);
   }
 `;
 
@@ -21,13 +23,12 @@ const User = ({ user, attend, setAttend }) => {
     });
   };
   return (
-    <button onClick={clickHandler}>
-      <Container
-        className={attend.map((el) => el.order).includes(order) ? 'active' : ''}
-      >
-        {username}
-      </Container>
-    </button>
+    <Container
+      onClick={clickHandler}
+      className={attend.map((el) => el.order).includes(order) ? 'active' : ''}
+    >
+      {username}
+    </Container>
   );
 };
 
