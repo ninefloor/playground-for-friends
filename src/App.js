@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import users from './users';
-import User from './User';
+import User from './components/User';
 
 const Container = styled.div`
   width: 100%;

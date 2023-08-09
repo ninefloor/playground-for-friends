@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'chaney';
-  src: url('../asset/chaney-ultraextended-webfont.eot');
-  src: url('../asset/chaney-ultraextended-webfont.eot?#iefix')
+  src: url('./asset/chaney-ultraextended-webfont.eot');
+  src: url('./asset/chaney-ultraextended-webfont.eot?#iefix')
       format('embedded-opentype'),
-    url('../asset/chaney-ultraextended-webfont.woff2') format('woff2'),
-    url('../asset/chaney-ultraextended-webfont.woff') format('woff'),
-    url('../asset/chaney-ultraextended-webfont.ttf') format('truetype');
+    url('./asset/chaney-ultraextended-webfont.woff2') format('woff2'),
+    url('./asset/chaney-ultraextended-webfont.woff') format('woff'),
+    url('./asset/chaney-ultraextended-webfont.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
