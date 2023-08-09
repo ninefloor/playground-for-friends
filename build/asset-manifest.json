@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/vote-for-honeys/static/css/main.4d152494.css",
-    "main.js": "/vote-for-honeys/static/js/main.cac86474.js",
+    "main.js": "/vote-for-honeys/static/js/main.d390be11.js",
     "static/media/doubl3b.jpg": "/vote-for-honeys/static/media/doubl3b.ff9d8c30fb618b3efe3b.jpg",
     "static/media/kimpirya.jpg": "/vote-for-honeys/static/media/kimpirya.31d7f88c51d7a8021b0d.jpg",
     "static/media/ryang.png": "/vote-for-honeys/static/media/ryang.e12c091ac649fd85a4c7.png",
@@ -18,10 +18,10 @@
     "static/media/next.svg": "/vote-for-honeys/static/media/next.a77cd32e06d350af5be898421ae76e28.svg",
     "static/media/prev.svg": "/vote-for-honeys/static/media/prev.9e7894555d94bd331819c159df5eef17.svg",
     "main.4d152494.css.map": "/vote-for-honeys/static/css/main.4d152494.css.map",
-    "main.cac86474.js.map": "/vote-for-honeys/static/js/main.cac86474.js.map"
+    "main.d390be11.js.map": "/vote-for-honeys/static/js/main.d390be11.js.map"
   },
   "entrypoints": [
     "static/css/main.4d152494.css",
-    "static/js/main.cac86474.js"
+    "static/js/main.d390be11.js"
   ]
 }

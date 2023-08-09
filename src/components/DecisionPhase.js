@@ -43,6 +43,9 @@ const Graph = styled.div`
   position: absolute;
   top: 0;
   display: flex;
+  opacity: ${({ resultValue }) =>
+    resultValue.L + resultValue.R !== 0 ? 1 : 0};
+  transition: opacity 0.2s ease-in-out;
   & > div {
     height: 100%;
     transition: all 0.4s ease-in-out;
@@ -75,6 +78,35 @@ const Graph = styled.div`
       else if (result === 'left') return '#EC4758';
       else if (result === 'right') return '#1A7BB9';
     }};
+    opacity: ${({ resultValue }) =>
+      resultValue.L + resultValue.R !== 0 ? 1 : 0};
+  }
+`;
+
+const DecisionPhaseText = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  left: 0;
+  top: 14px;
+  padding-top: 4px;
+  font-size: 12px;
+  font-family: 'chaney';
+  opacity: 0.5;
+  & span:first-child {
+    padding-left: 4px;
+    color: ${({ result }) => {
+      if (result === 'draw') return '#000000';
+      else return '#EC4758';
+    }};
+  }
+  & span:last-child {
+    padding-right: 4px;
+    color: ${({ result }) => {
+      if (result === 'draw') return '#000000';
+      else return '#1A7BB9';
+    }};
   }
 `;
 
@@ -104,7 +136,7 @@ const DecisionPhase = ({ attend, setIsDecision }) => {
       else if (resultValue.L > resultValue.R) return 'left';
       else if (resultValue.L < resultValue.R) return 'right';
     });
-  }, [picks, resultValue]);
+  }, [resultValue]);
 
   const resultMaker = () => {
     if (result === 'left') return 'left win';
@@ -114,15 +146,19 @@ const DecisionPhase = ({ attend, setIsDecision }) => {
 
   return (
     <>
-      {resultValue.L + resultValue.R !== 0 && (
-        <Graph resultValue={resultValue} result={result}>
-          <div className="L" />
-          <div className="R" />
-          <div className="result" result={result}>
-            {resultMaker()}
-          </div>
-        </Graph>
-      )}
+      <DecisionPhaseText result={result}>
+        <span>Decision Phase</span>
+        <span>Decision Phase</span>
+      </DecisionPhaseText>
+
+      <Graph resultValue={resultValue} result={result}>
+        <div className="L" />
+        <div className="R" />
+        <div className="result" result={result}>
+          {resultMaker()}
+        </div>
+      </Graph>
+
       <Users>
         {attend
           .sort((a, b) => a.order - b.order)
