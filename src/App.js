@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import users from './users';
-import User from './components/User';
+import PickPhase from './components/PickPhase';
+import DecisionPhase from './components/DecisionPhase';
 
 const Container = styled.div`
   width: 100%;
@@ -9,39 +9,30 @@ const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-`;
-
-const Title = styled.h1`
-  font-family: 'chaney';
-  font-size: 60px;
-  font-weight: bold;
-  margin-bottom: 20px;
-`;
-
-const Users = styled.div`
-  display: flex;
-  flex-direction: row;
-  column-gap: 32px;
+  position: relative;
 `;
 
 const App = () => {
   const [attend, setAttend] = useState([]);
+  const [isDecision, setIsDecision] = useState(true);
 
   return (
     <Container>
-      <Title>PICK PHASE</Title>
-      <Users>
-        {users.map((user) => (
-          <User
-            user={user}
-            key={user.username}
-            attend={attend}
-            setAttend={setAttend}
-          />
-        ))}
-      </Users>
+      {isDecision ? (
+        <DecisionPhase
+          attend={attend}
+          setAttend={setAttend}
+          setIsDecision={setIsDecision}
+        />
+      ) : (
+        <PickPhase
+          attend={attend}
+          setAttend={setAttend}
+          setIsDecision={setIsDecision}
+        />
+      )}
     </Container>
   );
 };
