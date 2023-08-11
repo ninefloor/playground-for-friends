@@ -8,12 +8,11 @@ const Users = styled.div`
   flex-direction: row;
 `;
 
-const PrevBtn = styled.button`
+const SmallBtn = styled.button`
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
   width: 40px;
   height: 40px;
   position: absolute;
-  bottom: 8px;
-  left: 8px;
   border-radius: 50%;
   background-color: #000;
   display: flex;
@@ -23,7 +22,12 @@ const PrevBtn = styled.button`
   z-index: 2;
 `;
 
-const VisibleBtn = styled.button`
+const PrevBtn = styled(SmallBtn)`
+  bottom: 8px;
+  left: 8px;
+`;
+
+const VisibleBtn = styled(SmallBtn)`
   width: 40px;
   height: 40px;
   position: absolute;
@@ -38,7 +42,7 @@ const VisibleBtn = styled.button`
   z-index: 2;
 `;
 
-const RefreshBtn = styled.button`
+const RefreshBtn = styled(SmallBtn)`
   width: 40px;
   height: 40px;
   position: absolute;
@@ -79,7 +83,7 @@ const Graph = styled.div`
 `;
 
 const FinalResult = styled.div`
-  animation: 0.3s ease-in-out fade;
+  animation: 0.9s ease-in-out fade;
   position: absolute;
   top: 0;
   bottom: 0;
