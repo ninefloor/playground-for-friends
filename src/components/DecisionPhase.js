@@ -59,7 +59,7 @@ const RefreshBtn = styled(SmallBtn)`
 
 const Graph = styled.div`
   width: 100%;
-  height: 360px;
+  height: 100%;
   position: absolute;
   bottom: 0;
   display: flex;
@@ -76,7 +76,7 @@ const Graph = styled.div`
     background: linear-gradient(
       270deg,
       rgba(236, 71, 88, 0.05) 0%,
-      #ec4758 150%
+      #ec4758 250%
     );
   }
   & > .R {
@@ -85,7 +85,7 @@ const Graph = styled.div`
     background: linear-gradient(
       90deg,
       rgba(26, 123, 185, 0.05) 0%,
-      #1a7bb9 150%
+      #1a7bb9 250%
     );
   }
 `;
