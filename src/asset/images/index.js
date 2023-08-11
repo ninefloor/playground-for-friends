@@ -8,6 +8,8 @@ import jyuani from './jyuani.jpg';
 import prev from './prev.svg';
 import next from './next.svg';
 import refresh from './refresh.svg';
+import visible from './visible.svg';
+import unvisible from './unvisible.svg';
 
 export {
   doubl3b,
@@ -20,4 +22,6 @@ export {
   prev,
   next,
   refresh,
+  visible,
+  unvisible,
 };
