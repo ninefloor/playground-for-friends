@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/vote-for-honeys/static/css/main.4d152494.css",
-    "main.js": "/vote-for-honeys/static/js/main.d390be11.js",
+    "main.js": "/vote-for-honeys/static/js/main.fa224a3d.js",
     "static/media/doubl3b.jpg": "/vote-for-honeys/static/media/doubl3b.ff9d8c30fb618b3efe3b.jpg",
     "static/media/kimpirya.jpg": "/vote-for-honeys/static/media/kimpirya.31d7f88c51d7a8021b0d.jpg",
     "static/media/ryang.png": "/vote-for-honeys/static/media/ryang.e12c091ac649fd85a4c7.png",
@@ -13,15 +13,17 @@
     "static/media/chaney-ultraextended-webfont.woff": "/vote-for-honeys/static/media/chaney-ultraextended-webfont.6745a83acebc376a2c87.woff",
     "static/media/chaney-ultraextended-webfont.eot": "/vote-for-honeys/static/media/chaney-ultraextended-webfont.0648f5c253dcd31611e3.eot",
     "static/media/chaney-ultraextended-webfont.woff2": "/vote-for-honeys/static/media/chaney-ultraextended-webfont.95b98e10361fe4b0f413.woff2",
+    "static/media/unvisible.svg": "/vote-for-honeys/static/media/unvisible.2db614b3b8ec7d22c20763095c43426e.svg",
+    "static/media/visible.svg": "/vote-for-honeys/static/media/visible.62ecea6c050603fdc241c07268b7a7fc.svg",
     "index.html": "/vote-for-honeys/index.html",
     "static/media/refresh.svg": "/vote-for-honeys/static/media/refresh.3040ad361cb2f5acd97c8c9d37563a60.svg",
     "static/media/next.svg": "/vote-for-honeys/static/media/next.a77cd32e06d350af5be898421ae76e28.svg",
     "static/media/prev.svg": "/vote-for-honeys/static/media/prev.9e7894555d94bd331819c159df5eef17.svg",
     "main.4d152494.css.map": "/vote-for-honeys/static/css/main.4d152494.css.map",
-    "main.d390be11.js.map": "/vote-for-honeys/static/js/main.d390be11.js.map"
+    "main.fa224a3d.js.map": "/vote-for-honeys/static/js/main.fa224a3d.js.map"
   },
   "entrypoints": [
     "static/css/main.4d152494.css",
-    "static/js/main.d390be11.js"
+    "static/js/main.fa224a3d.js"
   ]
 }
