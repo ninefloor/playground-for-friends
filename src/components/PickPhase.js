@@ -8,6 +8,7 @@ const Title = styled.h1`
   font-size: 60px;
   font-weight: bold;
   margin-bottom: 60px;
+  text-shadow: 0px 0px 32px rgba(0, 0, 0, 0.15);
 `;
 
 const Users = styled.div`

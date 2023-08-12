@@ -91,7 +91,7 @@ const Graph = styled.div`
 `;
 
 const FinalResult = styled.div`
-  animation: 0.9s ease-in-out fade;
+  animation: 0.9s ease-in-out contain;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -106,7 +106,9 @@ const FinalResult = styled.div`
   }};
   z-index: 1;
   transition: opacity 0.1s ease-in-out;
+  overflow: hidden;
   > span {
+    animation: 0.5s ease-in-out fade;
     width: 100%;
     height: 100%;
     display: flex;
@@ -114,7 +116,7 @@ const FinalResult = styled.div`
     align-items: center;
     font-family: 'chaney';
     font-size: 128px;
-    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.35);
     color: ${({ result }) => {
       if (result === 'draw') return '#444';
       else if (result === 'left') return '#EC4758';
@@ -124,12 +126,22 @@ const FinalResult = styled.div`
   &.hide {
     opacity: 0.1;
   }
-  @keyframes fade {
+  @keyframes contain {
     0% {
       opacity: 0;
     }
     100% {
       opacity: 1;
+    }
+  }
+  @keyframes fade {
+    0% {
+      opacity: 0;
+      transform: translateY(5%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
     }
   }
 `;

@@ -20,7 +20,7 @@ const User = styled.div`
     color: ${({ picks, username }) =>
       picks[username] === 'L' ? '#EC4758' : '#1a7bb9'};
     text-align: center;
-    text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 0px 24px rgba(255, 255, 255, 0.4);
     font-family: 'chaney';
     font-size: 72px;
   }
@@ -77,10 +77,12 @@ const User = styled.div`
       }
     }
   }
-  & > img {
+  & > .userImage {
     width: 136px;
     height: 160px;
-    object-fit: cover;
+    background-image: url(${(props) => userStyleConfig[props.order].image});
+    background-size: cover;
+    background-position: center;
   }
   & > .textBg {
     position: absolute;
@@ -96,6 +98,16 @@ const User = styled.div`
       font-style: 14px;
       color: #fff;
       margin-bottom: 8px;
+    }
+  }
+  @keyframes fade {
+    0% {
+      opacity: 0;
+      transform: translateY(5%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
     }
   }
 `;
@@ -128,7 +140,7 @@ const DecisionUserItem = ({ user, picks, setPicks, setResultValue }) => {
         <div className="textBg">
           <span className="text">{username}</span>
         </div>
-        <img src={userStyleConfig[order].image} alt={username} />
+        <div className="userImage" />
       </User>
     </Container>
   );
