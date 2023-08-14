@@ -112,7 +112,7 @@ const User = styled.div`
   }
 `;
 
-const DecisionUserItem = ({ user, picks, setPicks, setResultValue }) => {
+const DecisionUserItem = ({ user, picks, setPicks }) => {
   const { username, order } = user;
 
   const decisionHandler = (e) => {

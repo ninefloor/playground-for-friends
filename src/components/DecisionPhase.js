@@ -73,19 +73,15 @@ const Graph = styled.div`
   & > .L {
     width: ${({ resultValue }) =>
       (resultValue.L / (resultValue.L + resultValue.R)) * 100 + '%'};
-    background: linear-gradient(
-      270deg,
-      rgba(236, 71, 88, 0.05) 0%,
-      #ec4758 250%
-    );
+    background: linear-gradient(225deg, rgba(236, 71, 88, 0) 30%, #ec4758 200%);
   }
   & > .R {
     width: ${({ resultValue }) =>
       (resultValue.R / (resultValue.L + resultValue.R)) * 100 + '%'};
     background: linear-gradient(
-      90deg,
-      rgba(26, 123, 185, 0.05) 0%,
-      #1a7bb9 250%
+      135deg,
+      rgba(26, 123, 185, 0) 30%,
+      #1a7bb9 200%
     );
   }
 `;
@@ -191,6 +187,31 @@ const DecisionPhaseText = styled.div`
   }
 `;
 
+const ResultCount = styled.div`
+  width: 100%;
+  display: flex;
+  position: absolute;
+  top: 16px;
+  & > div {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'chaney';
+    font-size: 96px;
+    text-shadow: 0px 4px 24px rgba(255, 255, 255, 0.2);
+    opacity: 0.5;
+    &.left {
+      left: 16px;
+      color: #ec4758;
+    }
+    &.right {
+      right: 16px;
+      color: #1a7bb9;
+    }
+  }
+`;
+
 const DecisionPhase = ({ attend, setIsDecision }) => {
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
@@ -255,6 +276,11 @@ const DecisionPhase = ({ attend, setIsDecision }) => {
         <div className="L" />
         <div className="R" />
       </Graph>
+
+      <ResultCount>
+        <div className="left">{resultValue.L}</div>
+        <div className="right">{resultValue.R}</div>
+      </ResultCount>
 
       <Users>
         {attend
