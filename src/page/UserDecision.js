@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
-import { getDatabase, onValue, ref, set } from 'firebase/database';
-import { firebaseApp } from '../data';
+import {
+  getDatabase,
+  onValue,
+  ref,
+  push,
+  query,
+  orderByChild,
+  limitToLast,
+} from 'firebase/database';
 
 const Container = styled.div`
   width: 100%;
@@ -90,23 +97,45 @@ const UserDecision = () => {
 
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/${user}`);
-    set(decisionRef, { decision: '' });
+    const decisionRef = ref(db, `/joinUser`);
+    push(decisionRef, {
+      user,
+      join: true,
+      createdAt: Date.now(),
+    });
+    return () => {
+      push(decisionRef, {
+        user,
+        join: false,
+        createdAt: Date.now(),
+      });
+    };
   }, []);
 
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/${user}`);
-    onValue(decisionRef, (snapshot) => {
-      console.log(snapshot.val());
-      setDecision(snapshot.val().decision);
+    const decisionRef = ref(db, `/decision`);
+    const queryRef = query(
+      decisionRef,
+      orderByChild('createdAt'),
+      limitToLast(1)
+    );
+    onValue(queryRef, (snapshot) => {
+      const res = snapshot.val();
+      const data = res[Object.keys(res)[0]];
+      const { decision: curDecision, user: curUser } = data;
+      if (curUser === user) setDecision(curDecision);
     });
   }, [user]);
 
   const decisionHandler = ({ target: { id } }) => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/${user}`);
-    set(decisionRef, { decision: id });
+    const decisionRef = ref(db, `/decision`);
+    push(decisionRef, {
+      user,
+      decision: id,
+      createdAt: Date.now(),
+    });
   };
 
   return (
