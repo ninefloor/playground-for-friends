@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
+  max-width: 600px;
   height: 100vh;
-  background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -42,7 +42,7 @@ const PcBtn = styled(Button)`
 `;
 
 const Modal = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -53,6 +53,7 @@ const Modal = styled.div`
   align-items: center;
   & > .window {
     width: 70%;
+    max-width: 400px;
     background-color: #fff;
     border-radius: 8px;
     padding: 32px 16px;
