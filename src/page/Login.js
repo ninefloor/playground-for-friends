@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 100%;
@@ -97,6 +98,7 @@ const Login = () => {
   const [user, setUser] = useState('ryang');
   const [pw, setPw] = useState('');
   const [isShowModal, setIsShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const modalHandler = () => {
     setIsShowModal((prev) => !prev);
@@ -110,7 +112,11 @@ const Login = () => {
     );
   };
 
-  // TODO: 선택 페이지 생성 후 로그인 완료 시 선택 페이지로 이동
+  const loginHander = () => {
+    if (pw === process.env[`REACT_APP_${user.toUpperCase()}_PW`]) {
+      navigate('/userdecision', { state: { user } });
+    } else alert('비밀번호가 맞지 않습니다.');
+  };
 
   return (
     <Container>
@@ -146,11 +152,14 @@ const Login = () => {
             <input
               type="password"
               value={pw}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') loginHander();
+              }}
               onChange={({ target: { value } }) => {
                 setPw(value);
               }}
             />
-            <Button>login</Button>
+            <Button onClick={loginHander}>login</Button>
           </div>
         </Modal>
       )}

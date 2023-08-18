@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   width: 100%;
@@ -13,7 +14,6 @@ const Container = styled.div`
   & > .title {
     font-family: 'chaney';
     font-size: 16px;
-    font-weight: bold;
     margin-top: 20px;
     text-shadow: 0px 0px 32px rgba(0, 0, 0, 0.15);
   }
@@ -42,14 +42,19 @@ const Decision = styled.div`
   font-size: 60px;
   font-weight: bold;
   text-shadow: 0px 0px 32px rgba(255, 255, 255, 0.15);
-  color: ${({ decision }) => (decision === 'L' ? '#EC4758' : '#1a7bb9')};
-
-  background: ${({ decision }) =>
-    decision === 'L'
-      ? 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, #ec4758 300%)'
-      : decision === 'R'
-      ? 'linear-gradient(180deg, rgba(26, 123, 185, 0) 0%, #1a7bb9 300%)'
-      : 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #333333 300%)'};
+  color: ${(props) => (props.decision === 'L' ? '#EC4758' : '#1a7bb9')};
+  background: ${(props) => {
+    switch (props.decision) {
+      case 'L':
+        return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, #ec4758 300%)';
+      case 'R':
+        return 'linear-gradient(180deg, rgba(26, 123, 185, 0) 0%, #1a7bb9 300%)';
+      case 'giveup':
+        return 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #333333 300%)';
+      default:
+        return;
+    }
+  }};
 `;
 
 const Button = styled.button`
@@ -77,15 +82,19 @@ const GiveUpBtn = styled(Button)`
 
 const UserDecision = () => {
   const [decision, setDecision] = useState('');
+  const {
+    state: { user },
+  } = useLocation();
 
   const decisionHandler = ({ target: { id } }) => {
-    if (id === 'giveup') setDecision('💀');
-    else setDecision(id);
+    setDecision(id);
   };
   return (
     <Container>
-      <h1 className="title">user decision</h1>
-      <Decision decision={decision}>{decision}</Decision>
+      <h1 className="title">{user}'s decision</h1>
+      <Decision decision={decision}>
+        {decision === 'giveup' ? '💀' : decision}
+      </Decision>
       <div className="btns">
         <div className="left_right">
           <LeftBtn onClick={decisionHandler} id="L">
