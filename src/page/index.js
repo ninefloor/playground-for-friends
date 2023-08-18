@@ -1,3 +1,4 @@
 import Login from './Login';
+import UserDecision from './UserDecision';
 
-export { Login };
+export { Login, UserDecision };
