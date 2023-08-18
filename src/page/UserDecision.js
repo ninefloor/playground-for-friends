@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import { getDatabase, onValue, ref, set } from 'firebase/database';
+import { firebaseApp } from '../data';
 
 const Container = styled.div`
   width: 100%;
@@ -86,9 +88,27 @@ const UserDecision = () => {
     state: { user },
   } = useLocation();
 
+  useEffect(() => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/${user}`);
+    set(decisionRef, { decision: '' });
+  }, []);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/${user}`);
+    onValue(decisionRef, (snapshot) => {
+      console.log(snapshot.val());
+      setDecision(snapshot.val().decision);
+    });
+  }, [user]);
+
   const decisionHandler = ({ target: { id } }) => {
-    setDecision(id);
+    const db = getDatabase();
+    const decisionRef = ref(db, `/${user}`);
+    set(decisionRef, { decision: id });
   };
+
   return (
     <Container>
       <h1 className="title">{user}'s decision</h1>
