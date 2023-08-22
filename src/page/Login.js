@@ -31,6 +31,17 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const AdminBtn = styled(Button)`
+  position: absolute;
+  font-weight: normal;
+  top: 16px;
+  left: 16px;
+  font-size: 12px;
+  padding: 8px 16px;
+  background-color: #000;
+  color: #fff;
+`;
+
 const PcBtn = styled(Button)`
   position: absolute;
   font-weight: normal;
@@ -118,11 +129,16 @@ const Login = () => {
     } else alert('비밀번호가 맞지 않습니다.');
   };
 
+  const adminHandler = () => {
+    navigate('/admin');
+  };
+
   return (
     <Container>
       <h1 className="title">vote for honeyz</h1>
 
       <Button onClick={modalHandler}>join</Button>
+      <AdminBtn onClick={adminHandler}>admin</AdminBtn>
       <PcBtn onClick={pcUserHander}>PC Ver.</PcBtn>
       {isShowModal && (
         <Modal onClick={modalHandler}>
