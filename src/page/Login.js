@@ -95,7 +95,7 @@ const Modal = styled.div`
 `;
 
 const Login = () => {
-  const [user, setUser] = useState('ryang');
+  const [username, setUsername] = useState('ryang');
   const [pw, setPw] = useState('');
   const [isShowModal, setIsShowModal] = useState(false);
   const navigate = useNavigate();
@@ -113,8 +113,8 @@ const Login = () => {
   };
 
   const loginHander = () => {
-    if (pw === process.env[`REACT_APP_${user.toUpperCase()}_PW`]) {
-      navigate('/userdecision', { state: { user } });
+    if (pw === process.env[`REACT_APP_${username.toUpperCase()}_PW`]) {
+      navigate('/userdecision', { state: { username } });
     } else alert('비밀번호가 맞지 않습니다.');
   };
 
@@ -134,10 +134,10 @@ const Login = () => {
           >
             <h2 className="desc">user</h2>
             <select
-              value={user}
+              value={username}
               placeholder="select"
               onChange={({ target: { value } }) => {
-                setUser(value);
+                setUsername(value);
               }}
             >
               <option>ryang</option>

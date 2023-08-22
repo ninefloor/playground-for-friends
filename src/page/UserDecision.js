@@ -89,29 +89,54 @@ const GiveUpBtn = styled(Button)`
   background-color: #444;
 `;
 
+const userOrder = {
+  ryang: 1,
+  kimpirya: 2,
+  sike: 3,
+  sunny: 4,
+  jyuani: 5,
+  nine: 6,
+  doubl3b: 7,
+};
+
 const UserDecision = () => {
   const [decision, setDecision] = useState('');
   const {
-    state: { user },
+    state: { username },
   } = useLocation();
 
+  //* 유저 입장 시 데이터 송신
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/joinUser`);
-    push(decisionRef, {
-      user,
+    const joinRef = ref(db, `/joinUser`);
+    push(joinRef, {
+      username,
       join: true,
+      order: userOrder[username],
+      createdAt: Date.now(),
+    });
+    const decisionRef = ref(db, `/decision`);
+    push(decisionRef, {
+      username,
+      decision: '',
       createdAt: Date.now(),
     });
     return () => {
-      push(decisionRef, {
-        user,
+      push(joinRef, {
+        username,
         join: false,
+        order: userOrder[username],
+        createdAt: Date.now(),
+      });
+      push(decisionRef, {
+        username,
+        decision: '',
         createdAt: Date.now(),
       });
     };
   }, []);
 
+  //* 유저 입력 값에 따른 실시간 데이터 수신
   useEffect(() => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
@@ -123,16 +148,17 @@ const UserDecision = () => {
     onValue(queryRef, (snapshot) => {
       const res = snapshot.val();
       const data = res[Object.keys(res)[0]];
-      const { decision: curDecision, user: curUser } = data;
-      if (curUser === user) setDecision(curDecision);
+      const { decision: curDecision, username: curUser } = data;
+      if (curUser === 'all' && curDecision === 'clear') setDecision('');
+      if (curUser === username) setDecision(curDecision);
     });
-  }, [user]);
+  }, [username]);
 
   const decisionHandler = ({ target: { id } }) => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
     push(decisionRef, {
-      user,
+      username,
       decision: id,
       createdAt: Date.now(),
     });
@@ -140,7 +166,7 @@ const UserDecision = () => {
 
   return (
     <Container>
-      <h1 className="title">{user}'s decision</h1>
+      <h1 className="title">{username}'s decision</h1>
       <Decision decision={decision}>
         {decision === 'giveup' ? '💀' : decision}
       </Decision>
