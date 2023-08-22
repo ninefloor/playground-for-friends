@@ -78,22 +78,22 @@ const Modal = styled.div`
       font-size: 16px;
       font-weight: bold;
       text-align: center;
+      margin-bottom: 24px;
     }
     & > select {
       font-family: 'chaney';
       font-size: 14px;
-      margin: 24px 0px;
       width: 80%;
       height: 32px;
       outline: 0;
       text-align: center;
       background-color: #eee;
       border-radius: 8px;
+      margin-bottom: 24px;
     }
     & > input {
       font-family: 'chaney';
       font-size: 16px;
-      margin: 24px 0px;
       width: 80%;
       padding: 8px 16px;
       height: 32px;
@@ -101,6 +101,7 @@ const Modal = styled.div`
       text-align: center;
       background-color: #eee;
       border-radius: 8px;
+      margin-bottom: 24px;
     }
   }
 `;
@@ -108,11 +109,15 @@ const Modal = styled.div`
 const Login = () => {
   const [username, setUsername] = useState('ryang');
   const [pw, setPw] = useState('');
-  const [isShowModal, setIsShowModal] = useState(false);
+  const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [isShowAdminModal, setIsShowAdminModal] = useState(false);
   const navigate = useNavigate();
 
-  const modalHandler = () => {
-    setIsShowModal((prev) => !prev);
+  const loginModalHandler = () => {
+    setIsShowLoginModal((prev) => !prev);
+  };
+  const adminModalHandler = () => {
+    setIsShowAdminModal((prev) => !prev);
   };
 
   const pcUserHander = () => {
@@ -130,18 +135,19 @@ const Login = () => {
   };
 
   const adminHandler = () => {
-    navigate('/admin');
+    if (pw === process.env[`REACT_APP_ADMIN_PW`]) navigate('/admin');
+    else alert('비밀번호가 맞지 않습니다.');
   };
 
   return (
     <Container>
       <h1 className="title">vote for honeyz</h1>
 
-      <Button onClick={modalHandler}>join</Button>
-      <AdminBtn onClick={adminHandler}>admin</AdminBtn>
+      <Button onClick={loginModalHandler}>join</Button>
+      <AdminBtn onClick={adminModalHandler}>admin</AdminBtn>
       <PcBtn onClick={pcUserHander}>PC Ver.</PcBtn>
-      {isShowModal && (
-        <Modal onClick={modalHandler}>
+      {isShowLoginModal && (
+        <Modal onClick={loginModalHandler}>
           <div
             className="window"
             onClick={(e) => {
@@ -176,6 +182,29 @@ const Login = () => {
               }}
             />
             <Button onClick={loginHander}>login</Button>
+          </div>
+        </Modal>
+      )}
+      {isShowAdminModal && (
+        <Modal onClick={adminModalHandler}>
+          <div
+            className="window"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <h2 className="desc">password</h2>
+            <input
+              type="password"
+              value={pw}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') adminHandler();
+              }}
+              onChange={({ target: { value } }) => {
+                setPw(value);
+              }}
+            />
+            <Button onClick={adminHandler}>login</Button>
           </div>
         </Modal>
       )}

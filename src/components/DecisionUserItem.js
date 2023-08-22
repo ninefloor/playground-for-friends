@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { userStyleConfig } from '../data';
+import { getDatabase, ref, push } from 'firebase/database';
 
 const Container = styled.div`
   display: flex;
@@ -112,12 +113,17 @@ const User = styled.div`
   }
 `;
 
-const DecisionUserItem = ({ user, picks, setPicks }) => {
+const DecisionUserItem = ({ user, picks }) => {
   const { username, order } = user;
 
-  const decisionHandler = (e) => {
-    const { id } = e.target;
-    setPicks((prev) => ({ ...prev, [username]: id }));
+  const decisionHandler = ({ target: { id } }) => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/decision`);
+    push(decisionRef, {
+      username,
+      decision: id,
+      createdAt: Date.now(),
+    });
   };
 
   return (

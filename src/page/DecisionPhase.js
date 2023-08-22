@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { prev, refresh, visible, unvisible } from '../asset/images';
 import DecisionUserItem from '../components/DecisionUserItem';
-import { firebaseApp } from '../data';
 import {
   getDatabase,
   onValue,
@@ -260,35 +259,12 @@ const Modal = styled.div`
       font-size: 16px;
       font-weight: bold;
       text-align: center;
-    }
-    & > select {
-      font-family: 'chaney';
-      font-size: 14px;
-      margin: 24px 0px;
-      width: 80%;
-      height: 32px;
-      outline: 0;
-      text-align: center;
-      background-color: #eee;
-      border-radius: 8px;
-    }
-    & > input {
-      font-family: 'chaney';
-      font-size: 16px;
-      margin: 24px 0px;
-      width: 80%;
-      padding: 8px 16px;
-      height: 32px;
-      outline: 0;
-      text-align: center;
-      background-color: #eee;
-      border-radius: 8px;
+      margin-bottom: 16px;
     }
   }
 `;
 
 const DecisionPhase = () => {
-  const [pw, setPw] = useState('');
   const [join, setJoin] = useState(false);
   const [attend, setAttend] = useState([]);
   const [isShowModal, setIsShowModal] = useState(true);
@@ -306,6 +282,12 @@ const DecisionPhase = () => {
       join,
       createAt: Date.now(),
     });
+    return () => {
+      push(adminRef, {
+        join: false,
+        createAt: Date.now(),
+      });
+    };
   }, [join]);
 
   //* 유저 입장 데이터 수신
@@ -370,10 +352,8 @@ const DecisionPhase = () => {
   };
 
   const loginHander = () => {
-    if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
-      setIsShowModal(false);
-      setJoin(true);
-    } else alert('비밀번호가 맞지 않습니다.');
+    setIsShowModal(false);
+    setJoin(true);
   };
 
   const clearDecisionHandler = () => {
@@ -391,99 +371,82 @@ const DecisionPhase = () => {
 
   return (
     <>
-      {isShowModal ? (
+      {isShowModal && (
         <Modal>
-          <div
-            className="window"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <h2 className="desc">password</h2>
-            <input
-              type="password"
-              value={pw}
-              onKeyUp={({ key }) => {
-                if (key === 'Enter') loginHander();
-              }}
-              onChange={({ target: { value } }) => {
-                setPw(value);
-              }}
-            />
-            <Button onClick={loginHander}>login</Button>
+          <div className="window">
+            <h2 className="desc">admin ready</h2>
+
+            <Button onClick={loginHander}>start</Button>
           </div>
         </Modal>
-      ) : (
-        <>
-          {attend.length > 0 &&
-            attend.length ===
-              Object.values(picks).filter((el) => el !== '').length && (
-              <>
-                <FinalResult className={isFRVisible && 'hide'} result={result}>
-                  <span>{resultMaker()}</span>
-                </FinalResult>
-                <VisibleBtn
-                  onClick={() => {
-                    setIsFRVisible((prev) => !prev);
-                  }}
-                >
-                  <img
-                    src={isFRVisible ? visible : unvisible}
-                    alt="visible button"
-                  />
-                </VisibleBtn>
-              </>
-            )}
-          <DecisionPhaseText result={result}>
-            <span>Decision Phase</span>
-            <span>Decision Phase</span>
-          </DecisionPhaseText>
-
-          <Result resultvalue={resultValue} result={result}>
-            {resultMaker()}
-          </Result>
-
-          <Graph resultvalue={resultValue} result={result}>
-            <div className="L" />
-            <div className="R" />
-          </Graph>
-
-          <ResultCount>
-            <div className="left">{resultValue.L}</div>
-            <div className="right">{resultValue.R}</div>
-          </ResultCount>
-
-          <Users>
-            {attend
-              .sort((a, b) => a.order - b.order)
-              .map((user) => (
-                <DecisionUserItem
-                  user={user}
-                  key={user.username}
-                  attend={attend}
-                  picks={picks}
-                  setPicks={setPicks}
-                  setResultValue={setResultValue}
-                />
-              ))}
-          </Users>
-          <RefreshBtn
-            onClick={() => {
-              clearDecisionHandler();
-            }}
-          >
-            <img src={refresh} alt="refresh icon" />
-          </RefreshBtn>
-          <PrevBtn
-            onClick={() => {
-              setJoin(false);
-              navigate(-1);
-            }}
-          >
-            <img src={prev} alt="prev icon" />
-          </PrevBtn>
-        </>
       )}
+      {attend.length > 0 &&
+        attend.length ===
+          Object.values(picks).filter((el) => el !== '').length && (
+          <>
+            <FinalResult className={isFRVisible && 'hide'} result={result}>
+              <span>{resultMaker()}</span>
+            </FinalResult>
+            <VisibleBtn
+              onClick={() => {
+                setIsFRVisible((prev) => !prev);
+              }}
+            >
+              <img
+                src={isFRVisible ? visible : unvisible}
+                alt="visible button"
+              />
+            </VisibleBtn>
+          </>
+        )}
+      <DecisionPhaseText result={result}>
+        <span>Decision Phase</span>
+        <span>Decision Phase</span>
+      </DecisionPhaseText>
+
+      <Result resultvalue={resultValue} result={result}>
+        {resultMaker()}
+      </Result>
+
+      <Graph resultvalue={resultValue} result={result}>
+        <div className="L" />
+        <div className="R" />
+      </Graph>
+
+      <ResultCount>
+        <div className="left">{resultValue.L}</div>
+        <div className="right">{resultValue.R}</div>
+      </ResultCount>
+
+      <Users>
+        {attend
+          .sort((a, b) => a.order - b.order)
+          .map((user) => (
+            <DecisionUserItem
+              user={user}
+              key={user.username}
+              attend={attend}
+              picks={picks}
+              setPicks={setPicks}
+              setResultValue={setResultValue}
+            />
+          ))}
+      </Users>
+      <RefreshBtn
+        onClick={() => {
+          clearDecisionHandler();
+        }}
+      >
+        <img src={refresh} alt="refresh icon" />
+      </RefreshBtn>
+      <PrevBtn
+        onClick={() => {
+          setJoin(false);
+          navigate(-1);
+        }}
+      >
+        <img src={prev} alt="prev icon" />
+      </PrevBtn>
     </>
   );
 };
