@@ -94,6 +94,7 @@ const User = styled.div`
     justify-content: center;
     align-items: flex-end;
     background: ${(props) => userStyleConfig[props.order].color};
+    cursor: pointer;
     > .text {
       font-family: 'chaney';
       font-style: 14px;
@@ -113,7 +114,7 @@ const User = styled.div`
   }
 `;
 
-const DecisionUserItem = ({ user, picks }) => {
+const DecisionUserItem = ({ user, picks, setPicks }) => {
   const { username, order } = user;
 
   const decisionHandler = ({ target: { id } }) => {
@@ -124,6 +125,23 @@ const DecisionUserItem = ({ user, picks }) => {
       decision: id,
       createdAt: Date.now(),
     });
+  };
+
+  const kickHandler = ({ target: { id } }) => {
+    const db = getDatabase();
+    const joinRef = ref(db, `/joinUser`);
+    if (window.confirm('퇴장시키겠습니까?')) {
+      push(joinRef, {
+        username,
+        join: false,
+        createdAt: Date.now(),
+      });
+      setPicks((prev) => {
+        const newObj = { ...prev };
+        delete newObj[username];
+        return newObj;
+      });
+    } else return;
   };
 
   return (
@@ -143,9 +161,9 @@ const DecisionUserItem = ({ user, picks }) => {
             GIVE UP
           </button>
         </div>
-        <div className="textBg">
+        <button onClick={kickHandler} className="textBg">
           <span className="text">{username}</span>
-        </div>
+        </button>
         <div className="userImage" />
       </User>
     </Container>

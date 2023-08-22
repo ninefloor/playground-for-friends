@@ -13,6 +13,14 @@ import {
 } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  justify-content: center;
+`;
+
 const Users = styled.div`
   display: flex;
   flex-direction: row;
@@ -359,6 +367,7 @@ const DecisionPhase = () => {
   const clearDecisionHandler = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
+    setPicks({});
     const attendUsers = attend.map((el) => el.username);
     attendUsers.forEach((el) => {
       push(decisionRef, {
@@ -370,7 +379,7 @@ const DecisionPhase = () => {
   };
 
   return (
-    <>
+    <Container>
       {isShowModal && (
         <Modal>
           <div className="window">
@@ -447,7 +456,7 @@ const DecisionPhase = () => {
       >
         <img src={prev} alt="prev icon" />
       </PrevBtn>
-    </>
+    </Container>
   );
 };
 

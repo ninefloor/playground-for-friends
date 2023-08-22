@@ -171,7 +171,9 @@ const UserDecision = () => {
     const db = getDatabase();
     const joinRef = ref(db, `/joinUser`);
     const decisionRef = ref(db, `/decision`);
-    return () => {
+
+    const closeHandler = () => {
+      console.log('bye');
       push(joinRef, {
         username,
         join: false,
@@ -183,6 +185,11 @@ const UserDecision = () => {
         decision: '',
         createdAt: Date.now(),
       });
+    };
+
+    window.addEventListener('beforeunload', closeHandler);
+    return () => {
+      window.removeEventListener('beforeunload', closeHandler);
     };
   }, []);
 
