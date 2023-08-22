@@ -12,6 +12,7 @@ import {
   orderByChild,
   limitToLast,
 } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 
 const Users = styled.div`
   display: flex;
@@ -288,28 +289,24 @@ const Modal = styled.div`
 
 const DecisionPhase = () => {
   const [pw, setPw] = useState('');
+  const [join, setJoin] = useState(false);
   const [attend, setAttend] = useState([]);
   const [isShowModal, setIsShowModal] = useState(true);
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
   const [isFRVisible, setIsFRVisible] = useState(false);
+  const navigate = useNavigate();
 
-  //* Admin 입장 데이터 송신
+  //* Admin 입/퇴장 데이터 송신
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/activeAdmin`);
-    push(decisionRef, {
-      join: true,
+    const adminRef = ref(db, `/activeAdmin`);
+    push(adminRef, {
+      join,
       createAt: Date.now(),
     });
-    return () => {
-      push(decisionRef, {
-        join: false,
-        createAt: Date.now(),
-      });
-    };
-  }, []);
+  }, [join]);
 
   //* 유저 입장 데이터 수신
   useEffect(() => {
@@ -375,6 +372,7 @@ const DecisionPhase = () => {
   const loginHander = () => {
     if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
       setIsShowModal(false);
+      setJoin(true);
     } else alert('비밀번호가 맞지 않습니다.');
   };
 
@@ -476,6 +474,14 @@ const DecisionPhase = () => {
           >
             <img src={refresh} alt="refresh icon" />
           </RefreshBtn>
+          <PrevBtn
+            onClick={() => {
+              setJoin(false);
+              navigate(-1);
+            }}
+          >
+            <img src={prev} alt="prev icon" />
+          </PrevBtn>
         </>
       )}
     </>

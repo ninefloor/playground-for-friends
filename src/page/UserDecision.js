@@ -66,7 +66,7 @@ const Decision = styled.div`
   }};
 `;
 
-const Button = styled.button`
+const DecisionButton = styled.button`
   font-family: 'chaney';
   font-size: 48px;
   background-color: #ffc107;
@@ -74,19 +74,61 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const LeftBtn = styled(Button)`
+const LeftBtn = styled(DecisionButton)`
   width: 50%;
   background-color: #ec4758;
 `;
-const RightBtn = styled(Button)`
+const RightBtn = styled(DecisionButton)`
   width: 50%;
   background-color: #1a7bb9;
 `;
-const GiveUpBtn = styled(Button)`
+const GiveUpBtn = styled(DecisionButton)`
   width: 100%;
   height: 100%;
   font-size: 20px;
   background-color: #444;
+`;
+
+const Button = styled.button`
+  font-family: 'chaney';
+  font-size: 20px;
+  font-weight: bold;
+  padding: 16px 24px;
+  background-color: #ffc107;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  & > .window {
+    width: 70%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 32px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    & > .desc {
+      font-family: 'chaney';
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+  }
 `;
 
 const userOrder = {
@@ -101,26 +143,34 @@ const userOrder = {
 
 const UserDecision = () => {
   const [decision, setDecision] = useState('');
+  const [isShowModal, setIsShowModal] = useState(true);
+  const [isAdminReady, setIsAdminReady] = useState(false);
   const {
     state: { username },
   } = useLocation();
 
-  //* 유저 입장 시 데이터 송신
+  //* 어드민 입장 데이터 수신
+  useEffect(() => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/activeAdmin`);
+    const queryRef = query(
+      decisionRef,
+      orderByChild('createdAt'),
+      limitToLast(1)
+    );
+    onValue(queryRef, (snapshot) => {
+      const res = snapshot.val();
+      const data = res[Object.keys(res)[0]];
+      const { join } = data;
+      setIsAdminReady(join);
+    });
+  }, []);
+
+  //* 유저 퇴장 시 데이터 송신
   useEffect(() => {
     const db = getDatabase();
     const joinRef = ref(db, `/joinUser`);
-    push(joinRef, {
-      username,
-      join: true,
-      order: userOrder[username],
-      createdAt: Date.now(),
-    });
     const decisionRef = ref(db, `/decision`);
-    push(decisionRef, {
-      username,
-      decision: '',
-      createdAt: Date.now(),
-    });
     return () => {
       push(joinRef, {
         username,
@@ -164,28 +214,58 @@ const UserDecision = () => {
     });
   };
 
+  const joinHandler = () => {
+    const db = getDatabase();
+    const joinRef = ref(db, `/joinUser`);
+    const decisionRef = ref(db, `/decision`);
+    push(joinRef, {
+      username,
+      join: true,
+      order: userOrder[username],
+      createdAt: Date.now(),
+    });
+    push(decisionRef, {
+      username,
+      decision: '',
+      createdAt: Date.now(),
+    });
+    setIsShowModal(false);
+  };
+
   return (
     <Container>
-      <h1 className="title">{username}'s decision</h1>
-      <Decision decision={decision}>
-        {decision === 'giveup' ? '💀' : decision}
-      </Decision>
-      <div className="btns">
-        <div className="left_right">
-          <LeftBtn onClick={decisionHandler} id="L">
-            L
-          </LeftBtn>
-          <RightBtn onClick={decisionHandler} id="R">
-            R
-          </RightBtn>
-        </div>
-        <div className="giveup">
-          <GiveUpBtn onClick={decisionHandler} id="giveup">
-            give up
-          </GiveUpBtn>
-        </div>
-        <div></div>
-      </div>
+      {isShowModal ? (
+        <Modal>
+          <div className="window">
+            <h2 className="desc">{isAdminReady ? 'ready' : 'not ready'}</h2>
+            <Button disabled={!isAdminReady} onClick={joinHandler}>
+              join
+            </Button>
+          </div>
+        </Modal>
+      ) : (
+        <>
+          <h1 className="title">{username}'s decision</h1>
+          <Decision decision={decision}>
+            {decision === 'giveup' ? '💀' : decision}
+          </Decision>
+          <div className="btns">
+            <div className="left_right">
+              <LeftBtn onClick={decisionHandler} id="L">
+                L
+              </LeftBtn>
+              <RightBtn onClick={decisionHandler} id="R">
+                R
+              </RightBtn>
+            </div>
+            <div className="giveup">
+              <GiveUpBtn onClick={decisionHandler} id="giveup">
+                give up
+              </GiveUpBtn>
+            </div>
+          </div>
+        </>
+      )}
     </Container>
   );
 };
