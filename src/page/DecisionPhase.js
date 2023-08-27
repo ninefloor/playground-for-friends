@@ -1,7 +1,25 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { prev, refresh, visible, unvisible } from '../asset/images';
-import DecisionUserItem from './DecisionUserItem';
+import DecisionUserItem from '../components/DecisionUserItem';
+import {
+  getDatabase,
+  onValue,
+  ref,
+  push,
+  query,
+  orderByChild,
+  limitToLast,
+} from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
+
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  justify-content: center;
+`;
 
 const Users = styled.div`
   display: flex;
@@ -63,21 +81,21 @@ const Graph = styled.div`
   position: absolute;
   bottom: 0;
   display: flex;
-  opacity: ${({ resultValue }) =>
-    resultValue.L + resultValue.R !== 0 ? 1 : 0};
+  opacity: ${({ resultvalue }) =>
+    resultvalue.L + resultvalue.R !== 0 ? 1 : 0};
   transition: opacity 0.2s ease-in-out;
   & > div {
     height: 100%;
     transition: all 0.4s ease-in-out;
   }
   & > .L {
-    width: ${({ resultValue }) =>
-      (resultValue.L / (resultValue.L + resultValue.R)) * 100 + '%'};
+    width: ${({ resultvalue }) =>
+      (resultvalue.L / (resultvalue.L + resultvalue.R)) * 100 + '%'};
     background: linear-gradient(225deg, rgba(236, 71, 88, 0) 30%, #ec4758 200%);
   }
   & > .R {
-    width: ${({ resultValue }) =>
-      (resultValue.R / (resultValue.L + resultValue.R)) * 100 + '%'};
+    width: ${({ resultvalue }) =>
+      (resultvalue.R / (resultvalue.L + resultvalue.R)) * 100 + '%'};
     background: linear-gradient(
       135deg,
       rgba(26, 123, 185, 0) 30%,
@@ -158,8 +176,8 @@ const Result = styled.div`
     else if (result === 'left') return '#EC4758';
     else if (result === 'right') return '#1A7BB9';
   }};
-  opacity: ${({ resultValue }) =>
-    resultValue.L + resultValue.R !== 0 ? 1 : 0};
+  opacity: ${({ resultvalue }) =>
+    resultvalue.L + resultvalue.R !== 0 ? 1 : 0};
 `;
 
 const DecisionPhaseText = styled.div`
@@ -212,24 +230,118 @@ const ResultCount = styled.div`
   }
 `;
 
-const DecisionPhase = ({ attend, setIsDecision }) => {
+const Button = styled.button`
+  font-family: 'chaney';
+  font-size: 20px;
+  font-weight: bold;
+  padding: 16px 24px;
+  background-color: #ffc107;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  & > .window {
+    width: 70%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 32px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    & > .desc {
+      font-family: 'chaney';
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+  }
+`;
+
+const DecisionPhase = () => {
+  const [join, setJoin] = useState(false);
+  const [attend, setAttend] = useState([]);
+  const [isShowModal, setIsShowModal] = useState(true);
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
   const [isFRVisible, setIsFRVisible] = useState(false);
+  const navigate = useNavigate();
 
+  //* Admin 입/퇴장 데이터 송신
   useEffect(() => {
-    if (attend.length === 0) setIsDecision(false);
-  });
+    const db = getDatabase();
+    const adminRef = ref(db, `/activeAdmin`);
+    push(adminRef, {
+      join,
+      createAt: Date.now(),
+    });
+    return () => {
+      push(adminRef, {
+        join: false,
+        createAt: Date.now(),
+      });
+    };
+  }, [join]);
+
+  //* 유저 입장 데이터 수신
+  useEffect(() => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/joinUser`);
+    const queryRef = query(
+      decisionRef,
+      orderByChild('createdAt'),
+      limitToLast(1)
+    );
+    onValue(queryRef, (snapshot) => {
+      const res = snapshot.val();
+      const data = res[Object.keys(res)[0]];
+      const { join: curJoin, username: curUser, order } = data;
+      if (curJoin)
+        setAttend((prev) =>
+          prev.map((el) => el.username).includes(curUser)
+            ? prev
+            : [...prev, { username: curUser, order }]
+        );
+      else setAttend((prev) => prev.filter((el) => el.username !== curUser));
+    });
+  }, []);
+
+  //* 유저 선택 데이터 수신
+  useEffect(() => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/decision`);
+    const queryRef = query(
+      decisionRef,
+      orderByChild('createdAt'),
+      limitToLast(1)
+    );
+    onValue(queryRef, (snapshot) => {
+      const res = snapshot.val();
+      const data = res[Object.keys(res)[0]];
+      const { decision: curDecision, username: curUser } = data;
+      setPicks((prev) => ({ ...prev, [curUser]: curDecision }));
+    });
+  }, []);
 
   useEffect(() => {
     setResultValue({
-      L: Object.values(picks)
-        .filter((el) => el !== 'giveup')
-        .filter((el) => el === 'L').length,
-      R: Object.values(picks)
-        .filter((el) => el !== 'giveup')
-        .filter((el) => el === 'R').length,
+      L: Object.values(picks).filter((el) => el === 'L').length,
+      R: Object.values(picks).filter((el) => el === 'R').length,
     });
   }, [picks]);
 
@@ -247,32 +359,65 @@ const DecisionPhase = ({ attend, setIsDecision }) => {
     else return 'draw';
   };
 
+  const loginHander = () => {
+    setIsShowModal(false);
+    setJoin(true);
+  };
+
+  const clearDecisionHandler = () => {
+    const db = getDatabase();
+    const decisionRef = ref(db, `/decision`);
+    setPicks({});
+    const attendUsers = attend.map((el) => el.username);
+    attendUsers.forEach((el) => {
+      push(decisionRef, {
+        username: el,
+        decision: '',
+        createdAt: Date.now(),
+      });
+    });
+  };
+
   return (
-    <>
-      {attend.length === Object.keys(picks).length && (
-        <>
-          <FinalResult className={isFRVisible && 'hide'} result={result}>
-            <span>{resultMaker()}</span>
-          </FinalResult>
-          <VisibleBtn
-            onClick={() => {
-              setIsFRVisible((prev) => !prev);
-            }}
-          >
-            <img src={isFRVisible ? visible : unvisible} alt="visible button" />
-          </VisibleBtn>
-        </>
+    <Container>
+      {isShowModal && (
+        <Modal>
+          <div className="window">
+            <h2 className="desc">admin ready</h2>
+
+            <Button onClick={loginHander}>start</Button>
+          </div>
+        </Modal>
       )}
+      {attend.length > 0 &&
+        attend.length ===
+          Object.values(picks).filter((el) => el !== '').length && (
+          <>
+            <FinalResult className={isFRVisible && 'hide'} result={result}>
+              <span>{resultMaker()}</span>
+            </FinalResult>
+            <VisibleBtn
+              onClick={() => {
+                setIsFRVisible((prev) => !prev);
+              }}
+            >
+              <img
+                src={isFRVisible ? visible : unvisible}
+                alt="visible button"
+              />
+            </VisibleBtn>
+          </>
+        )}
       <DecisionPhaseText result={result}>
         <span>Decision Phase</span>
         <span>Decision Phase</span>
       </DecisionPhaseText>
 
-      <Result resultValue={resultValue} result={result}>
+      <Result resultvalue={resultValue} result={result}>
         {resultMaker()}
       </Result>
 
-      <Graph resultValue={resultValue} result={result}>
+      <Graph resultvalue={resultValue} result={result}>
         <div className="L" />
         <div className="R" />
       </Graph>
@@ -296,21 +441,22 @@ const DecisionPhase = ({ attend, setIsDecision }) => {
             />
           ))}
       </Users>
-      <PrevBtn
-        onClick={() => {
-          setIsDecision(false);
-        }}
-      >
-        <img src={prev} alt="prev icon" />
-      </PrevBtn>
       <RefreshBtn
         onClick={() => {
-          setPicks({});
+          clearDecisionHandler();
         }}
       >
         <img src={refresh} alt="refresh icon" />
       </RefreshBtn>
-    </>
+      <PrevBtn
+        onClick={() => {
+          setJoin(false);
+          navigate(-1);
+        }}
+      >
+        <img src={prev} alt="prev icon" />
+      </PrevBtn>
+    </Container>
   );
 };
 
