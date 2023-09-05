@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { styled } from 'styled-components';
 import { CircleBtn } from './atom';

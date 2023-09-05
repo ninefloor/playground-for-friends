@@ -24,7 +24,7 @@ const Container = styled.div`
   & > .users {
     width: 100%;
     display: flex;
-    padding: 0 64px;
+    padding: 0 120px;
     justify-content: space-between;
     align-items: flex-end;
     > .decisionUsers {
