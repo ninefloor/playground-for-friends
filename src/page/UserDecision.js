@@ -10,6 +10,13 @@ import {
   orderByChild,
   limitToLast,
 } from 'firebase/database';
+import {
+  Button,
+  GiveUpBtn,
+  LeftBtn,
+  RightBtn,
+  Modal,
+} from '../components/atom';
 
 const Container = styled.div`
   width: 100%;
@@ -52,6 +59,7 @@ const Decision = styled.div`
   font-weight: bold;
   text-shadow: 0px 0px 32px rgba(255, 255, 255, 0.15);
   color: ${(props) => (props.decision === 'L' ? '#EC4758' : '#1a7bb9')};
+  animation: 0.9s ease-in-out fade;
   background: ${(props) => {
     switch (props.decision) {
       case 'L':
@@ -64,69 +72,14 @@ const Decision = styled.div`
         return;
     }
   }};
-`;
-
-const DecisionButton = styled.button`
-  font-family: 'chaney';
-  font-size: 48px;
-  background-color: #ffc107;
-  color: #fff;
-  cursor: pointer;
-`;
-
-const LeftBtn = styled(DecisionButton)`
-  width: 50%;
-  background-color: #ec4758;
-`;
-const RightBtn = styled(DecisionButton)`
-  width: 50%;
-  background-color: #1a7bb9;
-`;
-const GiveUpBtn = styled(DecisionButton)`
-  width: 100%;
-  height: 100%;
-  font-size: 20px;
-  background-color: #444;
-`;
-
-const Button = styled.button`
-  font-family: 'chaney';
-  font-size: 20px;
-  font-weight: bold;
-  padding: 16px 24px;
-  background-color: #ffc107;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  & > .window {
-    width: 70%;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 32px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    & > .desc {
-      font-family: 'chaney';
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 24px;
+  @keyframes fade {
+    0% {
+      opacity: 0;
+      transform: translateY(5%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
     }
   }
 `;
@@ -185,6 +138,7 @@ const UserDecision = () => {
         decision: '',
         createdAt: Date.now(),
       });
+      isShowModal(true);
     };
 
     window.addEventListener('beforeunload', closeHandler);

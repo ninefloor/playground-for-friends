@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button, BlackBtn } from '../components/atom';
 
 const Container = styled.div`
   width: 100%;
@@ -20,90 +21,14 @@ const Container = styled.div`
   }
 `;
 
-const Button = styled.button`
-  font-family: 'chaney';
-  font-size: 20px;
-  font-weight: bold;
-  padding: 16px 24px;
-  background-color: #ffc107;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-`;
-
-const AdminBtn = styled(Button)`
-  position: absolute;
-  font-weight: normal;
+const AdminBtn = styled(BlackBtn)`
   top: 16px;
   left: 16px;
-  font-size: 12px;
-  padding: 8px 16px;
-  background-color: #000;
-  color: #fff;
 `;
 
-const PcBtn = styled(Button)`
-  position: absolute;
-  font-weight: normal;
+const PcBtn = styled(BlackBtn)`
   top: 16px;
   right: 16px;
-  font-size: 12px;
-  padding: 8px 16px;
-  background-color: #000;
-  color: #fff;
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  & > .window {
-    width: 70%;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 32px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    & > .desc {
-      font-family: 'chaney';
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    & > select {
-      font-family: 'chaney';
-      font-size: 14px;
-      width: 80%;
-      height: 32px;
-      outline: 0;
-      text-align: center;
-      background-color: #eee;
-      border-radius: 8px;
-      margin-bottom: 24px;
-    }
-    & > input {
-      font-family: 'chaney';
-      font-size: 16px;
-      width: 80%;
-      padding: 8px 16px;
-      height: 32px;
-      outline: 0;
-      text-align: center;
-      background-color: #eee;
-      border-radius: 8px;
-      margin-bottom: 24px;
-    }
-  }
 `;
 
 const Login = () => {

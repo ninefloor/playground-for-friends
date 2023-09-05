@@ -14,16 +14,23 @@ const User = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   transition: all 0.2s ease-in-out;
+  animation: 0.9s ease-in-out fade;
   &:hover > .decisionBtn {
     opacity: 1;
   }
   & > .decision {
     color: ${({ picks, username }) =>
       picks[username] === 'L' ? '#EC4758' : '#1a7bb9'};
+    text-shadow: ${({ picks, username }) =>
+      `0 0 12px ${
+        picks[username] === 'L'
+          ? 'rgba(236, 71, 88, 0.4)'
+          : 'rgba(26, 123, 185, 0.4)'
+      }`};
     text-align: center;
-    text-shadow: 0px 0px 24px rgba(255, 255, 255, 0.4);
     font-family: 'chaney';
     font-size: 72px;
+    animation: 0.9s ease-in-out fade;
   }
   & > .decisionBtn {
     width: 100%;
@@ -132,13 +139,13 @@ const DecisionUserItem = ({ user, picks, setPicks }) => {
     const joinRef = ref(db, `/joinUser`);
     if (window.confirm('퇴장시키겠습니까?')) {
       push(joinRef, {
-        username,
+        username: id,
         join: false,
         createdAt: Date.now(),
       });
       setPicks((prev) => {
         const newObj = { ...prev };
-        delete newObj[username];
+        delete newObj[id];
         return newObj;
       });
     } else return;
@@ -161,7 +168,7 @@ const DecisionUserItem = ({ user, picks, setPicks }) => {
             GIVE UP
           </button>
         </div>
-        <button onClick={kickHandler} className="textBg">
+        <button onClick={kickHandler} id={username} className="textBg">
           <span className="text">{username}</span>
         </button>
         <div className="userImage" />
