@@ -20,10 +20,17 @@ const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   justify-content: center;
+  overflow: hidden;
   & > .users {
     width: 100%;
     display: flex;
-    justify-content: center;
+    padding: 0 64px;
+    justify-content: space-between;
+    align-items: flex-end;
+    > .decisionUsers {
+      min-width: 136px;
+      display: flex;
+    }
   }
 `;
 
@@ -363,18 +370,54 @@ const DecisionPhase = () => {
       </ResultCount>
 
       <div className="users">
-        {attend
-          .sort((a, b) => a.order - b.order)
-          .map((user) => (
-            <DecisionUserItem
-              user={user}
-              key={user.username}
-              attend={attend}
-              picks={picks}
-              setPicks={setPicks}
-              setResultValue={setResultValue}
-            />
-          ))}
+        <div className="decisionUsers left">
+          {attend
+            .filter(({ username }) => picks[username] === 'L')
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
+        <div className="decisionUsers draw">
+          {attend
+            .filter(
+              ({ username }) =>
+                picks[username] === '' || picks[username] === 'giveup'
+            )
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
+        <div className="decisionUsers right">
+          {attend
+            .filter(({ username }) => picks[username] === 'R')
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
       </div>
       <RefreshBtn
         onClick={() => {

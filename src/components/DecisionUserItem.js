@@ -14,7 +14,7 @@ const User = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   transition: all 0.2s ease-in-out;
-  animation: 0.9s ease-in-out fade;
+  animation: 0.4s ease-in-out fade;
   &:hover > .decisionBtn {
     opacity: 1;
   }

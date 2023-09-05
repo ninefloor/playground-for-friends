@@ -102,29 +102,26 @@ const UserDecision = () => {
     state: { username },
   } = useLocation();
 
-  //* 어드민 입장 데이터 수신
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/activeAdmin`);
-    const queryRef = query(
-      decisionRef,
+    const activeAdminRef = ref(db, `/activeAdmin`);
+    const joinRef = ref(db, `/joinUser`);
+    const decisionRef = ref(db, `/decision`);
+    const adminQueryRef = query(
+      activeAdminRef,
       orderByChild('createdAt'),
       limitToLast(1)
     );
-    onValue(queryRef, (snapshot) => {
+
+    //* 어드민 입장 데이터 수신
+    onValue(adminQueryRef, (snapshot) => {
       const res = snapshot.val();
       const data = res[Object.keys(res)[0]];
       const { join } = data;
       setIsAdminReady(join);
     });
-  }, []);
 
-  //* 유저 퇴장 시 데이터 송신
-  useEffect(() => {
-    const db = getDatabase();
-    const joinRef = ref(db, `/joinUser`);
-    const decisionRef = ref(db, `/decision`);
-
+    //* 유저 퇴장 데이터 송신
     const closeHandler = () => {
       console.log('bye');
       push(joinRef, {
@@ -146,6 +143,13 @@ const UserDecision = () => {
       window.removeEventListener('beforeunload', closeHandler);
     };
   }, []);
+
+  //* 어드민 접속 종료 시 모달 창 출력
+  useEffect(() => {
+    if (!isAdminReady) {
+      setIsShowModal(true);
+    }
+  }, [isAdminReady]);
 
   //* 유저 입력 값에 따른 실시간 데이터 수신
   useEffect(() => {

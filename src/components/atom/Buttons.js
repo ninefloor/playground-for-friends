@@ -5,10 +5,10 @@ const Button = styled.button`
   font-size: 20px;
   font-weight: bold;
   padding: 16px 24px;
-  background-color: #ffc107;
+  background-color: ${(props) => (props.disabled ? '#aaa' : '#ffc107')};
   border-radius: 4px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  color: #000;
+  color: ${(props) => (props.disabled ? '#333' : '#000')};
   cursor: pointer;
 `;
 
