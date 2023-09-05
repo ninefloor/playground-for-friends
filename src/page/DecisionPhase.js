@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { prev, refresh, visible, unvisible } from '../asset/images';
-import DecisionUserItem from '../components/DecisionUserItem';
+import { DecisionUserItem, DecisionRoulette } from '../components';
 import {
   getDatabase,
   onValue,
@@ -12,6 +12,7 @@ import {
   limitToLast,
 } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
+import { Button, CircleBtn, Modal } from '../components/atom';
 
 const Container = styled.div`
   width: 100%;
@@ -19,60 +20,33 @@ const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   justify-content: center;
+  overflow: hidden;
+  & > .users {
+    width: 100%;
+    display: flex;
+    padding: 0 64px;
+    justify-content: space-between;
+    align-items: flex-end;
+    > .decisionUsers {
+      min-width: 136px;
+      display: flex;
+    }
+  }
 `;
 
-const Users = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const SmallBtn = styled.button`
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  border-radius: 50%;
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 2;
-`;
-
-const PrevBtn = styled(SmallBtn)`
+const PrevBtn = styled(CircleBtn)`
   bottom: 8px;
   left: 8px;
 `;
 
-const VisibleBtn = styled(SmallBtn)`
-  width: 40px;
-  height: 40px;
-  position: absolute;
+const VisibleBtn = styled(CircleBtn)`
   bottom: 8px;
   right: 56px;
-  border-radius: 50%;
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 2;
 `;
 
-const RefreshBtn = styled(SmallBtn)`
-  width: 40px;
-  height: 40px;
-  position: absolute;
+const RefreshBtn = styled(CircleBtn)`
   bottom: 8px;
   right: 8px;
-  border-radius: 50%;
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 2;
 `;
 
 const Graph = styled.div`
@@ -104,24 +78,25 @@ const Graph = styled.div`
   }
 `;
 
-const FinalResult = styled.div`
+const FinalResultContainer = styled.div`
+  width: 100%;
+  height: 140px;
   animation: 0.9s ease-in-out contain;
   position: absolute;
-  top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
   background: ${({ result }) => {
-    if (result === 'draw') return 'rgba(255, 255, 255, 0.85)';
+    if (result === 'draw')
+      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 100%)';
     else if (result === 'left')
-      return 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(236, 71, 88, 0.95) 100%)';
+      return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1) 80%)';
     else if (result === 'right')
-      return 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(26, 123, 185, 0.95) 100%)';
+      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 80%)';
   }};
   z-index: 1;
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
   overflow: hidden;
   > span {
+    margin-top: 12px;
     animation: 0.5s ease-in-out fade;
     width: 100%;
     height: 100%;
@@ -129,16 +104,12 @@ const FinalResult = styled.div`
     justify-content: center;
     align-items: center;
     font-family: 'chaney';
-    font-size: 128px;
-    text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.35);
-    color: ${({ result }) => {
-      if (result === 'draw') return '#444';
-      else if (result === 'left') return '#EC4758';
-      else if (result === 'right') return '#1A7BB9';
-    }};
+    font-size: 64px;
+    text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.7);
+    color: ${({ result }) => (result === 'draw' ? '#444' : '#eee')};
   }
   &.hide {
-    opacity: 0.1;
+    opacity: 0;
   }
   @keyframes contain {
     0% {
@@ -158,26 +129,6 @@ const FinalResult = styled.div`
       transform: translateY(0%);
     }
   }
-`;
-
-const Result = styled.div`
-  width: 100%;
-  height: 24px;
-  text-align: center;
-  position: absolute;
-  left: 50%;
-  top: 8px;
-  font-family: 'chaney';
-  font-size: 32px;
-  transform: translate(-50%);
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
-  color: ${({ result }) => {
-    if (result === 'draw') return '#444';
-    else if (result === 'left') return '#EC4758';
-    else if (result === 'right') return '#1A7BB9';
-  }};
-  opacity: ${({ resultvalue }) =>
-    resultvalue.L + resultvalue.R !== 0 ? 1 : 0};
 `;
 
 const DecisionPhaseText = styled.div`
@@ -230,56 +181,18 @@ const ResultCount = styled.div`
   }
 `;
 
-const Button = styled.button`
-  font-family: 'chaney';
-  font-size: 20px;
-  font-weight: bold;
-  padding: 16px 24px;
-  background-color: #ffc107;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  & > .window {
-    width: 70%;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 32px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    & > .desc {
-      font-family: 'chaney';
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-  }
-`;
-
 const DecisionPhase = () => {
   const [join, setJoin] = useState(false);
   const [attend, setAttend] = useState([]);
-  const [isShowModal, setIsShowModal] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [pw, setPw] = useState('');
+  const [isShowAdminModal, setIsShowAdminModal] = useState(true);
+  const [isShowStartModal, setIsShowStartModal] = useState(false);
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
   const [isFRVisible, setIsFRVisible] = useState(false);
+  const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
 
   //* Admin 입/퇴장 데이터 송신
@@ -301,9 +214,9 @@ const DecisionPhase = () => {
   //* 유저 입장 데이터 수신
   useEffect(() => {
     const db = getDatabase();
-    const decisionRef = ref(db, `/joinUser`);
+    const joinUserRef = ref(db, `/joinUser`);
     const queryRef = query(
-      decisionRef,
+      joinUserRef,
       orderByChild('createdAt'),
       limitToLast(1)
     );
@@ -347,9 +260,20 @@ const DecisionPhase = () => {
 
   useEffect(() => {
     setResult(() => {
-      if (resultValue.L === resultValue.R) return 'draw';
-      else if (resultValue.L > resultValue.R) return 'left';
-      else if (resultValue.L < resultValue.R) return 'right';
+      const { L, R } = resultValue;
+      if (L + R === 0) {
+        setIsShowRoulette(false);
+        return '';
+      } else if (L === R) {
+        setIsShowRoulette(true);
+        return 'draw';
+      } else if (L > R) {
+        setIsShowRoulette(false);
+        return 'left';
+      } else if (L < R) {
+        setIsShowRoulette(false);
+        return 'right';
+      }
     });
   }, [resultValue]);
 
@@ -359,15 +283,27 @@ const DecisionPhase = () => {
     else return 'draw';
   };
 
-  const loginHander = () => {
-    setIsShowModal(false);
-    setJoin(true);
+  const adminHandler = () => {
+    if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
+      setIsShowAdminModal(false);
+      setIsShowStartModal(true);
+      setIsLogin(true);
+    } else alert('비밀번호가 맞지 않습니다.');
+  };
+
+  const joinHander = () => {
+    if (isLogin) {
+      setIsShowStartModal(false);
+      setJoin(true);
+    } else alert('비정상적인 접근입니다. 비밀번호를 입력하여 접속하세요.');
   };
 
   const clearDecisionHandler = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
     setPicks({});
+    setIsFRVisible(false);
+    setIsShowRoulette(false);
     const attendUsers = attend.map((el) => el.username);
     attendUsers.forEach((el) => {
       push(decisionRef, {
@@ -378,14 +314,46 @@ const DecisionPhase = () => {
     });
   };
 
+  const FinalResult = ({ result }) => {
+    return (
+      <FinalResultContainer className={isFRVisible && 'hide'} result={result}>
+        <span>{resultMaker()}</span>
+      </FinalResultContainer>
+    );
+  };
+
   return (
     <Container>
-      {isShowModal && (
+      {isShowRoulette && <DecisionRoulette setResult={setResult} />}
+      {isShowStartModal && (
         <Modal>
           <div className="window">
             <h2 className="desc">admin ready</h2>
 
-            <Button onClick={loginHander}>start</Button>
+            <Button onClick={joinHander}>start</Button>
+          </div>
+        </Modal>
+      )}
+      {isShowAdminModal && (
+        <Modal>
+          <div
+            className="window"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <h2 className="desc">password</h2>
+            <input
+              type="password"
+              value={pw}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') adminHandler();
+              }}
+              onChange={({ target: { value } }) => {
+                setPw(value);
+              }}
+            />
+            <Button onClick={adminHandler}>login</Button>
           </div>
         </Modal>
       )}
@@ -393,9 +361,7 @@ const DecisionPhase = () => {
         attend.length ===
           Object.values(picks).filter((el) => el !== '').length && (
           <>
-            <FinalResult className={isFRVisible && 'hide'} result={result}>
-              <span>{resultMaker()}</span>
-            </FinalResult>
+            <FinalResult result={result} />
             <VisibleBtn
               onClick={() => {
                 setIsFRVisible((prev) => !prev);
@@ -413,10 +379,6 @@ const DecisionPhase = () => {
         <span>Decision Phase</span>
       </DecisionPhaseText>
 
-      <Result resultvalue={resultValue} result={result}>
-        {resultMaker()}
-      </Result>
-
       <Graph resultvalue={resultValue} result={result}>
         <div className="L" />
         <div className="R" />
@@ -427,20 +389,56 @@ const DecisionPhase = () => {
         <div className="right">{resultValue.R}</div>
       </ResultCount>
 
-      <Users>
-        {attend
-          .sort((a, b) => a.order - b.order)
-          .map((user) => (
-            <DecisionUserItem
-              user={user}
-              key={user.username}
-              attend={attend}
-              picks={picks}
-              setPicks={setPicks}
-              setResultValue={setResultValue}
-            />
-          ))}
-      </Users>
+      <div className="users">
+        <div className="decisionUsers left">
+          {attend
+            .filter(({ username }) => picks[username] === 'L')
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
+        <div className="decisionUsers draw">
+          {attend
+            .filter(
+              ({ username }) =>
+                picks[username] === '' || picks[username] === 'giveup'
+            )
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
+        <div className="decisionUsers right">
+          {attend
+            .filter(({ username }) => picks[username] === 'R')
+            .sort((a, b) => a.order - b.order)
+            .map((user) => (
+              <DecisionUserItem
+                user={user}
+                key={user.username}
+                attend={attend}
+                picks={picks}
+                setPicks={setPicks}
+                setResultValue={setResultValue}
+              />
+            ))}
+        </div>
+      </div>
       <RefreshBtn
         onClick={() => {
           clearDecisionHandler();
