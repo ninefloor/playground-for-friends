@@ -32,6 +32,9 @@ const CircleBtn = styled.button`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: #fff;
+  font-family: 'chaney';
+  font-size: 8px;
   z-index: 2;
 `;
 

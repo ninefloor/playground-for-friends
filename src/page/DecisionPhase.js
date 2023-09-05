@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { prev, refresh, visible, unvisible } from '../asset/images';
-import DecisionUserItem from '../components/DecisionUserItem';
+import { DecisionUserItem, DecisionRoulette } from '../components';
 import {
   getDatabase,
   onValue,
@@ -78,7 +78,7 @@ const Graph = styled.div`
   }
 `;
 
-const FinalResult = styled.div`
+const FinalResultContainer = styled.div`
   width: 100%;
   height: 140px;
   animation: 0.9s ease-in-out contain;
@@ -192,6 +192,7 @@ const DecisionPhase = () => {
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
   const [isFRVisible, setIsFRVisible] = useState(false);
+  const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
 
   //* Admin 입/퇴장 데이터 송신
@@ -259,9 +260,20 @@ const DecisionPhase = () => {
 
   useEffect(() => {
     setResult(() => {
-      if (resultValue.L === resultValue.R) return 'draw';
-      else if (resultValue.L > resultValue.R) return 'left';
-      else if (resultValue.L < resultValue.R) return 'right';
+      const { L, R } = resultValue;
+      if (L + R === 0) {
+        setIsShowRoulette(false);
+        return '';
+      } else if (L === R) {
+        setIsShowRoulette(true);
+        return 'draw';
+      } else if (L > R) {
+        setIsShowRoulette(false);
+        return 'left';
+      } else if (L < R) {
+        setIsShowRoulette(false);
+        return 'right';
+      }
     });
   }, [resultValue]);
 
@@ -291,6 +303,7 @@ const DecisionPhase = () => {
     const decisionRef = ref(db, `/decision`);
     setPicks({});
     setIsFRVisible(false);
+    setIsShowRoulette(false);
     const attendUsers = attend.map((el) => el.username);
     attendUsers.forEach((el) => {
       push(decisionRef, {
@@ -301,8 +314,17 @@ const DecisionPhase = () => {
     });
   };
 
+  const FinalResult = ({ result }) => {
+    return (
+      <FinalResultContainer className={isFRVisible && 'hide'} result={result}>
+        <span>{resultMaker()}</span>
+      </FinalResultContainer>
+    );
+  };
+
   return (
     <Container>
+      {isShowRoulette && <DecisionRoulette setResult={setResult} />}
       {isShowStartModal && (
         <Modal>
           <div className="window">
@@ -339,9 +361,7 @@ const DecisionPhase = () => {
         attend.length ===
           Object.values(picks).filter((el) => el !== '').length && (
           <>
-            <FinalResult className={isFRVisible && 'hide'} result={result}>
-              <span>{resultMaker()}</span>
-            </FinalResult>
+            <FinalResult result={result} />
             <VisibleBtn
               onClick={() => {
                 setIsFRVisible((prev) => !prev);
