@@ -17,6 +17,7 @@ import {
   RightBtn,
   Modal,
 } from '../components/atom';
+import { async } from '@firebase/util';
 
 const Container = styled.div`
   width: 100%;
@@ -169,10 +170,11 @@ const UserDecision = () => {
     });
   }, [username]);
 
-  const decisionHandler = ({ target: { id } }) => {
+  const decisionHandler = async ({ target: { id } }) => {
+    if (decision === id) return;
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
-    push(decisionRef, {
+    await push(decisionRef, {
       username,
       decision: id,
       createdAt: Date.now(),

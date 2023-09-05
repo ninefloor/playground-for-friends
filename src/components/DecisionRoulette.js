@@ -61,6 +61,22 @@ const DecisionRoulette = ({ setResult }) => {
       option: 'R',
       style: { backgroundColor: '#1a7bb9', textColor: '#ffffff' },
     },
+    {
+      option: 'L',
+      style: { backgroundColor: '#EC4758', textColor: '#ffffff' },
+    },
+    {
+      option: 'R',
+      style: { backgroundColor: '#1a7bb9', textColor: '#ffffff' },
+    },
+    {
+      option: 'L',
+      style: { backgroundColor: '#EC4758', textColor: '#ffffff' },
+    },
+    {
+      option: 'R',
+      style: { backgroundColor: '#1a7bb9', textColor: '#ffffff' },
+    },
   ];
 
   const handleSpinClick = () => {
@@ -85,7 +101,7 @@ const DecisionRoulette = ({ setResult }) => {
           radiusLineColor="#fff"
           onStopSpinning={() => {
             setMustSpin(false);
-            setResult(() => (prize === 0 ? 'left' : 'right'));
+            setResult(() => (prize % 2 === 0 ? 'left' : 'right'));
           }}
         />
         <CircleBtn className="spinBtn" onClick={handleSpinClick}>

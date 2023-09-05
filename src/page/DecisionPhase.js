@@ -19,8 +19,10 @@ const Container = styled.div`
   height: 100vh;
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
+  position: relative;
   & > .users {
     width: 100%;
     display: flex;
@@ -35,29 +37,26 @@ const Container = styled.div`
 `;
 
 const PrevBtn = styled(CircleBtn)`
-  bottom: 8px;
-  left: 8px;
+  bottom: 20px;
+  left: 12px;
 `;
 
 const VisibleBtn = styled(CircleBtn)`
-  bottom: 8px;
+  bottom: 20px;
   right: 56px;
 `;
 
 const RefreshBtn = styled(CircleBtn)`
-  bottom: 8px;
-  right: 8px;
+  bottom: 20px;
+  right: 12px;
 `;
 
 const Graph = styled.div`
   width: 100%;
-  height: 100%;
-  position: absolute;
-  bottom: 0;
+  height: 8px;
   display: flex;
-  opacity: ${({ resultvalue }) =>
-    resultvalue.L + resultvalue.R !== 0 ? 1 : 0};
   transition: opacity 0.2s ease-in-out;
+  background-color: #666;
   & > div {
     height: 100%;
     transition: all 0.4s ease-in-out;
@@ -65,32 +64,32 @@ const Graph = styled.div`
   & > .L {
     width: ${({ resultvalue }) =>
       (resultvalue.L / (resultvalue.L + resultvalue.R)) * 100 + '%'};
-    background: linear-gradient(225deg, rgba(236, 71, 88, 0) 30%, #ec4758 200%);
+    background-color: #ec4758;
   }
   & > .R {
     width: ${({ resultvalue }) =>
       (resultvalue.R / (resultvalue.L + resultvalue.R)) * 100 + '%'};
-    background: linear-gradient(
-      135deg,
-      rgba(26, 123, 185, 0) 30%,
-      #1a7bb9 200%
-    );
+    background-color: #1a7bb9;
   }
 `;
 
 const FinalResultContainer = styled.div`
-  width: 100%;
-  height: 140px;
+  width: 50%;
+  height: ${({ result }) => (result === 'draw' ? '30%' : '100%')};
   animation: 0.9s ease-in-out contain;
   position: absolute;
   bottom: 0;
+  width: ${({ result }) => result === 'draw' && '100%'};
+  left: ${({ result }) => result === 'left' && '0'};
+  right: ${({ result }) => result === 'right' && '0'};
+
   background: ${({ result }) => {
     if (result === 'draw')
       return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 100%)';
     else if (result === 'left')
-      return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1) 80%)';
+      return 'linear-gradient(270deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)';
     else if (result === 'right')
-      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 80%)';
+      return 'linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 100%)';
   }};
   z-index: 1;
   transition: opacity 0.2s ease-in-out;
@@ -102,10 +101,15 @@ const FinalResultContainer = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    padding-bottom: 36px;
     font-family: 'chaney';
-    font-size: 64px;
-    text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.7);
+    font-size: 48px;
+    text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: ${({ result }) => {
+      if (result === 'left') return '#ec4758 0.3px';
+      else if (result === 'right') return '#1a7bb9 0.3px';
+    }};
     color: ${({ result }) => (result === 'draw' ? '#444' : '#eee')};
   }
   &.hide {
@@ -191,7 +195,7 @@ const DecisionPhase = () => {
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
-  const [isFRVisible, setIsFRVisible] = useState(false);
+  const [isFRVisible, setIsFRVisible] = useState(true);
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
 
@@ -255,32 +259,32 @@ const DecisionPhase = () => {
     setResultValue({
       L: Object.values(picks).filter((el) => el === 'L').length,
       R: Object.values(picks).filter((el) => el === 'R').length,
+      giveup: Object.values(picks).filter((el) => el === 'giveup').length,
     });
   }, [picks]);
 
   useEffect(() => {
     setResult(() => {
-      const { L, R } = resultValue;
-      if (L + R === 0) {
-        setIsShowRoulette(false);
-        return '';
-      } else if (L === R) {
-        setIsShowRoulette(true);
-        return 'draw';
-      } else if (L > R) {
-        setIsShowRoulette(false);
-        return 'left';
-      } else if (L < R) {
-        setIsShowRoulette(false);
-        return 'right';
+      const { L, R, giveup } = resultValue;
+      if (attend.length > 0 && attend.length === L + R + giveup) {
+        if (L === R) {
+          setIsShowRoulette(true);
+          return 'draw';
+        } else if (L > R) {
+          setIsShowRoulette(false);
+          return 'left';
+        } else if (L < R) {
+          setIsShowRoulette(false);
+          return 'right';
+        }
       }
     });
-  }, [resultValue]);
+  }, [resultValue, attend]);
 
   const resultMaker = () => {
-    if (result === 'left') return 'left win';
-    else if (result === 'right') return 'right win';
-    else return 'draw';
+    if (result === 'left') return '↓ left win ↓';
+    else if (result === 'right') return '↓ right win ↓';
+    else if (result === 'draw') return 'draw';
   };
 
   const adminHandler = () => {
@@ -302,7 +306,7 @@ const DecisionPhase = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
     setPicks({});
-    setIsFRVisible(false);
+    setIsFRVisible(true);
     setIsShowRoulette(false);
     const attendUsers = attend.map((el) => el.username);
     attendUsers.forEach((el) => {
@@ -316,7 +320,7 @@ const DecisionPhase = () => {
 
   const FinalResult = ({ result }) => {
     return (
-      <FinalResultContainer className={isFRVisible && 'hide'} result={result}>
+      <FinalResultContainer result={result}>
         <span>{resultMaker()}</span>
       </FinalResultContainer>
     );
@@ -357,32 +361,11 @@ const DecisionPhase = () => {
           </div>
         </Modal>
       )}
-      {attend.length > 0 &&
-        attend.length ===
-          Object.values(picks).filter((el) => el !== '').length && (
-          <>
-            <FinalResult result={result} />
-            <VisibleBtn
-              onClick={() => {
-                setIsFRVisible((prev) => !prev);
-              }}
-            >
-              <img
-                src={isFRVisible ? visible : unvisible}
-                alt="visible button"
-              />
-            </VisibleBtn>
-          </>
-        )}
+      {result !== '' && isFRVisible && <FinalResult result={result} />}
       <DecisionPhaseText result={result}>
         <span>Decision Phase</span>
         <span>Decision Phase</span>
       </DecisionPhaseText>
-
-      <Graph resultvalue={resultValue} result={result}>
-        <div className="L" />
-        <div className="R" />
-      </Graph>
 
       <ResultCount>
         <div className="left">{resultValue.L}</div>
@@ -439,6 +422,10 @@ const DecisionPhase = () => {
             ))}
         </div>
       </div>
+      <Graph resultvalue={resultValue} result={result}>
+        <div className="L" />
+        <div className="R" />
+      </Graph>
       <RefreshBtn
         onClick={() => {
           clearDecisionHandler();
@@ -454,6 +441,15 @@ const DecisionPhase = () => {
       >
         <img src={prev} alt="prev icon" />
       </PrevBtn>
+      {result && (
+        <VisibleBtn
+          onClick={() => {
+            setIsFRVisible((prev) => !prev);
+          }}
+        >
+          <img src={isFRVisible ? unvisible : visible} alt="visible button" />
+        </VisibleBtn>
+      )}
     </Container>
   );
 };
