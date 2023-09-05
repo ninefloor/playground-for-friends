@@ -35,14 +35,10 @@ const Login = () => {
   const [username, setUsername] = useState('ryang');
   const [pw, setPw] = useState('');
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-  const [isShowAdminModal, setIsShowAdminModal] = useState(false);
   const navigate = useNavigate();
 
   const loginModalHandler = () => {
     setIsShowLoginModal((prev) => !prev);
-  };
-  const adminModalHandler = () => {
-    setIsShowAdminModal((prev) => !prev);
   };
 
   const pcUserHander = () => {
@@ -59,17 +55,18 @@ const Login = () => {
     } else alert('비밀번호가 맞지 않습니다.');
   };
 
-  const adminHandler = () => {
-    if (pw === process.env[`REACT_APP_ADMIN_PW`]) navigate('/admin');
-    else alert('비밀번호가 맞지 않습니다.');
-  };
-
   return (
     <Container>
       <h1 className="title">vote for honeyz</h1>
 
       <Button onClick={loginModalHandler}>join</Button>
-      <AdminBtn onClick={adminModalHandler}>admin</AdminBtn>
+      <AdminBtn
+        onClick={() => {
+          navigate('admin');
+        }}
+      >
+        admin
+      </AdminBtn>
       <PcBtn onClick={pcUserHander}>PC Ver.</PcBtn>
       {isShowLoginModal && (
         <Modal onClick={loginModalHandler}>
@@ -107,29 +104,6 @@ const Login = () => {
               }}
             />
             <Button onClick={loginHander}>login</Button>
-          </div>
-        </Modal>
-      )}
-      {isShowAdminModal && (
-        <Modal onClick={adminModalHandler}>
-          <div
-            className="window"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <h2 className="desc">password</h2>
-            <input
-              type="password"
-              value={pw}
-              onKeyUp={({ key }) => {
-                if (key === 'Enter') adminHandler();
-              }}
-              onChange={({ target: { value } }) => {
-                setPw(value);
-              }}
-            />
-            <Button onClick={adminHandler}>login</Button>
           </div>
         </Modal>
       )}

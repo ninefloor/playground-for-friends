@@ -177,7 +177,10 @@ const ResultCount = styled.div`
 const DecisionPhase = () => {
   const [join, setJoin] = useState(false);
   const [attend, setAttend] = useState([]);
-  const [isShowModal, setIsShowModal] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [pw, setPw] = useState('');
+  const [isShowAdminModal, setIsShowAdminModal] = useState(true);
+  const [isShowStartModal, setIsShowStartModal] = useState(false);
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
@@ -261,9 +264,19 @@ const DecisionPhase = () => {
     else return 'draw';
   };
 
-  const loginHander = () => {
-    setIsShowModal(false);
-    setJoin(true);
+  const adminHandler = () => {
+    if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
+      setIsShowAdminModal(false);
+      setIsShowStartModal(true);
+      setIsLogin(true);
+    } else alert('비밀번호가 맞지 않습니다.');
+  };
+
+  const joinHander = () => {
+    if (isLogin) {
+      setIsShowStartModal(false);
+      setJoin(true);
+    } else alert('비정상적인 접근입니다. 비밀번호를 입력하여 접속하세요.');
   };
 
   const clearDecisionHandler = () => {
@@ -283,12 +296,35 @@ const DecisionPhase = () => {
 
   return (
     <Container>
-      {isShowModal && (
+      {isShowStartModal && (
         <Modal>
           <div className="window">
             <h2 className="desc">admin ready</h2>
 
-            <Button onClick={loginHander}>start</Button>
+            <Button onClick={joinHander}>start</Button>
+          </div>
+        </Modal>
+      )}
+      {isShowAdminModal && (
+        <Modal>
+          <div
+            className="window"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <h2 className="desc">password</h2>
+            <input
+              type="password"
+              value={pw}
+              onKeyUp={({ key }) => {
+                if (key === 'Enter') adminHandler();
+              }}
+              onChange={({ target: { value } }) => {
+                setPw(value);
+              }}
+            />
+            <Button onClick={adminHandler}>login</Button>
           </div>
         </Modal>
       )}
