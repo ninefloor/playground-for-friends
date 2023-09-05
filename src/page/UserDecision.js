@@ -48,7 +48,7 @@ const Container = styled.div`
   }
 `;
 
-const Decision = styled.div`
+const DecisionContainer = styled.div`
   font-family: 'chaney';
   display: flex;
   justify-content: center;
@@ -59,7 +59,7 @@ const Decision = styled.div`
   font-weight: bold;
   text-shadow: 0px 0px 32px rgba(255, 255, 255, 0.15);
   color: ${(props) => (props.decision === 'L' ? '#EC4758' : '#1a7bb9')};
-  animation: 0.9s ease-in-out fade;
+  animation: 0.4s ease-in-out fade;
   background: ${(props) => {
     switch (props.decision) {
       case 'L':
@@ -193,6 +193,14 @@ const UserDecision = () => {
     setIsShowModal(false);
   };
 
+  const Decision = ({ decision }) => {
+    return (
+      <DecisionContainer decision={decision}>
+        {decision === 'giveup' ? '💀' : decision}
+      </DecisionContainer>
+    );
+  };
+
   return (
     <Container>
       {isShowModal ? (
@@ -207,9 +215,7 @@ const UserDecision = () => {
       ) : (
         <>
           <h1 className="title">{username}'s decision</h1>
-          <Decision decision={decision}>
-            {decision === 'giveup' ? '💀' : decision}
-          </Decision>
+          <Decision decision={decision} />
           <div className="btns">
             <div className="left_right">
               <LeftBtn onClick={decisionHandler} id="L">
