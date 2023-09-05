@@ -30,7 +30,7 @@ const User = styled.div`
     text-align: center;
     font-family: 'chaney';
     font-size: 72px;
-    animation: 0.9s ease-in-out fade;
+    animation: 0.3s ease-in-out fade;
   }
   & > .decisionBtn {
     width: 100%;
@@ -151,12 +151,16 @@ const DecisionUserItem = ({ user, picks, setPicks }) => {
     } else return;
   };
 
+  const Decision = ({ decision }) => {
+    return (
+      <div className="decision">{decision === 'giveup' ? '💀' : decision}</div>
+    );
+  };
+
   return (
     <Container>
       <User order={order} picks={picks} username={username}>
-        <div className="decision">
-          {picks[username] === 'giveup' ? '💀' : picks[username]}
-        </div>
+        <Decision decision={picks[username]} />
         <div className="decisionBtn">
           <button id="L" className="L btn" onClick={decisionHandler}>
             L
