@@ -7,4 +7,5 @@ Firebase의 Realtime DB를 활용해 각자의 기기에서 투표를 진행하�
 https://github.com/ninefloor/vote-for-honeyz/assets/77656241/43d189e7-d5c4-4c72-8213-65f6d0cbd74e
 
 - 유저는 각자 자신의 계정으로 로그인 해 투표에 참여할 수 있습니다.
+- 유저가 로그인하면 admin 페이지에서 감지해 유저 목록에 추가합니다.
 - 투표한 결과는 admin 페이지에 즉시 반영되며, 모든 투표를 마치면 결과가 출력됩니다.
