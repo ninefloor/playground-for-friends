@@ -87,9 +87,9 @@ const FinalResultContainer = styled.div`
     if (result === 'draw')
       return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 100%)';
     else if (result === 'left')
-      return 'linear-gradient(270deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)';
+      return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)';
     else if (result === 'right')
-      return 'linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 100%)';
+      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 100%)';
   }};
   z-index: 1;
   transition: opacity 0.2s ease-in-out;
@@ -195,7 +195,7 @@ const DecisionPhase = () => {
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState('');
-  const [isFRVisible, setIsFRVisible] = useState(true);
+  const [isFRVisible, setIsFRVisible] = useState(false);
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
 
@@ -282,8 +282,8 @@ const DecisionPhase = () => {
   }, [resultValue, attend]);
 
   const resultMaker = () => {
-    if (result === 'left') return '↓ left win ↓';
-    else if (result === 'right') return '↓ right win ↓';
+    if (result === 'left') return 'left win';
+    else if (result === 'right') return 'right win';
     else if (result === 'draw') return 'draw';
   };
 
@@ -361,7 +361,7 @@ const DecisionPhase = () => {
           </div>
         </Modal>
       )}
-      {result !== '' && isFRVisible && <FinalResult result={result} />}
+      {result !== undefined && isFRVisible && <FinalResult result={result} />}
       <DecisionPhaseText result={result}>
         <span>Decision Phase</span>
         <span>Decision Phase</span>
@@ -426,11 +426,7 @@ const DecisionPhase = () => {
         <div className="L" />
         <div className="R" />
       </Graph>
-      <RefreshBtn
-        onClick={() => {
-          clearDecisionHandler();
-        }}
-      >
+      <RefreshBtn onClick={clearDecisionHandler}>
         <img src={refresh} alt="refresh icon" />
       </RefreshBtn>
       <PrevBtn
