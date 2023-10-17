@@ -17,7 +17,11 @@ import { Button, CircleBtn, Modal } from '../components/atom';
 const Container = styled.div`
   width: 100%;
   height: 100vh;
-  background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(236, 71, 88, 0.3) 0%,
+    rgba(26, 123, 185, 0.3) 100%
+  );
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -26,12 +30,19 @@ const Container = styled.div`
   & > .users {
     width: 100%;
     display: flex;
-    padding: 0 120px;
+    padding: 0 40px;
     justify-content: space-between;
     align-items: flex-end;
+    position: relative;
     > .decisionUsers {
       min-width: 136px;
       display: flex;
+      &.draw {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     }
   }
 `;
@@ -74,43 +85,65 @@ const Graph = styled.div`
 `;
 
 const FinalResultContainer = styled.div`
-  width: 50%;
+  width: 100%;
+  display: flex;
   height: ${({ result }) => (result === 'draw' ? '30%' : '100%')};
   animation: 0.9s ease-in-out contain;
   position: absolute;
   bottom: 0;
-  width: ${({ result }) => result === 'draw' && '100%'};
-  left: ${({ result }) => result === 'left' && '0'};
-  right: ${({ result }) => result === 'right' && '0'};
-
-  background: ${({ result }) => {
-    if (result === 'draw')
-      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 100%)';
-    else if (result === 'left')
-      return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)';
-    else if (result === 'right')
-      return 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(26, 123, 185, 1) 100%)';
-  }};
   z-index: 1;
   transition: opacity 0.2s ease-in-out;
   overflow: hidden;
+  margin-bottom: 8px;
   > span {
     margin-top: 12px;
     animation: 0.5s ease-in-out fade;
-    width: 100%;
+    width: 50%;
     height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
     padding-bottom: 36px;
     font-family: 'chaney';
     font-size: 48px;
     text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.8);
-    -webkit-text-stroke: ${({ result }) => {
-      if (result === 'left') return '#ec4758 0.3px';
-      else if (result === 'right') return '#1a7bb9 0.3px';
-    }};
-    color: ${({ result }) => (result === 'draw' ? '#444' : '#eee')};
+    color: #eee;
+    & > span {
+      font-size: 200px;
+      -webkit-text-stroke: 0;
+      text-shadow: 0 0 48px #0000003b;
+    }
+
+    &.left {
+      -webkit-text-stroke: ${({ result }) =>
+        result === 'left' ? '#ec4758 0.6px' : '#646464 0.6px'};
+      background: ${({ result }) =>
+        result === 'left'
+          ? 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)'
+          : 'linear-gradient(180deg, rgba(100, 100, 100, 0) 0%, rgba(100 , 100, 100, 1.1) 100%)'};
+      display: ${({ result }) => result === 'draw' && 'none'};
+    }
+    &.right {
+      -webkit-text-stroke: ${({ result }) =>
+        result === 'right' ? '#1a7bb9 0.6px' : '#646464 0.6px'};
+      background: ${({ result }) =>
+        result === 'right'
+          ? 'linear-gradient(180deg, rgba(26, 123, 185, 0) 0%, rgba(26, 123, 185, 1.1) 100%)'
+          : 'linear-gradient(180deg, rgba(100, 100, 100, 0) 0%, rgba(100 , 100, 100, 1.1) 100%)'};
+      display: ${({ result }) => result === 'draw' && 'none'};
+    }
+
+    &.draw {
+      width: 100%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.85) 100%
+      );
+      display: ${({ result }) => result !== 'draw' && 'none'};
+      color: #444;
+    }
   }
   &.hide {
     opacity: 0;
@@ -171,15 +204,15 @@ const ResultCount = styled.div`
     justify-content: center;
     align-items: center;
     font-family: 'chaney';
-    font-size: 96px;
+    font-size: 40px;
     text-shadow: 0px 4px 24px rgba(255, 255, 255, 0.2);
-    opacity: 0.5;
+    opacity: 0.3;
     &.left {
-      left: 16px;
+      left: 46.5%;
       color: #ec4758;
     }
     &.right {
-      right: 16px;
+      right: 46.5%;
       color: #1a7bb9;
     }
   }
@@ -215,16 +248,23 @@ const DecisionPhase = () => {
     };
   }, [join]);
 
-  //* 유저 입장 데이터 수신
   useEffect(() => {
     const db = getDatabase();
     const joinUserRef = ref(db, `/joinUser`);
-    const queryRef = query(
+    const decisionRef = ref(db, `/decision`);
+    const joinQueryRef = query(
       joinUserRef,
       orderByChild('createdAt'),
       limitToLast(1)
     );
-    onValue(queryRef, (snapshot) => {
+    const decisionQueryRef = query(
+      decisionRef,
+      orderByChild('createdAt'),
+      limitToLast(1)
+    );
+
+    //* 유저 입장 데이터 수신
+    onValue(joinQueryRef, (snapshot) => {
       const res = snapshot.val();
       const data = res[Object.keys(res)[0]];
       const { join: curJoin, username: curUser, order } = data;
@@ -236,18 +276,9 @@ const DecisionPhase = () => {
         );
       else setAttend((prev) => prev.filter((el) => el.username !== curUser));
     });
-  }, []);
 
-  //* 유저 선택 데이터 수신
-  useEffect(() => {
-    const db = getDatabase();
-    const decisionRef = ref(db, `/decision`);
-    const queryRef = query(
-      decisionRef,
-      orderByChild('createdAt'),
-      limitToLast(1)
-    );
-    onValue(queryRef, (snapshot) => {
+    //* 유저 선택 데이터 수신
+    onValue(decisionQueryRef, (snapshot) => {
       const res = snapshot.val();
       const data = res[Object.keys(res)[0]];
       const { decision: curDecision, username: curUser } = data;
@@ -267,6 +298,7 @@ const DecisionPhase = () => {
     setResult(() => {
       const { L, R, giveup } = resultValue;
       if (attend.length > 0 && attend.length === L + R + giveup) {
+        setIsFRVisible(true);
         if (L === R) {
           setIsShowRoulette(true);
           return 'draw';
@@ -280,12 +312,6 @@ const DecisionPhase = () => {
       }
     });
   }, [resultValue, attend]);
-
-  const resultMaker = () => {
-    if (result === 'left') return 'left win';
-    else if (result === 'right') return 'right win';
-    else if (result === 'draw') return 'draw';
-  };
 
   const adminHandler = () => {
     if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
@@ -306,7 +332,7 @@ const DecisionPhase = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
     setPicks({});
-    setIsFRVisible(true);
+    setIsFRVisible(false);
     setIsShowRoulette(false);
     const attendUsers = attend.map((el) => el.username);
     attendUsers.forEach((el) => {
@@ -321,14 +347,24 @@ const DecisionPhase = () => {
   const FinalResult = ({ result }) => {
     return (
       <FinalResultContainer result={result}>
-        <span>{resultMaker()}</span>
+        <span className="left">
+          <span className="count">{resultValue.L}</span>
+          left {`${result === 'left' ? 'win' : 'lose'}`}
+        </span>
+        <span className="right">
+          <span className="count">{resultValue.R}</span>
+          right {`${result === 'right' ? 'win' : 'lose'}`}
+        </span>
+        <span className="draw">draw</span>
       </FinalResultContainer>
     );
   };
 
   return (
     <Container>
-      {isShowRoulette && <DecisionRoulette setResult={setResult} />}
+      {isShowRoulette && isFRVisible && (
+        <DecisionRoulette setResult={setResult} />
+      )}
       {isShowStartModal && (
         <Modal>
           <div className="window">

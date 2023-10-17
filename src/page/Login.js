@@ -12,6 +12,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+  background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   & > .title {
     font-family: 'chaney';
     font-size: 16px;
