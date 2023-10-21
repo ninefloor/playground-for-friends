@@ -5,7 +5,7 @@ import { CircleBtn } from './atom';
 
 const Container = styled.div`
   position: fixed;
-  z-index: 1;
+  z-index: 5;
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
