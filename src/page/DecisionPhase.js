@@ -87,7 +87,7 @@ const Graph = styled.div`
 const FinalResultContainer = styled.div`
   width: 100%;
   display: flex;
-  height: ${({ result }) => (result === 'draw' ? '30%' : '100%')};
+  height: 100%;
   animation: 0.9s ease-in-out contain;
   position: absolute;
   bottom: 0;
@@ -95,6 +95,8 @@ const FinalResultContainer = styled.div`
   transition: opacity 0.2s ease-in-out;
   overflow: hidden;
   margin-bottom: 8px;
+  backdrop-filter: ${({ result }) =>
+    result === 'draw' ? 'grayscale(100%)' : 'none'};
   > span {
     margin-top: 12px;
     animation: 0.5s ease-in-out fade;
@@ -123,6 +125,8 @@ const FinalResultContainer = styled.div`
           ? 'linear-gradient(180deg, rgba(236, 71, 88, 0) 0%, rgba(236, 71, 88, 1.1) 100%)'
           : 'linear-gradient(180deg, rgba(100, 100, 100, 0) 0%, rgba(100 , 100, 100, 1.1) 100%)'};
       display: ${({ result }) => result === 'draw' && 'none'};
+      backdrop-filter: ${({ result }) =>
+        result === 'right' ? 'grayscale(100%)' : ''};
     }
     &.right {
       -webkit-text-stroke: ${({ result }) =>
@@ -132,6 +136,8 @@ const FinalResultContainer = styled.div`
           ? 'linear-gradient(180deg, rgba(26, 123, 185, 0) 0%, rgba(26, 123, 185, 1.1) 100%)'
           : 'linear-gradient(180deg, rgba(100, 100, 100, 0) 0%, rgba(100 , 100, 100, 1.1) 100%)'};
       display: ${({ result }) => result === 'draw' && 'none'};
+      backdrop-filter: ${({ result }) =>
+        result === 'left' ? 'grayscale(100%)' : ''};
     }
 
     &.draw {
