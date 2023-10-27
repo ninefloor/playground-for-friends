@@ -21,7 +21,6 @@ import {
 const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
   width: 100%;
-  max-width: 600px;
   height: 100vh;
   display: flex;
   flex-direction: column;
