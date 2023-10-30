@@ -5,7 +5,6 @@ import { Modal, Button, BlackBtn } from '../components/atom';
 
 const Container = styled.div`
   width: 100%;
-  max-width: 600px;
   height: 100vh;
   display: flex;
   flex-direction: column;
