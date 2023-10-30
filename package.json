@@ -19,7 +19,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "aws s3 sync ./build s3://vote-for-honeys --profile=ninefloor --delete",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
