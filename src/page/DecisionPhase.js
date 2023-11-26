@@ -39,23 +39,20 @@ const DecisionPhase = () => {
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
 
-  //* Admin 입/퇴장 데이터 송신
+  //* Admin 퇴장 데이터 송신
   useEffect(() => {
     if (isLogin) {
       const db = getDatabase();
       const adminRef = ref(db, `/activeAdmin`);
-      push(adminRef, {
-        join,
-        createAt: Date.now(),
-      });
       return () => {
         push(adminRef, {
           join: false,
+          type: null,
           createAt: Date.now(),
         });
       };
     }
-  }, [join, isLogin]);
+  }, [isLogin]);
 
   useEffect(() => {
     const db = getDatabase();
@@ -142,10 +139,17 @@ const DecisionPhase = () => {
     }
   };
 
-  const joinHander = () => {
+  const joinHander = ({ target: { name } }) => {
     if (isLogin) {
+      const db = getDatabase();
+      const adminRef = ref(db, `/activeAdmin`);
+
+      push(adminRef, {
+        join: true,
+        type: name,
+        createAt: Date.now(),
+      });
       setIsShowStartModal(false);
-      setJoin(true);
     } else alert('비정상적인 접근입니다. 비밀번호를 입력하여 접속하세요.');
   };
 
@@ -190,8 +194,14 @@ const DecisionPhase = () => {
         <Modal>
           <div className="window">
             <h2 className="desc">admin ready</h2>
-
-            <Button onClick={joinHander}>start</Button>
+            <div className="btns">
+              <Button name="vote" onClick={joinHander}>
+                vote
+              </Button>
+              <Button name="tier" onClick={joinHander}>
+                tier
+              </Button>
+            </div>
           </div>
         </Modal>
       )}

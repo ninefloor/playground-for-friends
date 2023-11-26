@@ -28,6 +28,10 @@ const Modal = styled.div`
       text-align: center;
       margin-bottom: 16px;
     }
+    & > .btns {
+      display: flex;
+      column-gap: 8px;
+    }
     & > select {
       font-family: 'chaney';
       font-size: 14px;
