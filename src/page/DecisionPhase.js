@@ -3,7 +3,7 @@ import { getDatabase, ref, push } from 'firebase/database';
 import { Button, Modal } from '../components/atom';
 import { auth } from '../data';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import { VoteAdmin } from '../components/DecisionPhase';
+import { TierAdmin, VoteAdmin } from '../components/DecisionPhase';
 import Loading from '../components/Loading';
 
 const DecisionPhase = () => {
@@ -31,11 +31,13 @@ const DecisionPhase = () => {
 
   useEffect(() => {
     //* 어드민 로그인 확인
+    setIsLoading(true);
     onAuthStateChanged(auth, (user) => {
       if (user?.email === 'less0805@gmail.com') {
         setIsLogin(true);
         setIsShowAdminModal(false);
         setIsShowStartModal(true);
+        setIsLoading(false);
       } else setIsShowAdminModal(true);
     });
   }, []);
@@ -109,7 +111,7 @@ const DecisionPhase = () => {
           </div>
         </Modal>
       )}
-      {gameType === 'vote' ? <VoteAdmin /> : <div />}
+      {gameType === 'vote' ? <VoteAdmin /> : <TierAdmin />}
     </>
   );
 };
