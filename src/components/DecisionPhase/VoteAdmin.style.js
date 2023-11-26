@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CircleBtn } from '../components/atom';
+import { CircleBtn } from '../atom';
 
 const Container = styled.div`
   width: 100%;

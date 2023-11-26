@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { userStyleConfig } from '../data';
+import { userStyleConfig } from '../../data';
 import { getDatabase, ref, push } from 'firebase/database';
 
 const Container = styled.div`
