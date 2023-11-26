@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   getDatabase,
   onValue,
@@ -17,6 +17,8 @@ import {
   RightBtn,
   Modal,
 } from '../components/atom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../data';
 
 const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -84,6 +86,16 @@ const DecisionContainer = styled.div`
   }
 `;
 
+const usernameData = {
+  'ryang@naver.com': 'ryang',
+  'kimpirya@naver.com': 'kimpirya',
+  'sike@naver.com': 'sike',
+  'sunny@naver.com': 'sunny',
+  'jyuani@naver.com': 'jyuani',
+  'less0805@gmail.com': 'nine',
+  'doubl3b@naver.com': 'doubl3b',
+};
+
 const userOrder = {
   ryang: 1,
   kimpirya: 2,
@@ -95,12 +107,22 @@ const userOrder = {
 };
 
 const UserDecision = () => {
+  const [username, setUsername] = useState('');
   const [decision, setDecision] = useState('');
   const [isShowModal, setIsShowModal] = useState(true);
   const [isAdminReady, setIsAdminReady] = useState(false);
-  const {
-    state: { username },
-  } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      if (user) setUsername(usernameData[user.email]);
+      else {
+        alert('잘못된 접근입니다.');
+        navigate('/');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const db = getDatabase();
@@ -125,13 +147,13 @@ const UserDecision = () => {
     const closeHandler = () => {
       console.log('bye');
       push(joinRef, {
-        username,
+        username: username,
         join: false,
         order: userOrder[username],
         createdAt: Date.now(),
       });
       push(decisionRef, {
-        username,
+        username: username,
         decision: '',
         createdAt: Date.now(),
       });
@@ -174,7 +196,7 @@ const UserDecision = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
     await push(decisionRef, {
-      username,
+      username: username,
       decision: id,
       createdAt: Date.now(),
     });
@@ -185,13 +207,13 @@ const UserDecision = () => {
     const joinRef = ref(db, `/joinUser`);
     const decisionRef = ref(db, `/decision`);
     push(joinRef, {
-      username,
+      username: username,
       join: true,
       order: userOrder[username],
       createdAt: Date.now(),
     });
     push(decisionRef, {
-      username,
+      username: username,
       decision: '',
       createdAt: Date.now(),
     });

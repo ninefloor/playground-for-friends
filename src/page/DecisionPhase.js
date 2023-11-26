@@ -22,6 +22,8 @@ import {
   DecisionPhaseText,
   ResultCount,
 } from './DecisionPhase.style';
+import { auth } from '../data';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 
 const DecisionPhase = () => {
   const [join, setJoin] = useState(false);
@@ -67,6 +69,15 @@ const DecisionPhase = () => {
       orderByChild('createdAt'),
       limitToLast(1)
     );
+
+    //* 어드민 로그인 확인
+    onAuthStateChanged(auth, (user) => {
+      if (user.email === 'less0805@gmail.com') {
+        setIsLogin(true);
+        setIsShowAdminModal(false);
+        setIsShowStartModal(true);
+      } else setIsShowAdminModal(true);
+    });
 
     //* 유저 입장 데이터 수신
     onValue(joinQueryRef, (snapshot) => {
@@ -118,12 +129,15 @@ const DecisionPhase = () => {
     });
   }, [resultValue, attend]);
 
-  const adminHandler = () => {
-    if (pw === process.env[`REACT_APP_ADMIN_PW`]) {
+  const adminHandler = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, 'less0805@gmail.com', pw);
       setIsShowAdminModal(false);
       setIsShowStartModal(true);
       setIsLogin(true);
-    } else alert('비밀번호가 맞지 않습니다.');
+    } catch (error) {
+      alert('비밀번호가 잘못되었습니다.');
+    }
   };
 
   const joinHander = () => {

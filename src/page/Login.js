@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, BlackBtn } from '../components/atom';
+import { auth } from '../data';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const Container = styled.div`
   width: 100%;
@@ -32,7 +34,7 @@ const PcBtn = styled(BlackBtn)`
 `;
 
 const Login = () => {
-  const [username, setUsername] = useState('ryang');
+  const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
   const navigate = useNavigate();
@@ -49,10 +51,13 @@ const Login = () => {
     );
   };
 
-  const loginHander = () => {
-    if (pw === process.env[`REACT_APP_${username.toUpperCase()}_PW`]) {
-      navigate('/userdecision', { state: { username } });
-    } else alert('비밀번호가 맞지 않습니다.');
+  const loginHander = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, pw);
+      navigate('/userdecision');
+    } catch (error) {
+      alert('아이디나 비밀번호가 잘못되었습니다.');
+    }
   };
 
   return (
@@ -76,22 +81,16 @@ const Login = () => {
               e.stopPropagation();
             }}
           >
-            <h2 className="desc">user</h2>
-            <select
-              value={username}
-              placeholder="select"
+            <h2 className="desc">email</h2>
+            <input
+              value={email}
+              type="email"
+              placeholder="email"
               onChange={({ target: { value } }) => {
-                setUsername(value);
+                setEmail(value);
               }}
-            >
-              <option>ryang</option>
-              <option>kimpirya</option>
-              <option>sike</option>
-              <option>sunny</option>
-              <option>jyuani</option>
-              <option>nine</option>
-              <option>doubl3b</option>
-            </select>
+            />
+
             <h2 className="desc">password</h2>
             <input
               type="password"

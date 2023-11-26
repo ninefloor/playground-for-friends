@@ -1,5 +1,5 @@
 import users from './users';
 import userStyleConfig from './userStyleConfig';
-import firebaseApp from './firebaseApp';
+import { firebaseApp, auth } from './firebaseApp';
 
-export { users, userStyleConfig, firebaseApp };
+export { users, userStyleConfig, firebaseApp, auth };
