@@ -2,8 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, BlackBtn } from '../components/atom';
-import { auth } from '../data';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useLogin } from '../hook';
+import Loading from '../components/Loading';
 
 const Container = styled.div`
   width: 100%;
@@ -34,9 +34,9 @@ const PcBtn = styled(BlackBtn)`
 `;
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [pw, setPw] = useState('');
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const { email, emailHandler, pw, pwHander, isLoading, loginHander } =
+    useLogin('/userdecision');
   const navigate = useNavigate();
 
   const loginModalHandler = () => {
@@ -49,15 +49,6 @@ const Login = () => {
       '_blank',
       'popup=true, scrollbars=0, location=0'
     );
-  };
-
-  const loginHander = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, pw);
-      navigate('/userdecision');
-    } catch (error) {
-      alert('아이디나 비밀번호가 잘못되었습니다.');
-    }
   };
 
   return (
@@ -81,15 +72,9 @@ const Login = () => {
               e.stopPropagation();
             }}
           >
+            {isLoading && <Loading />}
             <h2 className="desc">email</h2>
-            <input
-              value={email}
-              type="email"
-              placeholder="email"
-              onChange={({ target: { value } }) => {
-                setEmail(value);
-              }}
-            />
+            <input value={email} type="email" onChange={emailHandler} />
 
             <h2 className="desc">password</h2>
             <input
@@ -98,9 +83,7 @@ const Login = () => {
               onKeyUp={({ key }) => {
                 if (key === 'Enter') loginHander();
               }}
-              onChange={({ target: { value } }) => {
-                setPw(value);
-              }}
+              onChange={pwHander}
             />
             <Button onClick={loginHander}>login</Button>
           </div>
