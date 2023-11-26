@@ -4,6 +4,7 @@ import { Button, Modal } from '../components/atom';
 import { auth } from '../data';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { VoteAdmin } from '../components/DecisionPhase';
+import Loading from '../components/Loading';
 
 const DecisionPhase = () => {
   const [gameType, setGameType] = useState(null);
@@ -11,6 +12,7 @@ const DecisionPhase = () => {
   const [pw, setPw] = useState('');
   const [isShowAdminModal, setIsShowAdminModal] = useState(true);
   const [isShowStartModal, setIsShowStartModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   //* Admin 퇴장 데이터 송신
   useEffect(() => {
@@ -40,7 +42,9 @@ const DecisionPhase = () => {
 
   const adminHandler = async () => {
     try {
+      setIsLoading(true);
       await signInWithEmailAndPassword(auth, 'less0805@gmail.com', pw);
+      setIsLoading(false);
       setIsShowAdminModal(false);
       setIsShowStartModal(true);
       setIsLogin(true);
@@ -89,6 +93,7 @@ const DecisionPhase = () => {
               e.stopPropagation();
             }}
           >
+            {isLoading && <Loading />}
             <h2 className="desc">password</h2>
             <input
               type="password"

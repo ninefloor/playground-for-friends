@@ -24,11 +24,11 @@ const Container = styled.div`
 const usernameData = {
   'sh0704x@gmail.com': 'ryang',
   'dream7726@naver.com': 'kimpirya',
-  'sike@naver.com': 'sike',
-  'sunny@naver.com': 'sunny',
+  'ck_toro@naver.com': 'sike',
+  'drhs118@gmail.com': 'sunny',
   'sindy8528@naver.com': 'jyuani',
   'less0805@gmail.com': 'nine',
-  'doubl3b@naver.com': 'doubl3b',
+  'snrndi153@naver.com': 'doubl3b',
 };
 
 const userOrder = {
@@ -51,14 +51,13 @@ const UserDecision = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
       if (user) setUsername(usernameData[user.email]);
       else {
         alert('잘못된 접근입니다.');
         navigate('/');
       }
     });
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const db = getDatabase();

@@ -21,6 +21,7 @@ const Modal = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
     & > .desc {
       font-family: 'chaney';
       font-size: 16px;
