@@ -10,13 +10,7 @@ import {
   orderByChild,
   limitToLast,
 } from 'firebase/database';
-import {
-  Button,
-  GiveUpBtn,
-  LeftBtn,
-  RightBtn,
-  Modal,
-} from '../components/atom';
+import { Button, LeftBtn, RightBtn, Modal } from '../components/atom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../data';
 
@@ -40,12 +34,8 @@ const Container = styled.div`
     height: 80%;
     & > .left_right {
       width: 100%;
-      height: 80%;
+      height: 100%;
       display: flex;
-    }
-    & > .giveup {
-      width: 100%;
-      height: 20%;
     }
   }
 `;
@@ -251,11 +241,6 @@ const UserDecision = () => {
               <RightBtn onClick={decisionHandler} id="R">
                 R
               </RightBtn>
-            </div>
-            <div className="giveup">
-              <GiveUpBtn onClick={decisionHandler} id="giveup">
-                give up
-              </GiveUpBtn>
             </div>
           </div>
         </>
