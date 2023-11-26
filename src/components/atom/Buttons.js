@@ -54,6 +54,17 @@ const RightBtn = styled(DecisionButton)`
   width: 50%;
   background-color: #1a7bb9;
 `;
+
+const UpBtn = styled(DecisionButton)`
+  background-color: #ec4758;
+  flex: 1;
+`;
+
+const DownBtn = styled(DecisionButton)`
+  background-color: #1a7bb9;
+  flex: 1;
+`;
+
 const GiveUpBtn = styled(DecisionButton)`
   width: 100%;
   height: 100%;
@@ -69,4 +80,6 @@ export {
   LeftBtn,
   RightBtn,
   GiveUpBtn,
+  UpBtn,
+  DownBtn,
 };
