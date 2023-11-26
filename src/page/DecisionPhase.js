@@ -41,19 +41,21 @@ const DecisionPhase = () => {
 
   //* Admin 입/퇴장 데이터 송신
   useEffect(() => {
-    const db = getDatabase();
-    const adminRef = ref(db, `/activeAdmin`);
-    push(adminRef, {
-      join,
-      createAt: Date.now(),
-    });
-    return () => {
+    if (isLogin) {
+      const db = getDatabase();
+      const adminRef = ref(db, `/activeAdmin`);
       push(adminRef, {
-        join: false,
+        join,
         createAt: Date.now(),
       });
-    };
-  }, [join]);
+      return () => {
+        push(adminRef, {
+          join: false,
+          createAt: Date.now(),
+        });
+      };
+    }
+  }, [join, isLogin]);
 
   useEffect(() => {
     const db = getDatabase();
@@ -72,7 +74,7 @@ const DecisionPhase = () => {
 
     //* 어드민 로그인 확인
     onAuthStateChanged(auth, (user) => {
-      if (user.email === 'less0805@gmail.com') {
+      if (user?.email === 'less0805@gmail.com') {
         setIsLogin(true);
         setIsShowAdminModal(false);
         setIsShowStartModal(true);
