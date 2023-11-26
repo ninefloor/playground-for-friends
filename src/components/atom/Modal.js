@@ -40,7 +40,8 @@ const Modal = styled.div`
       margin-bottom: 24px;
     }
     & > input {
-      font-family: 'chaney';
+      font-family: 'Pretendard';
+      font-weight: 600;
       font-size: 16px;
       width: 80%;
       padding: 8px 16px;
