@@ -92,14 +92,14 @@ const UserDecision = () => {
         decision: '',
         createdAt: Date.now(),
       });
-      isShowModal(true);
+      setIsShowModal(true);
     };
 
     window.addEventListener('beforeunload', closeHandler);
     return () => {
       window.removeEventListener('beforeunload', closeHandler);
     };
-  }, []);
+  }, [username]);
 
   //* 어드민 접속 종료 시 모달 창 출력
   useEffect(() => {
