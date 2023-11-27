@@ -20,7 +20,6 @@ const TierAdmin = () => {
     order: 0,
   });
   const [picks, setPicks] = useState({});
-  const [resultValue, setResultValue] = useState({ up: 0, down: 0 });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +64,7 @@ const TierAdmin = () => {
   const clearDecisionHandler = () => {
     const db = getDatabase();
     const decisionRef = ref(db, `/decision`);
+    const tierDecisionUserRef = ref(db, `/tierDecisionUser`);
     setPicks({});
     setSelectedUser({ username: '', pick: '', order: 0 });
     const attendUsers = attend.map((el) => el.username);
@@ -74,6 +74,10 @@ const TierAdmin = () => {
         decision: '',
         createdAt: Date.now(),
       });
+    });
+    push(tierDecisionUserRef, {
+      username: '',
+      createdAt: Date.now(),
     });
   };
 

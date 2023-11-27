@@ -8,6 +8,11 @@ import {
   GiveUpBtn,
   UpBtn,
   DownBtn,
+  SBtn,
+  ABtn,
+  BBtn,
+  CBtn,
+  DBtn,
 } from './Buttons';
 
 import Modal from './Modal';
@@ -23,4 +28,9 @@ export {
   Modal,
   UpBtn,
   DownBtn,
+  SBtn,
+  ABtn,
+  BBtn,
+  CBtn,
+  DBtn,
 };

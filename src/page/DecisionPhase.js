@@ -38,7 +38,10 @@ const DecisionPhase = () => {
         setIsShowAdminModal(false);
         setIsShowStartModal(true);
         setIsLoading(false);
-      } else setIsShowAdminModal(true);
+      } else {
+        setIsShowAdminModal(true);
+        setIsLoading(false);
+      }
     });
   }, []);
 
@@ -111,7 +114,13 @@ const DecisionPhase = () => {
           </div>
         </Modal>
       )}
-      {gameType === 'vote' ? <VoteAdmin /> : <TierAdmin />}
+      {gameType === 'vote' ? (
+        <VoteAdmin />
+      ) : gameType === 'tier' ? (
+        <TierAdmin />
+      ) : (
+        <div />
+      )}
     </>
   );
 };
