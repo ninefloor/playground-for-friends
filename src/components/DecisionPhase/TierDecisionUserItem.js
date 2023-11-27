@@ -168,7 +168,13 @@ const User = styled.div`
   }
 `;
 
-const TierDecisionUserItem = ({ user, picks, setPicks, setSelectedUser }) => {
+const TierDecisionUserItem = ({
+  user,
+  picks,
+  setPicks,
+  setSelectedUser,
+  setAttend,
+}) => {
   const { username, order } = user;
 
   const decisionHandler = ({ target: { id } }) => {
@@ -203,15 +209,16 @@ const TierDecisionUserItem = ({ user, picks, setPicks, setSelectedUser }) => {
     const joinRef = ref(db, `/joinUser`);
     if (window.confirm('퇴장시키겠습니까?')) {
       push(joinRef, {
-        username: id,
+        username: username,
         join: false,
         createdAt: Date.now(),
       });
       setPicks((prev) => {
         const newObj = { ...prev };
-        delete newObj[id];
+        delete newObj[username];
         return newObj;
       });
+      setAttend((prev) => prev.filter((user) => user.username !== id));
     } else return;
   };
 

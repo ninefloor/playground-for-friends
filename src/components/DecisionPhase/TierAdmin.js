@@ -97,7 +97,7 @@ const TierAdmin = () => {
       <div className="users">
         <div className="decisionUsers left">
           {attend
-            .filter(
+            ?.filter(
               ({ username }) =>
                 picks[username] === 'up' && selectedUser.username !== username
             )
@@ -108,13 +108,14 @@ const TierAdmin = () => {
                 key={user.username}
                 picks={picks}
                 setPicks={setPicks}
+                setAttend={setAttend}
                 setSelectedUser={setSelectedUser}
               />
             ))}
         </div>
         <div className="decisionUsers draw">
           {attend
-            .filter(
+            ?.filter(
               ({ username }) =>
                 (picks[username] === '' || picks[username] === 'giveup') &&
                 selectedUser.username !== username
@@ -126,13 +127,14 @@ const TierAdmin = () => {
                 key={user.username}
                 picks={picks}
                 setPicks={setPicks}
+                setAttend={setAttend}
                 setSelectedUser={setSelectedUser}
               />
             ))}
         </div>
         <div className="decisionUsers right">
           {attend
-            .filter(
+            ?.filter(
               ({ username }) =>
                 picks[username] === 'down' && selectedUser.username !== username
             )
@@ -143,6 +145,7 @@ const TierAdmin = () => {
                 key={user.username}
                 picks={picks}
                 setPicks={setPicks}
+                setAttend={setAttend}
                 setSelectedUser={setSelectedUser}
               />
             ))}
