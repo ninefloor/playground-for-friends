@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, BlackBtn } from '../components/atom';
+import { useLogin } from '../hook';
+import Loading from '../components/Loading';
 
 const Container = styled.div`
   width: 100%;
@@ -32,9 +34,9 @@ const PcBtn = styled(BlackBtn)`
 `;
 
 const Login = () => {
-  const [username, setUsername] = useState('ryang');
-  const [pw, setPw] = useState('');
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const { email, emailHandler, pw, pwHander, isLoading, loginHander } =
+    useLogin('/userdecision');
   const navigate = useNavigate();
 
   const loginModalHandler = () => {
@@ -47,12 +49,6 @@ const Login = () => {
       '_blank',
       'popup=true, scrollbars=0, location=0'
     );
-  };
-
-  const loginHander = () => {
-    if (pw === process.env[`REACT_APP_${username.toUpperCase()}_PW`]) {
-      navigate('/userdecision', { state: { username } });
-    } else alert('비밀번호가 맞지 않습니다.');
   };
 
   return (
@@ -76,22 +72,10 @@ const Login = () => {
               e.stopPropagation();
             }}
           >
-            <h2 className="desc">user</h2>
-            <select
-              value={username}
-              placeholder="select"
-              onChange={({ target: { value } }) => {
-                setUsername(value);
-              }}
-            >
-              <option>ryang</option>
-              <option>kimpirya</option>
-              <option>sike</option>
-              <option>sunny</option>
-              <option>jyuani</option>
-              <option>nine</option>
-              <option>doubl3b</option>
-            </select>
+            {isLoading && <Loading />}
+            <h2 className="desc">email</h2>
+            <input value={email} type="email" onChange={emailHandler} />
+
             <h2 className="desc">password</h2>
             <input
               type="password"
@@ -99,9 +83,7 @@ const Login = () => {
               onKeyUp={({ key }) => {
                 if (key === 'Enter') loginHander();
               }}
-              onChange={({ target: { value } }) => {
-                setPw(value);
-              }}
+              onChange={pwHander}
             />
             <Button onClick={loginHander}>login</Button>
           </div>

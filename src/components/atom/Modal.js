@@ -21,12 +21,17 @@ const Modal = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
     & > .desc {
       font-family: 'chaney';
       font-size: 16px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 16px;
+    }
+    & > .btns {
+      display: flex;
+      column-gap: 8px;
     }
     & > select {
       font-family: 'chaney';
@@ -40,7 +45,8 @@ const Modal = styled.div`
       margin-bottom: 24px;
     }
     & > input {
-      font-family: 'chaney';
+      font-family: 'Pretendard';
+      font-weight: 600;
       font-size: 16px;
       width: 80%;
       padding: 8px 16px;

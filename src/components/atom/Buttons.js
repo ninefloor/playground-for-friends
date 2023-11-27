@@ -54,6 +54,42 @@ const RightBtn = styled(DecisionButton)`
   width: 50%;
   background-color: #1a7bb9;
 `;
+
+const UpBtn = styled(DecisionButton)`
+  background-color: #ec4758;
+  flex: 1;
+`;
+
+const DownBtn = styled(DecisionButton)`
+  background-color: #1a7bb9;
+  flex: 1;
+`;
+
+const SBtn = styled(DecisionButton)`
+  background-color: #ff4a00;
+  flex: 1;
+`;
+
+const ABtn = styled(DecisionButton)`
+  background-color: #806cdc;
+  flex: 1;
+`;
+
+const BBtn = styled(DecisionButton)`
+  background-color: #4573d3;
+  flex: 1;
+`;
+
+const CBtn = styled(DecisionButton)`
+  background-color: #86bc64;
+  flex: 1;
+`;
+
+const DBtn = styled(DecisionButton)`
+  background-color: #939ea0;
+  flex: 1;
+`;
+
 const GiveUpBtn = styled(DecisionButton)`
   width: 100%;
   height: 100%;
@@ -69,4 +105,11 @@ export {
   LeftBtn,
   RightBtn,
   GiveUpBtn,
+  UpBtn,
+  DownBtn,
+  SBtn,
+  ABtn,
+  BBtn,
+  CBtn,
+  DBtn,
 };

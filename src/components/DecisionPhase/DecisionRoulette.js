@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { styled } from 'styled-components';
-import { CircleBtn } from './atom';
+import { CircleBtn } from '../atom';
 
 const Container = styled.div`
   position: fixed;
