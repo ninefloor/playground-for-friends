@@ -109,19 +109,24 @@ const User = styled.div`
   & > .textBg {
     position: absolute;
     bottom: 0;
+    right: 0;
     width: 100%;
-    height: 40px;
+    height: 160px;
     display: flex;
     justify-content: center;
     align-items: flex-end;
     background: ${(props) => userStyleConfig[props.order].color};
+    opacity: 0.5;
+  }
+  & > .text {
+    position: absolute;
+    bottom: 0;
+    right: 12px;
     cursor: pointer;
-    > .text {
-      font-family: 'chaney';
-      font-style: 14px;
-      color: #fff;
-      margin-bottom: 8px;
-    }
+    font-family: 'chaney';
+    font-style: 14px;
+    color: #fff;
+    margin-bottom: 8px;
   }
   @keyframes fade {
     0% {
@@ -135,7 +140,7 @@ const User = styled.div`
   }
 `;
 
-const DecisionUserItem = ({ user, picks, setPicks }) => {
+const DecisionUserItem = ({ user, picks, setPicks, setAttend }) => {
   const { username, order } = user;
 
   const decisionHandler = ({ target: { id } }) => {
@@ -162,6 +167,7 @@ const DecisionUserItem = ({ user, picks, setPicks }) => {
         delete newObj[id];
         return newObj;
       });
+      setAttend((prev) => prev.filter((user) => user.username !== username));
     } else return;
   };
 
@@ -194,8 +200,9 @@ const DecisionUserItem = ({ user, picks, setPicks }) => {
             </button>
           </div>
         </div>
-        <button onClick={kickHandler} id={username} className="textBg">
-          <span className="text">{username}</span>
+        <div className="textBg"></div>
+        <button className="text" onClick={kickHandler} id={username}>
+          {username}
         </button>
         <div className="userImage" />
       </User>

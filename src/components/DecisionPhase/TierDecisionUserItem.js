@@ -218,7 +218,7 @@ const TierDecisionUserItem = ({
         delete newObj[username];
         return newObj;
       });
-      setAttend((prev) => prev.filter((user) => user.username !== id));
+      setAttend((prev) => prev.filter((user) => user.username !== username));
     } else return;
   };
 

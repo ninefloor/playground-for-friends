@@ -156,6 +156,7 @@ const VoteAdmin = () => {
                 user={user}
                 key={user.username}
                 attend={attend}
+                setAttend={setAttend}
                 picks={picks}
                 setPicks={setPicks}
                 setResultValue={setResultValue}
@@ -174,6 +175,7 @@ const VoteAdmin = () => {
                 user={user}
                 key={user.username}
                 attend={attend}
+                setAttend={setAttend}
                 picks={picks}
                 setPicks={setPicks}
                 setResultValue={setResultValue}
@@ -189,6 +191,7 @@ const VoteAdmin = () => {
                 user={user}
                 key={user.username}
                 attend={attend}
+                setAttend={setAttend}
                 picks={picks}
                 setPicks={setPicks}
                 setResultValue={setResultValue}
