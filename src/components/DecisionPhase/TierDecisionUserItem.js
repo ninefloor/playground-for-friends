@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { userStyleConfig } from '../../data';
 import { getDatabase, ref, push } from 'firebase/database';
-import { kick } from '../../asset/images';
+import { kick, prev } from '../../asset/images';
 
 const Container = styled.div`
   display: flex;
@@ -182,7 +182,15 @@ const TierDecisionUserItem = ({ user, picks, setPicks, setSelectedUser }) => {
   };
 
   const selectedUserHandler = () => {
-    setSelectedUser({ username, order, pick: '' });
+    setSelectedUser({ username, order });
+    const db = getDatabase();
+    const decisionRef = ref(db, `/decision`);
+    push(decisionRef, {
+      username,
+      decision: '',
+      createdAt: Date.now(),
+    });
+    setPicks((prev) => ({ ...prev, [username]: '' }));
   };
 
   const kickHandler = ({ target: { id } }) => {
