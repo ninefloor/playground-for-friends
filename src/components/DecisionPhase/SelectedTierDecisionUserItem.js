@@ -13,8 +13,8 @@ const User = styled.div`
   animation: 0.4s ease-in-out fade;
   position: relative;
   & > .userImage {
-    width: 300px;
-    height: 120px;
+    width: 400px;
+    height: 180px;
     background-image: url(${(props) => userStyleConfig[props.order].image});
     background-size: cover;
     background-position: center;
@@ -105,8 +105,8 @@ const User = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 120px;
-    padding: 0 16px;
+    height: 180px;
+    padding: 0 32px;
     background: ${({ pick }) => {
       if (pick === 'S')
         return 'linear-gradient(270deg, rgba(255, 74, 0, 0) 30%, rgba(255, 74, 0, 0.3) 90%)';
@@ -129,7 +129,7 @@ const User = styled.div`
       }};
       text-align: center;
       font-family: 'chaney';
-      font-size: 60px;
+      font-size: 92px;
       animation: 0.3s ease-in-out fade;
     }
   }
