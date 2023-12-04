@@ -5,7 +5,7 @@
 
 ## 실시간 투표 with [piku](https://piku.co.kr)
 
-![이상형 월드컵 - 제2회 벌꿀즈 마함무츄디 월드컵 PIKU - Whale 2023-12-04 16-05-41](https://github.com/ninefloor/playground-for-honeyz/assets/77656241/99237468-add5-41a7-9269-c8efc4f96abf)
+![vote](https://github.com/ninefloor/playground-for-honeyz/assets/77656241/c7304ff6-465c-45f7-bcd4-66ebfc80f30d)
 
 - 유저는 각자 자신의 계정으로 로그인 해 투표에 참여할 수 있습니다.
 - 유저가 로그인하면 admin 페이지에서 감지해 유저 목록에 추가합니다.
@@ -13,7 +13,7 @@
 
 ## 티어게임 with [Tiermaker](https://tiermaker.com/)
 
-![tiergame](https://github.com/ninefloor/playground-for-honeyz/assets/77656241/ca55834b-0a85-423b-b87a-a9ac4aa6baf7)
+![tier](https://github.com/ninefloor/playground-for-honeyz/assets/77656241/c2b37cf7-abe8-4213-a655-c114cd98edec)
 
 - 유저가 로그인하면 admin 페이지에서 감지해 유저 목록에 추가합니다.
 - 해당 차례에 티어를 정할 유저는 자신의 투표 화면에서 본인이 생각하는 티어를 고릅니다.
