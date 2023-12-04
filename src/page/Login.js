@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal, Button, BlackBtn } from '../components/atom';
 import { useLogin } from '../hook';
 import Loading from '../components/Loading';
+import { logo } from '../asset/images';
 
 const Container = styled.div`
   width: 100%;
@@ -14,12 +15,17 @@ const Container = styled.div`
   align-items: center;
   position: relative;
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
+  & > img {
+    width: 200px;
+    margin-bottom: 16px;
+  }
   & > .title {
     font-family: 'chaney';
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 60px;
     text-shadow: 0px 0px 32px rgba(0, 0, 0, 0.15);
+    text-align: center;
   }
 `;
 
@@ -53,7 +59,14 @@ const Login = () => {
 
   return (
     <Container>
-      <h1 className="title">vote for honeyz</h1>
+      <img src={logo} alt="logo" />
+      <h1 className="title">
+        playground
+        <br />
+        for
+        <br />
+        honeyz
+      </h1>
 
       <Button onClick={loginModalHandler}>join</Button>
       <AdminBtn

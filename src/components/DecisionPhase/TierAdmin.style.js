@@ -47,11 +47,6 @@ const PrevBtn = styled(CircleBtn)`
   right: 60px;
 `;
 
-const VisibleBtn = styled(CircleBtn)`
-  bottom: 20px;
-  right: 56px;
-`;
-
 const RefreshBtn = styled(CircleBtn)`
   bottom: 20px;
   right: 12px;

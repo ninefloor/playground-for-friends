@@ -11,6 +11,7 @@ import refresh from './refresh.svg';
 import visible from './visible.svg';
 import unvisible from './unvisible.svg';
 import kick from './kick.svg';
+import logo from './logo.png';
 
 export {
   doubl3b,
@@ -26,4 +27,5 @@ export {
   visible,
   unvisible,
   kick,
+  logo,
 };
