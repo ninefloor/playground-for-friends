@@ -55,6 +55,7 @@ const DecisionPhase = () => {
       setIsLogin(true);
     } catch (error) {
       alert('비밀번호가 잘못되었습니다.');
+      setIsLoading(false);
     }
   };
 

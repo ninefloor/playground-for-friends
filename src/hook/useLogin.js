@@ -9,7 +9,7 @@ import { auth } from '../data';
  * @param {string} location - 로그인 후 경로 이동이 필요하다면 작성.
  * @return {object} email, emailHandler, pw, pwHander, isLoading, loginHander
  */
-const useLogin = (location) => {
+const useLogin = (location = '') => {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +28,10 @@ const useLogin = (location) => {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, email, pw);
       setIsLoading(false);
-      navigate(location);
+      if (location.length > 0) navigate(location);
     } catch (error) {
       alert('아이디나 비밀번호가 잘못되었습니다.');
+      setIsLoading(false);
     }
   };
 
