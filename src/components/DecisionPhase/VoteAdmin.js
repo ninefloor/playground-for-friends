@@ -18,7 +18,6 @@ import {
   RefreshBtn,
   Graph,
   FinalResultContainer,
-  DecisionPhaseText,
   ResultCount,
 } from './VoteAdmin.style';
 
@@ -136,10 +135,6 @@ const VoteAdmin = () => {
         <DecisionRoulette setResult={setResult} />
       )}
       {result !== undefined && isFRVisible && <FinalResult result={result} />}
-      <DecisionPhaseText result={result}>
-        <span>Decision Phase</span>
-        <span>Decision Phase</span>
-      </DecisionPhaseText>
 
       <ResultCount>
         <div className="left">{resultValue.L}</div>

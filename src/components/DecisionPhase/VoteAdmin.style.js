@@ -35,17 +35,17 @@ const Container = styled.div`
 `;
 
 const PrevBtn = styled(CircleBtn)`
-  bottom: 20px;
+  top: 12px;
   left: 12px;
 `;
 
 const VisibleBtn = styled(CircleBtn)`
-  bottom: 20px;
+  top: 12px;
   right: 56px;
 `;
 
 const RefreshBtn = styled(CircleBtn)`
-  bottom: 20px;
+  top: 12px;
   right: 12px;
 `;
 
@@ -161,31 +161,6 @@ const FinalResultContainer = styled.div`
   }
 `;
 
-const DecisionPhaseText = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  top: 0;
-  padding: 6px 8px 0 8px;
-
-  font-size: 12px;
-  font-family: 'chaney';
-  opacity: 0.5;
-  & span:first-child {
-    color: ${({ result }) => {
-      if (result === 'draw') return '#333';
-      else return '#EC4758';
-    }};
-  }
-  & span:last-child {
-    color: ${({ result }) => {
-      if (result === 'draw') return '#333';
-      else return '#1A7BB9';
-    }};
-  }
-`;
-
 const ResultCount = styled.div`
   width: 100%;
   display: flex;
@@ -218,6 +193,5 @@ export {
   RefreshBtn,
   Graph,
   FinalResultContainer,
-  DecisionPhaseText,
   ResultCount,
 };
