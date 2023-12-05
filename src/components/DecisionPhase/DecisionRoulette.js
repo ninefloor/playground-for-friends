@@ -49,7 +49,7 @@ const Container = styled.div`
   }
 `;
 
-const DecisionRoulette = ({ setResult }) => {
+const DecisionRoulette = ({ setResult, setResultValue }) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prize, setPrize] = useState('');
   const data = [
@@ -101,7 +101,13 @@ const DecisionRoulette = ({ setResult }) => {
           radiusLineColor="#fff"
           onStopSpinning={() => {
             setMustSpin(false);
-            setResult(() => (prize % 2 === 0 ? 'left' : 'right'));
+            // setResult(() => (prize % 2 === 0 ? 'left' : 'right'));
+            setResultValue((prev) => {
+              const newObj = { ...prev };
+              if (prize % 2 === 0) newObj.L += 1;
+              else newObj.R += 1;
+              return newObj;
+            });
           }}
         />
         <CircleBtn className="spinBtn" onClick={handleSpinClick}>

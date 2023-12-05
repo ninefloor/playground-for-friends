@@ -81,16 +81,14 @@ const VoteAdmin = () => {
   useEffect(() => {
     setResult(() => {
       const { L, R, giveup } = resultValue;
-      if (attend.length > 0 && attend.length === L + R + giveup) {
+      if (attend.length > 0 && attend.length <= L + R + giveup) {
         setIsFRVisible(true);
         if (L === R) {
           setIsShowRoulette(true);
           return 'draw';
         } else if (L > R) {
-          setIsShowRoulette(false);
           return 'left';
         } else if (L < R) {
-          setIsShowRoulette(false);
           return 'right';
         }
       }
@@ -132,7 +130,10 @@ const VoteAdmin = () => {
   return (
     <Container>
       {isShowRoulette && isFRVisible && (
-        <DecisionRoulette setResult={setResult} />
+        <DecisionRoulette
+          setResult={setResult}
+          setResultValue={setResultValue}
+        />
       )}
       {result !== undefined && isFRVisible && <FinalResult result={result} />}
 
