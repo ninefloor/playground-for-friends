@@ -1,6 +1,6 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { Login, UserDecision, DecisionPhase } from './page';
-import { firebaseApp } from './data';
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Login, UserDecision, DecisionPhase } from "./page";
+import { firebaseApp } from "./data";
 
 const App = () => {
   return (

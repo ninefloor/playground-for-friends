@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import {
   getDatabase,
   onValue,
@@ -9,11 +9,11 @@ import {
   query,
   orderByChild,
   limitToLast,
-} from 'firebase/database';
-import { Button, Modal } from '../components/atom';
-import { VoteDecision, TierDecision } from '../components/UserDecision';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../data';
+} from "firebase/database";
+import { Button, Modal } from "../components/atom";
+import { VoteDecision, TierDecision } from "../components/UserDecision";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../data";
 
 const Container = styled.div`
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -22,28 +22,30 @@ const Container = styled.div`
 `;
 
 const usernameData = {
-  'sh0704x@gmail.com': 'ryang',
-  'dream7726@naver.com': 'kimpirya',
-  'ck_toro@naver.com': 'sike',
-  'drhs118@gmail.com': 'sunny',
-  'sindy8528@naver.com': 'jyuani',
-  'less0805@gmail.com': 'nine',
-  'snrndi153@naver.com': 'doubl3b',
+  "sh0704x@gmail.com": "ryang",
+  "dream7726@naver.com": "kimpirya",
+  "ck_toro@naver.com": "sike",
+  "mm1223@naver.com": "soso",
+  "drhs118@gmail.com": "sunny",
+  "sindy8528@naver.com": "jyuani",
+  "less0805@gmail.com": "nine",
+  "snrndi153@naver.com": "doubl3b",
 };
 
 const userOrder = {
   ryang: 1,
   kimpirya: 2,
   sike: 3,
-  sunny: 4,
-  jyuani: 5,
-  nine: 6,
-  doubl3b: 7,
+  soso: 4,
+  sunny: 5,
+  jyuani: 6,
+  nine: 7,
+  doubl3b: 8,
 };
 
 const UserDecision = () => {
-  const [username, setUsername] = useState('');
-  const [decision, setDecision] = useState('');
+  const [username, setUsername] = useState("");
+  const [decision, setDecision] = useState("");
   const [isShowModal, setIsShowModal] = useState(true);
   const [isAdminReady, setIsAdminReady] = useState(false);
   const [type, setType] = useState(null);
@@ -53,8 +55,8 @@ const UserDecision = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) setUsername(usernameData[user.email]);
       else {
-        alert('잘못된 접근입니다.');
-        navigate('/');
+        alert("잘못된 접근입니다.");
+        navigate("/");
       }
     });
   }, [navigate]);
@@ -66,7 +68,7 @@ const UserDecision = () => {
     const decisionRef = ref(db, `/decision`);
     const adminQueryRef = query(
       activeAdminRef,
-      orderByChild('createdAt'),
+      orderByChild("createdAt"),
       limitToLast(1)
     );
 
@@ -89,15 +91,15 @@ const UserDecision = () => {
       });
       push(decisionRef, {
         username: username,
-        decision: '',
+        decision: "",
         createdAt: Date.now(),
       });
       setIsShowModal(true);
     };
 
-    window.addEventListener('beforeunload', closeHandler);
+    window.addEventListener("beforeunload", closeHandler);
     return () => {
-      window.removeEventListener('beforeunload', closeHandler);
+      window.removeEventListener("beforeunload", closeHandler);
     };
   }, [username]);
 
@@ -114,14 +116,14 @@ const UserDecision = () => {
     const decisionRef = ref(db, `/decision`);
     const queryRef = query(
       decisionRef,
-      orderByChild('createdAt'),
+      orderByChild("createdAt"),
       limitToLast(1)
     );
     onValue(queryRef, (snapshot) => {
       const res = snapshot.val();
       const data = res[Object.keys(res)[0]];
       const { decision: curDecision, username: curUser } = data;
-      if (curUser === 'all' && curDecision === 'clear') setDecision('');
+      if (curUser === "all" && curDecision === "clear") setDecision("");
       if (curUser === username) setDecision(curDecision);
     });
   }, [username]);
@@ -138,7 +140,7 @@ const UserDecision = () => {
     });
     push(decisionRef, {
       username: username,
-      decision: '',
+      decision: "",
       createdAt: Date.now(),
     });
     setIsShowModal(false);
@@ -150,14 +152,14 @@ const UserDecision = () => {
         <Modal>
           <div className="window">
             <h2 className="desc">
-              {isAdminReady ? `${type} ready` : 'not ready'}
+              {isAdminReady ? `${type} ready` : "not ready"}
             </h2>
             <Button disabled={!isAdminReady} onClick={joinHandler}>
               join
             </Button>
           </div>
         </Modal>
-      ) : type === 'vote' ? (
+      ) : type === "vote" ? (
         <VoteDecision username={username} decision={decision} />
       ) : (
         <TierDecision username={username} decision={decision} />
