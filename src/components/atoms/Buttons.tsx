@@ -24,3 +24,27 @@ export const BlackBtn: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
     </button>
   );
 };
+
+export const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
+  children,
+  className,
+  ...props
+}) => {
+  return (
+    <button className={`${s.circleBtn} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};
+
+export const DecisionButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
+  children,
+  className,
+  ...props
+}) => {
+  return (
+    <button className={`${s.decisionBtn} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+};

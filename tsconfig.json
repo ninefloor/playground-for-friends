@@ -26,6 +26,7 @@
       "@components/*":["src/components/*"],
       "@pages/*":["src/pages/*"],
       "@utils/*":["src/utils/*"],
+
     },
     "typeRoots": ["./node_modules/@types"],
   },

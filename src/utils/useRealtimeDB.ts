@@ -12,7 +12,7 @@ import {
 
 import { useEffect, useState } from "react";
 
-export const useRealtimeDB = (src: string, isLoad: boolean = true) => {
+export const useRealtimeDB = (src: string, isLoad: boolean = false) => {
   const [data, setData] = useState(null);
   const reference = ref(realtimeDB, src);
 
