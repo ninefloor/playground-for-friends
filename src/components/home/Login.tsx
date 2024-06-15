@@ -12,7 +12,7 @@ export const Login = () => {
 
   return (
     <div className={s.container}>
-      <Button onClick={open}>join</Button>
+      <Button onClick={open}>login</Button>
 
       <DefaultModal isOpen={isOpen} close={close}>
         {isLoading && <Loading />}

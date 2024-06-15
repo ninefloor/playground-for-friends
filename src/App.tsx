@@ -1,15 +1,11 @@
-import { Home } from "@pages/Home";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Router } from "@components/Router";
+import { RecoilRoot } from "recoil";
 
 const App = () => {
   return (
-    <BrowserRouter basename="/">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/userdecision" element={<UserDecision />} /> */}
-        {/* <Route path="/admin" element={<DecisionPhase />} /> */}
-      </Routes>
-    </BrowserRouter>
+    <RecoilRoot>
+      <Router />
+    </RecoilRoot>
   );
 };
 

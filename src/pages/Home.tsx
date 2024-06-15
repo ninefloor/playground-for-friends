@@ -1,7 +1,10 @@
 import logo from "@assets/images/logo.png";
 import s from "./Home.module.scss";
 import { BlackBtn } from "@components/atoms/Buttons";
-import { Login } from "@components/Login";
+import { Login } from "@components/home/Login";
+import { useRecoilValue } from "recoil";
+import userInfo from "@utils/userInfo";
+import { JoinSystem } from "@components/home/JoinSystem";
 
 export const Home = () => {
   const pcUserHander = () => {
@@ -11,6 +14,8 @@ export const Home = () => {
       "popup=true, scrollbars=0, location=0"
     );
   };
+  const user = useRecoilValue(userInfo);
+  const adminId = import.meta.env.VITE_APP_ADMIN_ID;
 
   return (
     <div className={s.container}>
@@ -22,11 +27,13 @@ export const Home = () => {
         <br />
         honeyz
       </h1>
-      <BlackBtn className={s.adminBtn}>ADMIN</BlackBtn>
+      {adminId === user.userId && (
+        <BlackBtn className={s.adminBtn}>ADMIN</BlackBtn>
+      )}
       <BlackBtn className={s.pcBtn} onClick={pcUserHander}>
         PC Ver.
       </BlackBtn>
-      <Login />
+      {user.name ? <JoinSystem userName={user.name} /> : <Login />}
     </div>
   );
 };
