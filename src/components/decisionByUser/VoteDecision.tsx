@@ -1,5 +1,5 @@
 import { DecisionButton } from "@components/atoms/Buttons";
-import s from "./VoteDecision.module.scss";
+import s from "./DecisionComponents.module.scss";
 import { MouseEvent } from "react";
 import { useRecoilValue } from "recoil";
 import userInfo from "@utils/userInfo";

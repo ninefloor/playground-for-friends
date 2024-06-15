@@ -17,11 +17,39 @@
     height: 80%;
     display: flex;
 
-    .L {
+    &.col {
+      flex-direction: column;
+      > * {
+        flex: 1;
+      }
+    }
+
+    .L,
+    .up {
       background-color: $leftRed;
     }
-    .R {
+    .R,
+    .down {
       background-color: $rightBlue;
+    }
+    .ok {
+      background-color: $cColor;
+      color: #000;
+    }
+    .S {
+      background-color: $sColor;
+    }
+    .A {
+      background-color: $aColor;
+    }
+    .B {
+      background-color: $bColor;
+    }
+    .C {
+      background-color: $cColor;
+    }
+    .D {
+      background-color: $dColor;
     }
   }
 }

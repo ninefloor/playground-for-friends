@@ -41,7 +41,8 @@
       rgba(69, 115, 211, 1) 300%
     );
   }
-  &.C {
+  &.C,
+  &.ok {
     color: #86bc64;
     background: linear-gradient(
       180deg,

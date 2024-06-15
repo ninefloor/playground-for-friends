@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import s from "./DecisionByUser.module.scss";
 import { VoteDecision } from "@components/decisionByUser/VoteDecision";
+import { TierDecision } from "@components/decisionByUser/TierDecision";
 
 export const DecisionByUser = () => {
   const location = useLocation();
@@ -10,6 +11,13 @@ export const DecisionByUser = () => {
       return (
         <div className={s.container}>
           <VoteDecision />
+        </div>
+      );
+
+    case "/tier":
+      return (
+        <div className={s.container}>
+          <TierDecision />
         </div>
       );
 
