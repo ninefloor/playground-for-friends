@@ -20,6 +20,7 @@ export const Router = () => {
       ],
     },
   ]);
+
   const adminRouter = createBrowserRouter([
     {
       errorElement: <NotFound />,
@@ -39,6 +40,18 @@ export const Router = () => {
         {
           path: "/admin",
           element: <Admin />,
+        },
+        {
+          path: "/admin/vote",
+          element: <DecisionByUser />,
+        },
+        {
+          path: "/admin/tier",
+          element: <DecisionByUser />,
+        },
+        {
+          path: "/admin/members",
+          element: <DecisionByUser />,
         },
       ],
     },
