@@ -8,7 +8,7 @@ import { Button } from "@components/atoms/Buttons";
 export const DecisionByUser = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [data] = useRealtimeDB("/activeAdmin", false);
+  const { data } = useRealtimeDB("/activeAdmin", false);
 
   switch (location.pathname) {
     case "/vote":

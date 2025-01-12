@@ -4,7 +4,7 @@ import { useRealtimeDB } from "@utils/useRealtimeDB";
 import { useNavigate } from "react-router-dom";
 
 export const JoinSystem = ({ userName }: { userName: string }) => {
-  const [data] = useRealtimeDB("/activeAdmin", false);
+  const { data } = useRealtimeDB("/activeAdmin", false);
   const navigate = useNavigate();
 
   const movePageHandler = () => {

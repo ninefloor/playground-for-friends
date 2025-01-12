@@ -1,4 +1,5 @@
 import { Admin } from "@pages/Admin";
+import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { DecisionByUser } from "@pages/DecisionByUser";
 import { Home } from "@pages/Home";
 import { NotFound } from "@pages/NotFound";
@@ -43,11 +44,11 @@ export const Router = () => {
         },
         {
           path: "/admin/vote",
-          element: <DecisionByUser />,
+          element: <DecisionByAdmin />,
         },
         {
           path: "/admin/tier",
-          element: <DecisionByUser />,
+          element: <DecisionByAdmin />,
         },
         {
           path: "/admin/members",

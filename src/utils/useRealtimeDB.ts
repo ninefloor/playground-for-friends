@@ -10,7 +10,7 @@ import {
   DataSnapshot,
 } from "firebase/database";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useRealtimeDB = (src: string, isLoad: boolean = true) => {
   const [data, setData] = useState(null);
@@ -40,15 +40,17 @@ export const useRealtimeDB = (src: string, isLoad: boolean = true) => {
 
     onValue(lastOfOneQuery, handleValueChange);
 
-    // Cleanup function to remove the listener
     return () => {
       off(lastOfOneQuery, "value", handleValueChange);
     };
   }, []);
 
-  const pushData = async (data: unknown) => {
-    await push(reference, data);
-  };
+  const pushData = useCallback(
+    async (data: unknown) => {
+      await push(reference, data);
+    },
+    [reference]
+  );
 
-  return [data, pushData];
+  return { data, push: pushData };
 };

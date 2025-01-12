@@ -8,8 +8,8 @@ import { useRealtimeDB } from "@utils/useRealtimeDB";
 
 export const TierDecision = () => {
   const { name, userId } = useRecoilValue(userInfo);
-  const [decisionData, push] = useRealtimeDB(`/userDecision/${userId}`);
-  const [tierSelect] = useRealtimeDB(`/tierDecisionUser`, false);
+  const { data: decisionData, push } = useRealtimeDB(`/userDecision/${userId}`);
+  const { data: tierSelect } = useRealtimeDB(`/tierDecisionUser`, false);
   const [isTierDecision, setIsTierDecision] = useState<boolean>(false);
 
   useEffect(() => {

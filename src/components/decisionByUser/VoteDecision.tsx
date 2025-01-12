@@ -8,7 +8,7 @@ import { useRealtimeDB } from "@utils/useRealtimeDB";
 
 export const VoteDecision = () => {
   const { name, userId } = useRecoilValue(userInfo);
-  const [data, push] = useRealtimeDB(`/userDecision/${userId}`);
+  const { data, push } = useRealtimeDB(`/userDecision/${userId}`);
 
   const decisionHandler = async ({
     currentTarget: { id },
