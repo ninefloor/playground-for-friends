@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC } from "react";
+import type { ButtonHTMLAttributes, FC } from "react";
 import s from "./Buttons.module.scss";
 
 export const Button: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({

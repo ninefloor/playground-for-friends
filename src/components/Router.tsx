@@ -3,12 +3,12 @@ import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { DecisionByUser } from "@pages/DecisionByUser";
 import { Home } from "@pages/Home";
 import { NotFound } from "@pages/NotFound";
-import userInfo from "@utils/userInfo";
+import userInfo from "@utils/userInfoAtom";
+import { useAtomValue } from "jotai";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 
 export const Router = () => {
-  const { userId } = useRecoilValue(userInfo);
+  const { userId } = useAtomValue(userInfo);
   const adminId = import.meta.env.VITE_APP_ADMIN_ID;
   const noAuthRouter = createBrowserRouter([
     {

@@ -1,13 +1,13 @@
 import { DecisionButton } from "@components/atoms/Buttons";
-import s from "./DecisionComponents.module.scss";
-import { MouseEvent, useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import userInfo from "@utils/userInfo";
 import { DecisionViewer } from "@components/decisionByUser/DecisionViewer";
 import { useRealtimeDB } from "@utils/useRealtimeDB";
+import userInfo from "@utils/userInfoAtom";
+import { useAtomValue } from "jotai";
+import { type MouseEvent, useEffect, useState } from "react";
+import s from "./DecisionComponents.module.scss";
 
 export const TierDecision = () => {
-  const { name, userId } = useRecoilValue(userInfo);
+  const { name, userId } = useAtomValue(userInfo);
   const { data: decisionData, push } = useRealtimeDB(`/userDecision/${userId}`);
   const { data: tierSelect } = useRealtimeDB(`/tierDecisionUser`, false);
   const [isTierDecision, setIsTierDecision] = useState<boolean>(false);

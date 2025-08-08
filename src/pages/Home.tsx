@@ -1,17 +1,18 @@
 import logo from "@assets/images/logo.png";
-import s from "./Home.module.scss";
 import { BlackBtn } from "@components/atoms/Buttons";
-import { Login } from "@components/home/Login";
-import { useRecoilValue, useResetRecoilState } from "recoil";
-import userInfo from "@utils/userInfo";
 import { JoinSystem } from "@components/home/JoinSystem";
-import { signOut } from "firebase/auth";
+import { Login } from "@components/home/Login";
 import { auth } from "@utils/firebase";
+import userInfo from "@utils/userInfoAtom";
+import { signOut } from "firebase/auth";
+import { useAtomValue } from "jotai";
+import { useResetAtom } from "jotai/utils";
 import { useNavigate } from "react-router-dom";
+import s from "./Home.module.scss";
 
 export const Home = () => {
-  const { userId, name } = useRecoilValue(userInfo);
-  const resetUserInfo = useResetRecoilState(userInfo);
+  const { userId, name } = useAtomValue(userInfo);
+  const resetUserInfo = useResetAtom(userInfo);
   const navigate = useNavigate();
   const pcUserHander = () => {
     window.open(

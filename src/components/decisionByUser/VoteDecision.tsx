@@ -1,13 +1,13 @@
 import { DecisionButton } from "@components/atoms/Buttons";
-import s from "./DecisionComponents.module.scss";
-import { MouseEvent } from "react";
-import { useRecoilValue } from "recoil";
-import userInfo from "@utils/userInfo";
 import { DecisionViewer } from "@components/decisionByUser/DecisionViewer";
 import { useRealtimeDB } from "@utils/useRealtimeDB";
+import userInfo from "@utils/userInfoAtom";
+import { useAtomValue } from "jotai";
+import { type MouseEvent } from "react";
+import s from "./DecisionComponents.module.scss";
 
 export const VoteDecision = () => {
-  const { name, userId } = useRecoilValue(userInfo);
+  const { name, userId } = useAtomValue(userInfo);
   const { data, push } = useRealtimeDB(`/userDecision/${userId}`);
 
   const decisionHandler = async ({

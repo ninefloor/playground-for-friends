@@ -1,10 +1,10 @@
 import { auth, firestore } from "@utils/firebase";
-import userInfo from "@utils/userInfo";
+import userInfo from "@utils/userInfoAtom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { ChangeEvent, useState } from "react";
+import { useSetAtom } from "jotai";
+import { type ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
 
 /**
  * useLogin: 로그인 로직을 위한 훅
@@ -18,7 +18,7 @@ const useLogin = (location: string | undefined) => {
   const [pw, setPw] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const setUserInfo = useSetRecoilState(userInfo);
+  const setUserInfo = useSetAtom(userInfo);
 
   const emailHandler = ({
     target: { value },
