@@ -3,10 +3,12 @@ import { Input } from "@components/atoms/Input";
 import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
 import { auth, firestore, storage } from "@utils/firebase";
+import { userInfoAtom } from "@utils/userInfoAtom";
 import imageCompression from "browser-image-compression";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +45,7 @@ export const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState<string>("#2b2b2b");
+  const setUserInfo = useSetAtom(userInfoAtom);
 
   const {
     register,
@@ -53,8 +56,6 @@ export const Register = () => {
   } = useForm<UserFormData>({ mode: "onSubmit" });
 
   const user = watch();
-
-  console.log(user);
 
   const onSubmit = async (data: UserFormData) => {
     try {
@@ -84,6 +85,15 @@ export const Register = () => {
       await setDoc(doc(firestore, "users", userCred.user.uid), {
         nickname: data.nickname,
         photoURL: photoURL ?? null,
+        createdAt: Date.now(),
+        role: "USER",
+        color: selectedColor,
+      });
+
+      setUserInfo({
+        uid: userCred.user.uid,
+        nickname: data.nickname,
+        photoURL: photoURL ?? "",
         createdAt: Date.now(),
         role: "USER",
         color: selectedColor,

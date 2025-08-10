@@ -45,6 +45,7 @@ const useLogin = (location: string | undefined) => {
           photoURL: userData.photoURL,
           createdAt: userData.createdAt,
           role: userData.role,
+          color: userData.color,
         });
       setIsLoading(false);
       if (location) navigate(location);
