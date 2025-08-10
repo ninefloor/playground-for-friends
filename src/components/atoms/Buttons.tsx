@@ -1,13 +1,32 @@
 import type { ButtonHTMLAttributes, FC } from "react";
 import s from "./Buttons.module.scss";
 
-export const Button: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?:
+    | "primary"
+    | "secondary"
+    | "tertiary"
+    | "accent"
+    | "danger"
+    | "info"
+    | "black";
+  inline?: boolean;
+};
+
+export const Button: FC<ButtonProps> = ({
   children,
   className,
+  variant = "primary",
+  inline = false,
   ...props
 }) => {
   return (
-    <button className={`${s.button} ${className}`} {...props}>
+    <button
+      className={`${s.button} ${s[variant]} ${
+        inline ? s.inline : ""
+      } ${className}`}
+      {...props}
+    >
       {children}
     </button>
   );

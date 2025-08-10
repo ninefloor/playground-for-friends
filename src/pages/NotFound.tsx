@@ -1,6 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
-import s from "./NotFound.module.scss";
 import { useNavigate } from "react-router-dom";
+import s from "./NotFound.module.scss";
 
 export const NotFound = () => {
   const navigate = useNavigate();

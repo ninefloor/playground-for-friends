@@ -1,7 +1,7 @@
 import { Button } from "@components/atoms/Buttons";
-import s from "./Admin.module.scss";
-import { useNavigate } from "react-router-dom";
 import { MouseEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import s from "./Admin.module.scss";
 
 export const Admin = () => {
   const navigate = useNavigate();

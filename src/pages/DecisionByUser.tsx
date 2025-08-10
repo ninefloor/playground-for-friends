@@ -1,9 +1,9 @@
+import { Button } from "@components/atoms/Buttons";
+import { TierDecision } from "@components/decisionByUser/TierDecision";
+import { VoteDecision } from "@components/decisionByUser/VoteDecision";
+import { useRealtimeDB } from "@utils/useRealtimeDB";
 import { useLocation, useNavigate } from "react-router-dom";
 import s from "./DecisionByUser.module.scss";
-import { VoteDecision } from "@components/decisionByUser/VoteDecision";
-import { TierDecision } from "@components/decisionByUser/TierDecision";
-import { useRealtimeDB } from "@utils/useRealtimeDB";
-import { Button } from "@components/atoms/Buttons";
 
 export const DecisionByUser = () => {
   const location = useLocation();

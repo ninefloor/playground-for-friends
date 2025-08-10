@@ -1,7 +1,7 @@
 import { Button } from "@components/atoms/Buttons";
-import s from "./JoinSystem.module.scss";
 import { useRealtimeDB } from "@utils/useRealtimeDB";
 import { useNavigate } from "react-router-dom";
+import s from "./JoinSystem.module.scss";
 
 export const JoinSystem = ({ userName }: { userName: string }) => {
   const { data } = useRealtimeDB("/activeAdmin", false);

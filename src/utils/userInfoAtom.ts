@@ -1,14 +1,9 @@
 import { atomWithStorage, createJSONStorage } from "jotai/utils";
 
-const initState: UserInfo = {
-  userId: null,
-  name: null,
-};
+const initState: UserInfo | null = null;
 
-const userInfo = atomWithStorage<UserInfo>(
+export const userInfoAtom = atomWithStorage<UserInfo | null>(
   "userInfo",
   initState,
   createJSONStorage(() => sessionStorage)
 );
-
-export default userInfo;

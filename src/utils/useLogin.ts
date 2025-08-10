@@ -1,5 +1,5 @@
 import { auth, firestore } from "@utils/firebase";
-import userInfo from "@utils/userInfoAtom";
+import { userInfoAtom } from "@utils/userInfoAtom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useSetAtom } from "jotai";
@@ -18,7 +18,7 @@ const useLogin = (location: string | undefined) => {
   const [pw, setPw] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const setUserInfo = useSetAtom(userInfo);
+  const setUserInfo = useSetAtom(userInfoAtom);
 
   const emailHandler = ({
     target: { value },
@@ -38,7 +38,14 @@ const useLogin = (location: string | undefined) => {
       const docRef = doc(firestore, "users", userId);
       const userDoc = await getDoc(docRef);
       const userData = userDoc.data();
-      if (userData) setUserInfo({ userId, name: userData.name });
+      if (userData)
+        setUserInfo({
+          uid: userId,
+          nickname: userData.nickname,
+          photoURL: userData.photoURL,
+          createdAt: userData.createdAt,
+          role: userData.role,
+        });
       setIsLoading(false);
       if (location) navigate(location);
     } catch (error) {

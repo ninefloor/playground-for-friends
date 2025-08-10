@@ -1,9 +1,43 @@
 $leftRed: #ec4758;
 $rightBlue: #1a7bb9;
 $basicYellow: #ffc107;
+$basicBackground: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
 
 $sColor: #ff4a00;
 $aColor: #806cdc;
 $bColor: #4573d3;
 $cColor: #86bc64;
 $dColor: #939ea0;
+
+// Neutral scale
+$neutral-50: #f9fafb;
+$neutral-100: #f3f4f6;
+$neutral-200: #e5e7eb;
+$neutral-300: #d1d5db;
+$neutral-400: #9ca3af;
+$neutral-500: #6b7280;
+$neutral-600: #4b5563;
+$neutral-700: #374151;
+$neutral-800: #1f2937;
+$neutral-900: #111827;
+
+// Semantic color aliases
+$primary: $basicYellow;
+$secondary: $bColor;
+$tertiary: $neutral-300;
+$accent: $aColor;
+$danger: $sColor;
+$info: $rightBlue;
+
+// Surfaces and text
+$surface: #ffffff;
+$surfaceMuted: #f8fafc;
+$overlay: rgba(0, 0, 0, 0.5);
+
+$textPrimary: #111827;
+$textSecondary: #4b5563;
+$textInverse: #ffffff;
+
+// Borders and focus
+$borderColor: $neutral-200;
+$focusRing: rgba($primary, 0.4);

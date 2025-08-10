@@ -1,22 +1,28 @@
+import { DefaultLayout } from "@components/layout/DefaultLayout";
 import { Admin } from "@pages/Admin";
 import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { DecisionByUser } from "@pages/DecisionByUser";
 import { Home } from "@pages/Home";
 import { NotFound } from "@pages/NotFound";
-import userInfo from "@utils/userInfoAtom";
+import { Register } from "@pages/Register";
+import { userInfoAtom } from "@utils/userInfoAtom";
 import { useAtomValue } from "jotai";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 export const Router = () => {
-  const { userId } = useAtomValue(userInfo);
-  const adminId = import.meta.env.VITE_APP_ADMIN_ID;
+  const userInfo = useAtomValue(userInfoAtom);
   const noAuthRouter = createBrowserRouter([
     {
+      Component: DefaultLayout,
       errorElement: <NotFound />,
       children: [
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
       ],
     },
@@ -24,11 +30,16 @@ export const Router = () => {
 
   const adminRouter = createBrowserRouter([
     {
+      Component: DefaultLayout,
       errorElement: <NotFound />,
       children: [
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
         {
           path: "/vote",
@@ -59,11 +70,16 @@ export const Router = () => {
   ]);
   const authRouter = createBrowserRouter([
     {
+      Component: DefaultLayout,
       errorElement: <NotFound />,
       children: [
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
         {
           path: "/vote",
@@ -79,7 +95,11 @@ export const Router = () => {
   return (
     <RouterProvider
       router={
-        userId ? (userId === adminId ? adminRouter : authRouter) : noAuthRouter
+        userInfo
+          ? userInfo.role === "ADMIN"
+            ? adminRouter
+            : authRouter
+          : noAuthRouter
       }
     />
   );

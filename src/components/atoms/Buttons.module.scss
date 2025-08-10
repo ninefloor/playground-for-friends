@@ -1,15 +1,46 @@
 .button {
-  font-size: 20px;
+  width: 100%;
+  font-size: 16px;
   font-weight: bold;
-  padding: 16px 24px;
-  background-color: #ffc107;
+  padding: 8px 16px;
   border-radius: 4px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  color: #000;
+  color: $textPrimary;
   cursor: pointer;
+  border: 0;
+  outline: 0;
   &:disabled {
     color: #333;
     background-color: #aaa;
+  }
+  &.primary {
+    background-color: $primary;
+  }
+  &.secondary {
+    background-color: $secondary;
+    color: $textInverse;
+  }
+  &.tertiary {
+    background-color: $tertiary;
+  }
+  &.accent {
+    background-color: $accent;
+    color: $textInverse;
+  }
+  &.danger {
+    background-color: $danger;
+    color: $textInverse;
+  }
+  &.info {
+    background-color: $info;
+    color: $textInverse;
+  }
+  &.black {
+    background-color: #000;
+    color: #fff;
+  }
+  &.inline {
+    width: auto;
   }
 }
 

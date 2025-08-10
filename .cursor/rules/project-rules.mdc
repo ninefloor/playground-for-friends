@@ -1,0 +1,118 @@
+## 프로젝트 기본 룰 (Playground for Honeyz Migration)
+
+### 1) 목적/범위
+
+- **목적**: 현재 코드베이스(React + Vite + TypeScript, Firebase, SCSS, Jotai, React Router)를 기준으로 일관된 개발/리뷰/배포 기준을 정의합니다.
+- **적용 범위**: 프론트엔드 전체 (`src/**`), 문서/설정(`*.md`, `*.config.*`, `vite.config.ts`, `tsconfig*.json`) 및 배포 설정.
+
+### 2) 기술 스택 기준
+
+- **Runtime**: Node LTS 권장. NPM 사용(프로젝트에 `package-lock.json` 존재).
+- **Framework**: React 19, Vite 7, TypeScript 5 (strict 활성화).
+- **Routing**: React Router 7. 라우팅 엔트리: `src/components/Router.tsx`.
+- **State**: Jotai. 기본 사용자 상태: `src/utils/userInfoAtom.ts` (sessionStorage 지속).
+- **Firebase**: v12 (Auth, Firestore, Realtime Database, Storage 초기화는 `src/utils/firebase.ts`).
+- **Styles**: SCSS Modules + 전역 토큰 `src/theme.scss` (`@use "@theme" as *;` 자동 주입, Vite 설정 사용).
+
+### 3) 폴더/모듈 규칙
+
+- **경로 별칭**: Vite/TS 동기화. 아래 별칭만 사용합니다.
+  - `@assets/*` → `src/assets/*`
+  - `@components/*` → `src/components/*`
+  - `@pages/*` → `src/pages/*`
+  - `@utils/*` → `src/utils/*`
+  - `@theme` → `src/theme.scss`
+- **스타일 파일**: 컴포넌트 단위 `*.module.scss` 사용. 전역 토큰은 `@theme`에서만 정의/관리.
+- **이미지/폰트**: 퍼블릭 정적 리소스는 `public/**`에 배치. 번들 리소스는 `src/assets/**`.
+
+### 4) 타입스크립트 규칙
+
+- `strict: true`, `noUnusedLocals/Parameters: true`를 깨지 않도록 작성합니다.
+- 컴포넌트/함수는 명시적 반환 타입을 선호합니다. 불필요한 `any` 금지.
+- 의미 있는 변수/함수명 사용: 축약어 지양, 역할이 드러나게 작성.
+- 조건/분기 로직은 가드 클로즈를 선호하여 중첩을 줄입니다.
+
+### 5) 린트/포맷 규칙
+
+- 린트 실행: `npm run lint`. 에러 0을 기준으로 PR 생성.
+- ESLint 설정은 `eslint.config.js` 기준을 따릅니다(react-hooks, react-refresh, typescript-eslint 포함).
+- 자동 포맷터(Prettier) 미도입 상태: 린트/TS 에러가 없고 기존 포맷을 존중하는 선에서 정리.
+
+### 6) 라우팅/권한 규칙
+
+- 라우팅은 `src/components/Router.tsx`에서 관리합니다.
+  - 비인증 라우터: `/`, `/register` 등
+  - 인증 일반 유저 라우터: `/`, `/vote`, `/tier`
+  - 관리자 라우터: `/admin`, `/admin/vote`, `/admin/tier`, `/admin/members`
+- **관리자 판별**: `VITE_APP_ADMIN_ID`와 `userId` 비교로 분기합니다.
+- 새 페이지 추가 시, 권한 라우팅 그룹에 맞게 `Router.tsx`에만 라우트를 추가하고, 경로/권한을 PR 설명에 명시합니다.
+
+### 7) 상태관리(Jotai)
+
+- 전역 사용자 상태는 `userInfo`(세션 저장)로 관리합니다. 구조 변경 시 마이그레이션 처리 주석을 파일 상단에 남깁니다.
+- 새로운 전역 상태(atom)는 `src/utils` 하위에 파일 분리, 키 충돌 방지 및 초기값/스토리지 정책을 문서화합니다.
+
+### 8) 인증/데이터 접근 규칙
+
+- 로그인 훅은 `src/utils/useLogin.ts`를 사용합니다. 에러 메시지는 사용자 친화적으로 노출하고, 콘솔 오류 출력은 개발 모드에서만 허용합니다.
+- 사용자 문서는 Firestore `users/{uid}` 기준. 클라이언트에서 `uid` 외 식별값 저장 금지.
+- 비밀번호는 Firebase Auth로 위임하며, 추가 저장 금지.
+- 서버 규칙(Firebase Rules)은 실제 사용 컬렉션/경로 변경 시 반드시 동기화합니다.
+
+### 9) 환경변수/시크릿
+
+- Vite 규칙상 브라우저 노출 변수는 `VITE_` 접두사를 사용합니다.
+- 필수 변수 목록(예시):
+  - `VITE_API_KEY`, `VITE_AUTH_DOMAIN`, `VITE_DATABASE_URL`, `VITE_PROJECT_ID`, `VITE_STORAGE_BUCKET`, `VITE_MESSAGING_SENDER_ID`, `VITE_APP_ID`, `VITE_APP_ADMIN_ID`
+- `.env.local`를 사용하고 Git에 커밋하지 않습니다. Vercel 환경 변수와 동기화합니다.
+
+### 10) 스타일 가이드
+
+- SCSS 변수/믹스인은 `@theme`에 정의. 각 컴포넌트 스타일에서는 추가 전역 임포트 금지(이미 Vite에서 자동 주입).
+- 색상/타이포 토큰은 하드코딩하지 말고 전역 토큰을 사용합니다.
+- 반응형/상태 스타일은 SCSS 모듈에서 BEM 유사 네이밍 유지(필수는 아님: 가독성 우선).
+
+### 11) 에러 처리/UX
+
+- 네트워크/인증 오류는 사용자에게 명확하게 안내합니다. `alert`는 임시 허용하되, 가능하면 공용 피드백 컴포넌트로 이관 예정.
+- 로딩 상태는 공용 로더(`src/components/Loading.tsx`)를 우선 사용합니다.
+
+### 12) 빌드/실행/배포
+
+- 스크립트:
+  - 개발: `npm run dev`
+  - 빌드: `npm run build` (타입체킹 포함)
+  - 프리뷰: `npm run preview`
+  - 린트: `npm run lint`
+- 배포: Vercel 기준. 메인 브랜치 머지 시 자동 배포(프로젝트 설정에 따름). 환경변수는 Vercel에 설정.
+
+### 13) 브랜치/커밋/PR
+
+- 브랜치: `feature/<topic>`, `fix/<topic>`, `chore/<topic>` 패턴 권장.
+- 커밋 메시지: 한 줄, 영어, 간결하게. 예) `feat: add basic project rules doc`
+- PR: 변경 요약, 테스트 방법, 라우팅/권한 영향, 환경변수 변화가 있다면 명시.
+- 병합 전 체크리스트: 빌드 통과, 린트 통과, 눈에 띄는 타입 any 없음, 라우팅/권한 검증 완료.
+
+### 14) 보안/개인정보
+
+- Firebase 클라이언트 키는 노출 전제이나, 추가 시크릿/토큰은 절대 커밋 금지.
+- 사용자 식별자/민감정보는 최소 수집/저장. 로컬 스토리지 대신 세션 스토리지/메모리 우선.
+- Firestore/RTDB 규칙을 주기적으로 점검하고, 컬렉션/경로 추가 시 즉시 반영.
+
+### 15) 로그/디버깅
+
+- `console.log`는 개발 전용. PR 시 제거 또는 조건부 가드.
+- 오류는 `console.error`로 한정하고, 사용자 피드백과 분리하여 관리.
+
+### 16) 향후 확장 메모(pff-rule 연계)
+
+- 방 시스템, 권한 관리, 투표 고도화 도입 시 라우팅 구조는 다음 제안을 따릅니다:
+  - `/lobby`, `/room/:roomId`, `/room/:roomId/admin`, `/room/:roomId/result`
+- 상태는 Recoil 대신 Jotai 유지 또는 혼용 시 공용 셰이프 문서화 필요.
+- 실시간 상태는 Realtime DB의 `onDisconnect` 활용 지침 수립(참가자 입퇴장 반영).
+
+---
+
+최신화 이력
+
+- v1: 초기 규칙 추가 (본 문서 생성)

@@ -1,32 +1,40 @@
 .container {
+  width: 128px;
+  height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  position: relative;
+  background-color: $neutral-200;
 }
 
 .user {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   transition: all 0.2s ease-in-out;
   animation: 0.4s ease-in-out fade;
-  & .decisionBtn {
+  width: 100%;
+  height: 100%;
+
+  .decisionBtn {
     width: 100%;
     display: flex;
     justify-content: space-between;
     opacity: 0;
     transition: all 0.2s ease-in-out;
     position: relative;
-    & .btn {
+
+    .btn {
       opacity: 0;
       width: 50%;
       height: 48px;
       color: #fff;
-      font-family: 'chaney';
+      font-family: "chaney";
       font-size: 36px;
       cursor: pointer;
       transition: all 0.2s ease-in-out;
+
       &.L {
         background: linear-gradient(
           180deg,
@@ -38,6 +46,7 @@
           opacity: 1;
         }
       }
+
       &.R {
         background: linear-gradient(
           180deg,
@@ -49,6 +58,7 @@
           opacity: 1;
         }
       }
+
       &.giveup {
         position: absolute;
         width: 100%;
@@ -67,55 +77,79 @@
       }
     }
   }
+
   &:hover {
-    & .decisionBtn {
+    .decisionBtn {
       opacity: 1;
     }
-    & .userImage {
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)),
-        url(${(props) => userStyleConfig[props.order].image});
-      background-size: cover;
-      background-position: center;
-    }
   }
-  & > .decision {
-    cursor: default;
-    background: ${({ picks, username }) => {
-      if (picks[username] === 'L')
-        return 'linear-gradient(180deg, rgba(236, 71, 88, 0) 30%, rgba(236, 71, 88, 0.07) 90%)';
-      if (picks[username] === 'R')
-        return 'linear-gradient(180deg, rgba(26, 123, 185, 0) 30%, rgba(26, 123, 185, 0.07) 90%)';
-      if (picks[username] === 'giveup')
-        return 'linear-gradient(180deg, rgba(100, 100, 100, 0) 30%, rgba(100, 100, 100, 0.07) 90%)';
-    }};
 
-    & > .decisionChosen {
-      opacity: ${({ picks, username }) =>
-        picks[username] === 'giveup' ? '0.8' : '1'};
-      color: ${({ picks, username }) =>
-        picks[username] === 'L' ? '#EC4758' : '#1a7bb9'};
-      text-shadow: ${({ picks, username }) =>
-        `0 0 12px ${
-          picks[username] === 'L'
-            ? 'rgba(236, 71, 88, 0.4)'
-            : 'rgba(26, 123, 185, 0.4)'
-        }`};
+  > .decision {
+    cursor: default;
+
+    > .decisionChosen {
       text-align: center;
-      font-family: 'chaney';
+      font-family: "chaney";
       font-size: 72px;
       animation: 0.3s ease-in-out fade;
     }
   }
 
-  & > .userImage {
-    width: 128px;
-    height: 160px;
-    background: url(${(props) => userStyleConfig[props.order].image});
+  /* pick 상태에 따른 배경/텍스트 색상 */
+  &.pick-L > .decision {
+    background: linear-gradient(
+      180deg,
+      rgba(236, 71, 88, 0) 30%,
+      rgba(236, 71, 88, 0.07) 90%
+    );
+    > .decisionChosen {
+      color: #ec4758;
+      text-shadow: 0 0 12px rgba(236, 71, 88, 0.4);
+    }
+  }
+
+  &.pick-R > .decision {
+    background: linear-gradient(
+      180deg,
+      rgba(26, 123, 185, 0) 30%,
+      rgba(26, 123, 185, 0.07) 90%
+    );
+    > .decisionChosen {
+      color: #1a7bb9;
+      text-shadow: 0 0 12px rgba(26, 123, 185, 0.4);
+    }
+  }
+
+  &.pick-giveup > .decision {
+    background: linear-gradient(
+      180deg,
+      rgba(100, 100, 100, 0) 30%,
+      rgba(100, 100, 100, 0.07) 90%
+    );
+    > .decisionChosen {
+      opacity: 0.8;
+    }
+  }
+
+  > .userImage {
+    position: relative;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
-    transition: background 0.7s ease-in-out;
+
+    /* 호버시 어둡게 처리 */
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1));
+      opacity: 0;
+      transition: opacity 0.7s ease-in-out;
+    }
   }
-  & > .textBg {
+
+  > .textBg {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -124,27 +158,37 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    background: ${(props) => userStyleConfig[props.order].color};
     opacity: 0.5;
   }
-  & > .text {
+
+  > .text {
     position: absolute;
     bottom: 0;
-    right: 12px;
+    right: 0;
+    padding: 8px;
     cursor: pointer;
-    font-family: 'chaney';
-    font-style: 14px;
+    font-family: "chaney";
+    font-weight: 900;
+    font-size: 12px;
     color: #fff;
-    margin-bottom: 8px;
+    text-align: right;
+    word-break: break-all;
+    white-space: pre-wrap;
+    text-shadow: 0 0 1px 12px rgba(0, 0, 0, 0.5);
+    &.korean {
+      font-family: "Pretendard";
+      font-size: 16px;
+    }
   }
-  @keyframes fade {
-    0% {
-      opacity: 0;
-      transform: translateY(5%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0%);
-    }
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+    transform: translateY(5%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
   }
 }

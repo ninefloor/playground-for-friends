@@ -1,9 +1,9 @@
 import logo from "@assets/images/logo.png";
-import { BlackBtn } from "@components/atoms/Buttons";
+import { Button } from "@components/atoms/Buttons";
 import { JoinSystem } from "@components/home/JoinSystem";
 import { Login } from "@components/home/Login";
 import { auth } from "@utils/firebase";
-import userInfo from "@utils/userInfoAtom";
+import { userInfoAtom } from "@utils/userInfoAtom";
 import { signOut } from "firebase/auth";
 import { useAtomValue } from "jotai";
 import { useResetAtom } from "jotai/utils";
@@ -11,8 +11,8 @@ import { useNavigate } from "react-router-dom";
 import s from "./Home.module.scss";
 
 export const Home = () => {
-  const { userId, name } = useAtomValue(userInfo);
-  const resetUserInfo = useResetAtom(userInfo);
+  const userInfo = useAtomValue(userInfoAtom);
+  const resetUserInfo = useResetAtom(userInfoAtom);
   const navigate = useNavigate();
   const pcUserHander = () => {
     window.open(
@@ -21,7 +21,6 @@ export const Home = () => {
       "popup=true, scrollbars=0, location=0"
     );
   };
-  const adminId = import.meta.env.VITE_APP_ADMIN_ID;
 
   const logoutHandler = async () => {
     try {
@@ -44,22 +43,32 @@ export const Home = () => {
         <br />
         for
         <br />
-        honeyz
+        friends
       </h1>
-      {adminId === userId && (
-        <BlackBtn className={s.adminBtn} onClick={adminHandler}>
+      {userInfo?.role === "ADMIN" && (
+        <Button
+          className={s.adminBtn}
+          variant="black"
+          onClick={adminHandler}
+          inline
+        >
           ADMIN
-        </BlackBtn>
+        </Button>
       )}
-      {userId && (
-        <BlackBtn className={s.logoutBtn} onClick={logoutHandler}>
+      {userInfo && (
+        <Button
+          className={s.logoutBtn}
+          variant="black"
+          onClick={logoutHandler}
+          inline
+        >
           Logout
-        </BlackBtn>
+        </Button>
       )}
-      <BlackBtn className={s.pcBtn} onClick={pcUserHander}>
+      <Button className={s.pcBtn} variant="black" onClick={pcUserHander} inline>
         PC Ver.
-      </BlackBtn>
-      {name ? <JoinSystem userName={name} /> : <Login />}
+      </Button>
+      {userInfo ? <JoinSystem userName={userInfo.nickname} /> : <Login />}
     </div>
   );
 };

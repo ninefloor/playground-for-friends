@@ -1,47 +1,44 @@
-import useLogin from "@utils/useLogin";
-import { Loading } from "@components/Loading";
-import s from "./Login.module.scss";
 import { Button } from "@components/atoms/Buttons";
-import { useModal } from "@utils/useModal";
-import { DefaultModal } from "@components/DefaultModal";
+import { Input } from "@components/atoms/Input";
+import { Loading } from "@components/Loading";
+import useLogin from "@utils/useLogin";
+import { useNavigate } from "react-router-dom";
+import s from "./Login.module.scss";
 
 export const Login = () => {
   const { email, emailHandler, pw, pwHander, isLoading, loginHander } =
     useLogin("/");
-  const { isOpen, open, close } = useModal();
+  const navigate = useNavigate();
 
   return (
-    <div className={s.container}>
-      <Button onClick={open}>login</Button>
-
-      <DefaultModal isOpen={isOpen} close={close}>
-        {isLoading && <Loading />}
-        <div className={s.formContainer}>
-          <div>
-            <h2 className={s.desc}>email</h2>
-            <input
-              className={s.input}
-              value={email}
-              type="email"
-              onChange={emailHandler}
-            />
-          </div>
-
-          <div>
-            <h2 className={s.desc}>password</h2>
-            <input
-              className={s.input}
-              type="password"
-              value={pw}
-              onKeyUp={({ key }) => {
-                if (key === "Enter") loginHander();
-              }}
-              onChange={pwHander}
-            />
-          </div>
-          <Button onClick={loginHander}>login</Button>
+    <div>
+      {isLoading && <Loading />}
+      <div className={s.formContainer}>
+        <div>
+          <Input
+            value={email}
+            type="email"
+            label="이메일"
+            onChange={emailHandler}
+          />
         </div>
-      </DefaultModal>
+
+        <div>
+          <Input
+            type="password"
+            label="비밀번호"
+            value={pw}
+            onKeyUp={({ key }) => {
+              if (key === "Enter") loginHander();
+            }}
+            onChange={pwHander}
+          />
+        </div>
+        <Button onClick={loginHander}>로그인</Button>
+        <Button variant="secondary" onClick={() => navigate("/register")}>
+          회원가입
+        </Button>
+      </div>
     </div>
   );
 };
