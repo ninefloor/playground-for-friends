@@ -35,6 +35,10 @@ export const Home = () => {
     navigate("/admin");
   };
 
+  const profileHandler = () => {
+    navigate("/profile");
+  };
+
   return (
     <div className={s.container}>
       <img src={logo} alt="logo" />
@@ -63,6 +67,11 @@ export const Home = () => {
           inline
         >
           Logout
+        </Button>
+      )}
+      {userInfo && (
+        <Button variant="black" onClick={profileHandler} inline>
+          My Profile
         </Button>
       )}
       <Button className={s.pcBtn} variant="black" onClick={pcUserHander} inline>
