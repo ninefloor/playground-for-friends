@@ -1,5 +1,6 @@
 import logo from "@assets/images/logo.png";
 import { Button } from "@components/atoms/Buttons";
+import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
 import { JoinSystem } from "@components/home/JoinSystem";
 import { Login } from "@components/home/Login";
 import { auth } from "@utils/firebase";
@@ -69,6 +70,7 @@ export const Home = () => {
           Logout
         </Button>
       )}
+      {userInfo && <UserItemPreview user={userInfo} />}
       {userInfo && (
         <Button variant="black" onClick={profileHandler} inline>
           My Profile

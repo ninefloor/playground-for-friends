@@ -88,7 +88,6 @@ export const ProfileEdit = () => {
       form={form}
       onSubmit={handleSubmit(onSubmit)}
       isLoading={isLoading}
-      submitLabel="수정하기"
       onBack={() => navigate(-1)}
       initialPhotoURL={currentUser?.photoURL}
     />

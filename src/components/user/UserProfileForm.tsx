@@ -38,7 +38,6 @@ type Props =
       form: UseFormReturn<UserFormData>;
       onSubmit: (e?: BaseSyntheticEvent) => void;
       isLoading?: boolean;
-      submitLabel: string;
       onBack: () => void;
       initialPhotoURL?: string;
     }
@@ -47,7 +46,6 @@ type Props =
       form: UseFormReturn<UserEditFormData>;
       onSubmit: (e?: BaseSyntheticEvent) => void;
       isLoading?: boolean;
-      submitLabel: string;
       onBack: () => void;
       initialPhotoURL?: string;
     };
@@ -57,21 +55,20 @@ export const UserProfileForm = (props: Props) => {
     form,
     onSubmit,
     isLoading,
-    submitLabel,
     onBack,
     // isEdit 으로 분기 처리
     initialPhotoURL,
   } = props;
 
   const isEdit = props.isEdit;
-  const regForm = (isEdit ? null : (form as UseFormReturn<UserFormData>));
-  const editForm = (isEdit ? (form as UseFormReturn<UserEditFormData>) : null);
+  const regForm = isEdit ? null : (form as UseFormReturn<UserFormData>);
+  const editForm = isEdit ? (form as UseFormReturn<UserEditFormData>) : null;
   const nicknameValue = isEdit
-    ? (editForm!.watch("nickname") ?? "")
-    : (regForm!.watch("nickname") ?? "");
+    ? editForm!.watch("nickname") ?? ""
+    : regForm!.watch("nickname") ?? "";
   const selectedColor = isEdit
-    ? (editForm!.watch("color") ?? "#2b2b2b")
-    : (regForm!.watch("color") ?? "#2b2b2b");
+    ? editForm!.watch("color") ?? "#2b2b2b"
+    : regForm!.watch("color") ?? "#2b2b2b";
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -182,7 +179,10 @@ export const UserProfileForm = (props: Props) => {
                     value: /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-zA-Z0-9]+$/,
                     message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
                   },
-                  minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
+                  minLength: {
+                    value: 2,
+                    message: "닉네임은 2자 이상이어야 합니다.",
+                  },
                   maxLength: {
                     value: 8,
                     message: "닉네임은 8자 이하로 입력해주세요.",
@@ -195,7 +195,10 @@ export const UserProfileForm = (props: Props) => {
                   value: /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-zA-Z0-9]+$/,
                   message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
                 },
-                minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
+                minLength: {
+                  value: 2,
+                  message: "닉네임은 2자 이상이어야 합니다.",
+                },
                 maxLength: {
                   value: 8,
                   message: "닉네임은 8자 이하로 입력해주세요.",
@@ -223,7 +226,7 @@ export const UserProfileForm = (props: Props) => {
                 style={{ backgroundColor: hex }}
                 aria-label={`select color ${hex}`}
                 onClick={() =>
-                  (props.isEdit
+                  props.isEdit
                     ? (editForm as UseFormReturn<UserEditFormData>).setValue(
                         "color",
                         hex,
@@ -233,7 +236,7 @@ export const UserProfileForm = (props: Props) => {
                         "color",
                         hex,
                         { shouldDirty: true }
-                      ))
+                      )
                 }
                 title={hex}
               />
@@ -242,7 +245,7 @@ export const UserProfileForm = (props: Props) => {
         </div>
 
         <div className={s.actions}>
-          <Button type="submit">{submitLabel}</Button>
+          <Button type="submit">{isEdit ? "수정하기" : "회원가입"}</Button>
           <Button type="button" variant="tertiary" onClick={onBack}>
             뒤로가기
           </Button>

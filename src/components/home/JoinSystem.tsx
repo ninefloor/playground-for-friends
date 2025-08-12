@@ -13,7 +13,6 @@ export const JoinSystem = ({ userName }: { userName: string }) => {
 
   return (
     <div className={s.container}>
-      <div className={s.title}>welcome, {userName}</div>
       <div className={s.desc}></div>
       <Button disabled={data ? !data.join : true} onClick={movePageHandler}>
         {data?.join ? `join ${data?.type}` : "not ready"}

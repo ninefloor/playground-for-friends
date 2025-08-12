@@ -86,7 +86,6 @@ export const Register = () => {
       form={form}
       onSubmit={handleSubmit(onSubmit)}
       isLoading={isLoading}
-      submitLabel="가입하기"
       onBack={() => navigate(-1)}
     />
   );
