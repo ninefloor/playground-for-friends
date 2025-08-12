@@ -4,6 +4,7 @@ import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
 import s from "@pages/Register.module.scss";
 import type { BaseSyntheticEvent, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import type { Path, UseFormReturn } from "react-hook-form";
 
 const colorPalette: string[] = [
@@ -36,39 +37,61 @@ type CommonFormShape = {
   password?: string;
   nickname: string;
   color: string;
+  image?: File | null;
 };
 
 type Props<T extends CommonFormShape> = {
   form: UseFormReturn<T>;
   onSubmit: (e?: BaseSyntheticEvent) => void;
-  selectedColor: string;
-  onSelectColor: (hex: string) => void;
-  previewUrl: string | null;
-  onChangeFile: (e: ChangeEvent<HTMLInputElement>) => void;
   isLoading?: boolean;
   submitLabel: string;
   onBack: () => void;
   showEmail?: boolean;
   showPassword?: boolean;
+  initialPhotoURL?: string;
 };
 
 export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
   const {
     form,
     onSubmit,
-    selectedColor,
-    onSelectColor,
-    previewUrl,
-    onChangeFile,
     isLoading,
     submitLabel,
     onBack,
     showEmail = false,
     showPassword = false,
+    initialPhotoURL,
   } = props;
 
-  const { register, formState: { errors }, watch } = form;
-  const nicknameValue = (watch("nickname" as Path<T>) as unknown as string) ?? "";
+  const {
+    register,
+    formState: { errors },
+    watch,
+    setValue,
+  } = form;
+  const nicknameValue =
+    (watch("nickname" as Path<T>) as unknown as string) ?? "";
+  const selectedColor = (watch("color" as Path<T>) as unknown as string) ?? "#2b2b2b";
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const onChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const newFile = e.target.files?.[0] ?? null;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    if (newFile) {
+      const url = URL.createObjectURL(newFile);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+    setValue("image" as Path<T>, (newFile as unknown as never), { shouldDirty: true });
+  };
 
   return (
     <div className={s.container}>
@@ -81,7 +104,7 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
               user={{
                 nickname: nicknameValue || "nickname",
                 color: selectedColor,
-                photoURL: previewUrl || "",
+                photoURL: previewUrl || initialPhotoURL || "",
                 uid: "",
                 createdAt: new Date().getTime(),
                 role: "USER",
@@ -163,7 +186,7 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
                 }`}
                 style={{ backgroundColor: hex }}
                 aria-label={`select color ${hex}`}
-                onClick={() => onSelectColor(hex)}
+                onClick={() => setValue("color" as Path<T>, (hex as unknown as never), { shouldDirty: true })}
                 title={hex}
               />
             ))}

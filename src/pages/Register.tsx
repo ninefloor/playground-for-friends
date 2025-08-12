@@ -6,16 +6,13 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [selectedColor, setSelectedColor] = useState<string>("#2b2b2b");
   const setUserInfo = useSetAtom(userInfoAtom);
 
   const form = useForm<UserFormData>({ mode: "onSubmit" });
@@ -31,8 +28,8 @@ export const Register = () => {
       );
 
       let photoURL: string | undefined;
-      if (file) {
-        const compressedFile = await imageCompression(file, {
+      if (data.image) {
+        const compressedFile = await imageCompression(data.image, {
           maxSizeMB: 1,
           maxWidthOrHeight: 1024,
         });
@@ -51,7 +48,7 @@ export const Register = () => {
         photoURL: photoURL ?? null,
         createdAt: Date.now(),
         role: "USER",
-        color: selectedColor,
+        color: data.color,
       });
 
       setUserInfo({
@@ -60,7 +57,7 @@ export const Register = () => {
         photoURL: photoURL ?? "",
         createdAt: Date.now(),
         role: "USER",
-        color: selectedColor,
+        color: data.color,
       });
 
       navigate("/");
@@ -83,32 +80,10 @@ export const Register = () => {
     }
   };
 
-  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = e.target.files?.[0] ?? null;
-    setFile(newFile);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    if (newFile) {
-      const url = URL.createObjectURL(newFile);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
   return (
     <UserProfileForm<UserFormData>
       form={form}
       onSubmit={handleSubmit(onSubmit)}
-      selectedColor={selectedColor}
-      onSelectColor={setSelectedColor}
-      previewUrl={previewUrl}
-      onChangeFile={onChangeFile}
       isLoading={isLoading}
       submitLabel="가입하기"
       onBack={() => navigate(-1)}

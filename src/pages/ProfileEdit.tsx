@@ -15,12 +15,7 @@ export const ProfileEdit = () => {
   const currentUser = useAtomValue(userInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
 
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(
-    currentUser?.color ?? "#2b2b2b"
-  );
 
   const form = useForm<UserEditFormData>({
     mode: "onSubmit",
@@ -30,8 +25,7 @@ export const ProfileEdit = () => {
       color: currentUser?.color ?? "#2b2b2b",
     },
   });
-  const { handleSubmit, setValue, watch } = form;
-  const formValues = watch();
+  const { handleSubmit, setValue } = form;
 
   useEffect(() => {
     if (currentUser) {
@@ -40,23 +34,7 @@ export const ProfileEdit = () => {
     }
   }, [currentUser, setValue]);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
-  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = e.target.files?.[0] ?? null;
-    setFile(newFile);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    if (newFile) {
-      const url = URL.createObjectURL(newFile);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
-    }
-  };
+  // preview 관리는 폼 컴포넌트 내부에서 처리
 
   const onSubmit = async (data: UserEditFormData) => {
     if (!auth.currentUser || !currentUser) return;
@@ -64,8 +42,8 @@ export const ProfileEdit = () => {
       setIsLoading(true);
 
       let photoURL: string | undefined | null = currentUser.photoURL ?? null;
-      if (file) {
-        const compressedFile = await imageCompression(file, {
+      if (data.image) {
+        const compressedFile = await imageCompression(data.image, {
           maxSizeMB: 1,
           maxWidthOrHeight: 1024,
         });
@@ -85,7 +63,7 @@ export const ProfileEdit = () => {
       await updateDoc(userRef, {
         nickname: data.nickname,
         photoURL: photoURL ?? null,
-        color: selectedColor,
+        color: data.color,
       });
 
       // 전역 상태 갱신
@@ -93,11 +71,11 @@ export const ProfileEdit = () => {
         ...currentUser,
         nickname: data.nickname,
         photoURL: photoURL ?? "",
-        color: selectedColor,
+        color: data.color,
       });
 
       navigate("/");
-    } catch (e) {
+  } catch {
       alert("프로필 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
@@ -108,18 +86,12 @@ export const ProfileEdit = () => {
     <UserProfileForm<UserEditFormData>
       form={form}
       onSubmit={handleSubmit(onSubmit)}
-      selectedColor={selectedColor}
-      onSelectColor={(hex) => {
-        setSelectedColor(hex);
-        setValue("color", hex);
-      }}
-      previewUrl={previewUrl}
-      onChangeFile={onChangeFile}
       isLoading={isLoading}
       submitLabel="수정하기"
       onBack={() => navigate(-1)}
       showEmail={false}
       showPassword={false}
+      initialPhotoURL={currentUser?.photoURL}
     />
   );
 };
