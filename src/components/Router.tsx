@@ -5,8 +5,8 @@ import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { DecisionByUser } from "@pages/DecisionByUser";
 import { Home } from "@pages/Home";
 import { NotFound } from "@pages/NotFound";
-import { Register } from "@pages/Register";
 import { ProfileEdit } from "@pages/ProfileEdit";
+import { Register } from "@pages/Register";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -16,7 +16,11 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/register", element: <Register /> },
-      { path: "/profile", element: <AuthLayout />, children: [{ path: "", element: <ProfileEdit /> }] },
+      {
+        path: "/profile",
+        element: <AuthLayout />,
+        children: [{ path: "", element: <ProfileEdit /> }],
+      },
       {
         element: <AuthLayout />, // 로그인 필요 섹션
         children: [

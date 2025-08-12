@@ -9,7 +9,6 @@ import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
- 
 
 export const Register = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -19,15 +18,8 @@ export const Register = () => {
   const [selectedColor, setSelectedColor] = useState<string>("#2b2b2b");
   const setUserInfo = useSetAtom(userInfoAtom);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-    watch,
-  } = useForm<UserFormData>({ mode: "onSubmit" });
-
-  const user = watch();
+  const form = useForm<UserFormData>({ mode: "onSubmit" });
+  const { handleSubmit, setError } = form;
 
   const onSubmit = async (data: UserFormData) => {
     try {
@@ -111,10 +103,8 @@ export const Register = () => {
 
   return (
     <UserProfileForm<UserFormData>
+      form={form}
       onSubmit={handleSubmit(onSubmit)}
-      register={register}
-      errors={errors}
-      nicknameValue={user.nickname}
       selectedColor={selectedColor}
       onSelectColor={setSelectedColor}
       previewUrl={previewUrl}

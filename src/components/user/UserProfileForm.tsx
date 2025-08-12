@@ -2,9 +2,9 @@ import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
-import type { BaseSyntheticEvent, ChangeEvent } from "react";
-import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import s from "@pages/Register.module.scss";
+import type { BaseSyntheticEvent, ChangeEvent } from "react";
+import type { Path, UseFormReturn } from "react-hook-form";
 
 const colorPalette: string[] = [
   "#e53e3e",
@@ -39,10 +39,8 @@ type CommonFormShape = {
 };
 
 type Props<T extends CommonFormShape> = {
+  form: UseFormReturn<T>;
   onSubmit: (e?: BaseSyntheticEvent) => void;
-  register: UseFormRegister<T>;
-  errors: FieldErrors<T>;
-  nicknameValue: string;
   selectedColor: string;
   onSelectColor: (hex: string) => void;
   previewUrl: string | null;
@@ -56,10 +54,8 @@ type Props<T extends CommonFormShape> = {
 
 export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
   const {
+    form,
     onSubmit,
-    register,
-    errors,
-    nicknameValue,
     selectedColor,
     onSelectColor,
     previewUrl,
@@ -70,6 +66,9 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
     showEmail = false,
     showPassword = false,
   } = props;
+
+  const { register, formState: { errors }, watch } = form;
+  const nicknameValue = (watch("nickname" as Path<T>) as unknown as string) ?? "";
 
   return (
     <div className={s.container}>
@@ -90,7 +89,13 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
             />
             <div className={s.placeholder}>이미지 선택</div>
           </label>
-          <input id="profile" type="file" accept="image/*" onChange={onChangeFile} hidden />
+          <input
+            id="profile"
+            type="file"
+            accept="image/*"
+            onChange={onChangeFile}
+            hidden
+          />
         </div>
 
         {showEmail && (
@@ -105,7 +110,7 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
                 message: "올바른 이메일 형식이 아닙니다.",
               },
             })}
-            error={(errors as FieldErrors<CommonFormShape>)?.email?.message}
+            error={errors.email?.message as string | undefined}
           />
         )}
 
@@ -117,9 +122,12 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
             placeholder="6자 이상"
             {...register("password" as Path<T>, {
               required: "비밀번호를 입력해주세요.",
-              minLength: { value: 6, message: "비밀번호는 6자 이상이어야 합니다." },
+              minLength: {
+                value: 6,
+                message: "비밀번호는 6자 이상이어야 합니다.",
+              },
             })}
-            error={(errors as FieldErrors<CommonFormShape>)?.password?.message}
+            error={errors.password?.message as string | undefined}
           />
         )}
 
@@ -135,9 +143,12 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
               message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
             },
             minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
-            maxLength: { value: 8, message: "닉네임은 8자 이하로 입력해주세요." },
+            maxLength: {
+              value: 8,
+              message: "닉네임은 8자 이하로 입력해주세요.",
+            },
           })}
-          error={(errors as FieldErrors<CommonFormShape>)?.nickname?.message}
+          error={errors.nickname?.message as string | undefined}
         />
 
         <div>
@@ -147,7 +158,9 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
               <button
                 key={hex}
                 type="button"
-                className={`${s.colorSwatch} ${selectedColor === hex ? s.selected : ""}`}
+                className={`${s.colorSwatch} ${
+                  selectedColor === hex ? s.selected : ""
+                }`}
                 style={{ backgroundColor: hex }}
                 aria-label={`select color ${hex}`}
                 onClick={() => onSelectColor(hex)}
@@ -167,5 +180,3 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
     </div>
   );
 };
-
-

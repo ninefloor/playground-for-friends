@@ -18,9 +18,11 @@ export const ProfileEdit = () => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(currentUser?.color ?? "#2b2b2b");
+  const [selectedColor, setSelectedColor] = useState<string>(
+    currentUser?.color ?? "#2b2b2b"
+  );
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<UserEditFormData>({
+  const form = useForm<UserEditFormData>({
     mode: "onSubmit",
     defaultValues: {
       email: currentUser ? undefined : undefined,
@@ -28,7 +30,7 @@ export const ProfileEdit = () => {
       color: currentUser?.color ?? "#2b2b2b",
     },
   });
-
+  const { handleSubmit, setValue, watch } = form;
   const formValues = watch();
 
   useEffect(() => {
@@ -63,7 +65,10 @@ export const ProfileEdit = () => {
 
       let photoURL: string | undefined | null = currentUser.photoURL ?? null;
       if (file) {
-        const compressedFile = await imageCompression(file, { maxSizeMB: 1, maxWidthOrHeight: 1024 });
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1024,
+        });
         const storageRef = ref(storage, `profiles/${currentUser.uid}`);
         await uploadBytes(storageRef, compressedFile);
         photoURL = await getDownloadURL(storageRef);
@@ -101,12 +106,13 @@ export const ProfileEdit = () => {
 
   return (
     <UserProfileForm<UserEditFormData>
+      form={form}
       onSubmit={handleSubmit(onSubmit)}
-      register={register}
-      errors={errors}
-      nicknameValue={formValues.nickname}
       selectedColor={selectedColor}
-      onSelectColor={(hex) => { setSelectedColor(hex); setValue("color", hex); }}
+      onSelectColor={(hex) => {
+        setSelectedColor(hex);
+        setValue("color", hex);
+      }}
       previewUrl={previewUrl}
       onChangeFile={onChangeFile}
       isLoading={isLoading}
@@ -117,5 +123,3 @@ export const ProfileEdit = () => {
     />
   );
 };
-
-
