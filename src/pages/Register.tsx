@@ -81,14 +81,13 @@ export const Register = () => {
   };
 
   return (
-    <UserProfileForm<UserFormData>
+    <UserProfileForm
+      isEdit={false}
       form={form}
       onSubmit={handleSubmit(onSubmit)}
       isLoading={isLoading}
       submitLabel="가입하기"
       onBack={() => navigate(-1)}
-      showEmail
-      showPassword
     />
   );
 };

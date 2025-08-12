@@ -75,7 +75,7 @@ export const ProfileEdit = () => {
       });
 
       navigate("/");
-  } catch {
+    } catch {
       alert("프로필 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
@@ -83,14 +83,13 @@ export const ProfileEdit = () => {
   };
 
   return (
-    <UserProfileForm<UserEditFormData>
+    <UserProfileForm
+      isEdit={true}
       form={form}
       onSubmit={handleSubmit(onSubmit)}
       isLoading={isLoading}
       submitLabel="수정하기"
       onBack={() => navigate(-1)}
-      showEmail={false}
-      showPassword={false}
       initialPhotoURL={currentUser?.photoURL}
     />
   );

@@ -5,7 +5,7 @@ import { Loading } from "@components/Loading";
 import s from "@pages/Register.module.scss";
 import type { BaseSyntheticEvent, ChangeEvent } from "react";
 import { useEffect, useState } from "react";
-import type { Path, UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 
 const colorPalette: string[] = [
   "#e53e3e",
@@ -32,46 +32,46 @@ const colorPalette: string[] = [
   "#2b2b2b",
 ];
 
-type CommonFormShape = {
-  email?: string;
-  password?: string;
-  nickname: string;
-  color: string;
-  image?: File | null;
-};
+type Props =
+  | {
+      isEdit: false;
+      form: UseFormReturn<UserFormData>;
+      onSubmit: (e?: BaseSyntheticEvent) => void;
+      isLoading?: boolean;
+      submitLabel: string;
+      onBack: () => void;
+      initialPhotoURL?: string;
+    }
+  | {
+      isEdit: true;
+      form: UseFormReturn<UserEditFormData>;
+      onSubmit: (e?: BaseSyntheticEvent) => void;
+      isLoading?: boolean;
+      submitLabel: string;
+      onBack: () => void;
+      initialPhotoURL?: string;
+    };
 
-type Props<T extends CommonFormShape> = {
-  form: UseFormReturn<T>;
-  onSubmit: (e?: BaseSyntheticEvent) => void;
-  isLoading?: boolean;
-  submitLabel: string;
-  onBack: () => void;
-  showEmail?: boolean;
-  showPassword?: boolean;
-  initialPhotoURL?: string;
-};
-
-export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
+export const UserProfileForm = (props: Props) => {
   const {
     form,
     onSubmit,
     isLoading,
     submitLabel,
     onBack,
-    showEmail = false,
-    showPassword = false,
+    // isEdit 으로 분기 처리
     initialPhotoURL,
   } = props;
 
-  const {
-    register,
-    formState: { errors },
-    watch,
-    setValue,
-  } = form;
-  const nicknameValue =
-    (watch("nickname" as Path<T>) as unknown as string) ?? "";
-  const selectedColor = (watch("color" as Path<T>) as unknown as string) ?? "#2b2b2b";
+  const isEdit = props.isEdit;
+  const regForm = (isEdit ? null : (form as UseFormReturn<UserFormData>));
+  const editForm = (isEdit ? (form as UseFormReturn<UserEditFormData>) : null);
+  const nicknameValue = isEdit
+    ? (editForm!.watch("nickname") ?? "")
+    : (regForm!.watch("nickname") ?? "");
+  const selectedColor = isEdit
+    ? (editForm!.watch("color") ?? "#2b2b2b")
+    : (regForm!.watch("color") ?? "#2b2b2b");
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -90,7 +90,15 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
     } else {
       setPreviewUrl(null);
     }
-    setValue("image" as Path<T>, (newFile as unknown as never), { shouldDirty: true });
+    if (isEdit) {
+      (editForm as UseFormReturn<UserEditFormData>).setValue("image", newFile, {
+        shouldDirty: true,
+      });
+    } else {
+      (regForm as UseFormReturn<UserFormData>).setValue("image", newFile, {
+        shouldDirty: true,
+      });
+    }
   };
 
   return (
@@ -121,36 +129,42 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
           />
         </div>
 
-        {showEmail && (
+        {!props.isEdit && (
           <Input
             id="email"
             label="이메일"
             type="email"
-            {...register("email" as Path<T>, {
+            {...(form as UseFormReturn<UserFormData>).register("email", {
               required: "이메일을 입력해주세요.",
               pattern: {
                 value: /[^\s@]+@[^\s@]+\.[^\s@]+/,
                 message: "올바른 이메일 형식이 아닙니다.",
               },
             })}
-            error={errors.email?.message as string | undefined}
+            error={
+              (form as UseFormReturn<UserFormData>).formState.errors.email
+                ?.message as string | undefined
+            }
           />
         )}
 
-        {showPassword && (
+        {!props.isEdit && (
           <Input
             id="password"
             label="비밀번호"
             type="password"
             placeholder="6자 이상"
-            {...register("password" as Path<T>, {
+            {...(form as UseFormReturn<UserFormData>).register("password", {
               required: "비밀번호를 입력해주세요.",
               minLength: {
                 value: 6,
                 message: "비밀번호는 6자 이상이어야 합니다.",
               },
             })}
-            error={errors.password?.message as string | undefined}
+            error={
+              (form as UseFormReturn<UserFormData>).formState.errors.password
+                ?.message as string | undefined
+            }
           />
         )}
 
@@ -159,19 +173,41 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
           label="닉네임"
           type="text"
           placeholder="2자 이상 8자 이하"
-          {...register("nickname" as Path<T>, {
-            required: "닉네임을 입력해주세요.",
-            pattern: {
-              value: /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-zA-Z0-9]+$/,
-              message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
-            },
-            minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
-            maxLength: {
-              value: 8,
-              message: "닉네임은 8자 이하로 입력해주세요.",
-            },
-          })}
-          error={errors.nickname?.message as string | undefined}
+          {...(props.isEdit
+            ? (editForm as UseFormReturn<UserEditFormData>).register(
+                "nickname",
+                {
+                  required: "닉네임을 입력해주세요.",
+                  pattern: {
+                    value: /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-zA-Z0-9]+$/,
+                    message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
+                  },
+                  minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
+                  maxLength: {
+                    value: 8,
+                    message: "닉네임은 8자 이하로 입력해주세요.",
+                  },
+                }
+              )
+            : (regForm as UseFormReturn<UserFormData>).register("nickname", {
+                required: "닉네임을 입력해주세요.",
+                pattern: {
+                  value: /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-zA-Z0-9]+$/,
+                  message: "닉네임은 한글, 영문, 숫자만 입력해주세요.",
+                },
+                minLength: { value: 2, message: "닉네임은 2자 이상이어야 합니다." },
+                maxLength: {
+                  value: 8,
+                  message: "닉네임은 8자 이하로 입력해주세요.",
+                },
+              }))}
+          error={
+            (props.isEdit
+              ? (editForm as UseFormReturn<UserEditFormData>).formState.errors
+                  .nickname?.message
+              : (regForm as UseFormReturn<UserFormData>).formState.errors
+                  .nickname?.message) as string | undefined
+          }
         />
 
         <div>
@@ -186,7 +222,19 @@ export const UserProfileForm = <T extends CommonFormShape>(props: Props<T>) => {
                 }`}
                 style={{ backgroundColor: hex }}
                 aria-label={`select color ${hex}`}
-                onClick={() => setValue("color" as Path<T>, (hex as unknown as never), { shouldDirty: true })}
+                onClick={() =>
+                  (props.isEdit
+                    ? (editForm as UseFormReturn<UserEditFormData>).setValue(
+                        "color",
+                        hex,
+                        { shouldDirty: true }
+                      )
+                    : (regForm as UseFormReturn<UserFormData>).setValue(
+                        "color",
+                        hex,
+                        { shouldDirty: true }
+                      ))
+                }
                 title={hex}
               />
             ))}
