@@ -1,4 +1,4 @@
-import logo from "@assets/images/logo.png";
+import logo from "@assets/images/pff.svg";
 import { Button } from "@components/atoms/Buttons";
 import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
 import { JoinSystem } from "@components/home/JoinSystem";
@@ -42,7 +42,11 @@ export const Home = () => {
 
   return (
     <div className={s.container}>
-      <img src={logo} alt="logo" />
+      {userInfo ? (
+        <UserItemPreview user={userInfo} />
+      ) : (
+        <img src={logo} alt="logo" />
+      )}
       <h1 className={s.title}>
         playground
         <br />
@@ -70,7 +74,6 @@ export const Home = () => {
           Logout
         </Button>
       )}
-      {userInfo && <UserItemPreview user={userInfo} />}
       {userInfo && (
         <Button variant="black" onClick={profileHandler} inline>
           My Profile
