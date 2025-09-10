@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
  * @return {object} email, emailHandler, pw, pwHander, isLoading, loginHander
  */
 
-const useLogin = (location: string | undefined) => {
+const useLogin = (location?: string) => {
   const [email, setEmail] = useState<string>("");
   const [pw, setPw] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);

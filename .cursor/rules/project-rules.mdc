@@ -44,7 +44,7 @@
   - 비인증 라우터: `/`, `/register` 등
   - 인증 일반 유저 라우터: `/`, `/vote`, `/tier`
   - 관리자 라우터: `/admin`, `/admin/vote`, `/admin/tier`, `/admin/members`
-- **관리자 판별**: `VITE_APP_ADMIN_ID`와 `userId` 비교로 분기합니다.
+- 관리자 판별: Firestore `users/{uid}` 문서의 `role` 필드가 `"ADMIN"`인지 여부로 결정합니다. 라우트 가드는 `userInfo.role`을 사용합니다.
 - 새 페이지 추가 시, 권한 라우팅 그룹에 맞게 `Router.tsx`에만 라우트를 추가하고, 경로/권한을 PR 설명에 명시합니다.
 
 ### 7) 상태관리(Jotai)
@@ -63,7 +63,8 @@
 
 - Vite 규칙상 브라우저 노출 변수는 `VITE_` 접두사를 사용합니다.
 - 필수 변수 목록(예시):
-  - `VITE_API_KEY`, `VITE_AUTH_DOMAIN`, `VITE_DATABASE_URL`, `VITE_PROJECT_ID`, `VITE_STORAGE_BUCKET`, `VITE_MESSAGING_SENDER_ID`, `VITE_APP_ID`, `VITE_APP_ADMIN_ID`
+  - `VITE_API_KEY`, `VITE_AUTH_DOMAIN`, `VITE_DATABASE_URL`, `VITE_PROJECT_ID`, `VITE_STORAGE_BUCKET`, `VITE_MESSAGING_SENDER_ID`, `VITE_APP_ID`
+  - 선택: `VITE_APP_ADMIN_ID` (환경변수 기반 관리자 판별을 도입하는 경우에만 사용)
 - `.env.local`를 사용하고 Git에 커밋하지 않습니다. Vercel 환경 변수와 동기화합니다.
 
 ### 10) 스타일 가이드
