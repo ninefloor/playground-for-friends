@@ -35,6 +35,7 @@ const colorPalette: string[] = [
 type Props =
   | {
       isEdit: false;
+      adminMode?: false;
       form: UseFormReturn<UserFormData>;
       onSubmit: (e?: BaseSyntheticEvent) => void;
       isLoading?: boolean;
@@ -43,7 +44,17 @@ type Props =
     }
   | {
       isEdit: true;
+      adminMode?: false;
       form: UseFormReturn<UserEditFormData>;
+      onSubmit: (e?: BaseSyntheticEvent) => void;
+      isLoading?: boolean;
+      onBack: () => void;
+      initialPhotoURL?: string;
+    }
+  | {
+      isEdit: true;
+      adminMode: true;
+      form: UseFormReturn<AdminUserEditFormData>;
       onSubmit: (e?: BaseSyntheticEvent) => void;
       isLoading?: boolean;
       onBack: () => void;
@@ -61,14 +72,20 @@ export const UserProfileForm = (props: Props) => {
   } = props;
 
   const isEdit = props.isEdit;
+  const isAdminMode = isEdit && props.adminMode === true;
   const regForm = isEdit ? null : (form as UseFormReturn<UserFormData>);
-  const editForm = isEdit ? (form as UseFormReturn<UserEditFormData>) : null;
+  const editForm = isEdit
+    ? (form as UseFormReturn<UserEditFormData | AdminUserEditFormData>)
+    : null;
   const nicknameValue = isEdit
     ? editForm!.watch("nickname") ?? ""
     : regForm!.watch("nickname") ?? "";
   const selectedColor = isEdit
     ? editForm!.watch("color") ?? "#2b2b2b"
     : regForm!.watch("color") ?? "#2b2b2b";
+  const roleValue = isAdminMode
+    ? (editForm as UseFormReturn<AdminUserEditFormData>).watch("role") ?? "USER"
+    : undefined;
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -100,6 +117,9 @@ export const UserProfileForm = (props: Props) => {
 
   return (
     <div className={s.container}>
+      <Button className={s.backBtn} variant="black" onClick={onBack} inline>
+        BACK
+      </Button>
       {isLoading && <Loading />}
 
       <form className={s.formContainer} onSubmit={onSubmit} noValidate>
@@ -110,9 +130,6 @@ export const UserProfileForm = (props: Props) => {
                 nickname: nicknameValue || "nickname",
                 color: selectedColor,
                 photoURL: previewUrl || initialPhotoURL || "",
-                uid: "",
-                createdAt: new Date().getTime(),
-                role: "USER",
               }}
             />
             <div className={s.placeholder}>이미지 선택</div>
@@ -244,11 +261,62 @@ export const UserProfileForm = (props: Props) => {
           </div>
         </div>
 
+        {isEdit && isAdminMode && (
+          <div>
+            <h2 className={s.desc}>권한/정렬</h2>
+            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <div style={{ minWidth: 160 }}>
+                <div className={s.desc}>권한</div>
+                <label style={{ marginRight: 12 }}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="USER"
+                    checked={roleValue === "USER"}
+                    onChange={() =>
+                      (editForm as UseFormReturn<AdminUserEditFormData>).setValue(
+                        "role",
+                        "USER",
+                        { shouldDirty: true }
+                      )
+                    }
+                  />
+                  <span style={{ marginLeft: 6 }}>USER</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="ADMIN"
+                    checked={roleValue === "ADMIN"}
+                    onChange={() =>
+                      (editForm as UseFormReturn<AdminUserEditFormData>).setValue(
+                        "role",
+                        "ADMIN",
+                        { shouldDirty: true }
+                      )
+                    }
+                  />
+                  <span style={{ marginLeft: 6 }}>ADMIN</span>
+                </label>
+              </div>
+              <div style={{ minWidth: 160 }}>
+                <Input
+                  id="customOrder"
+                  label="Custom Order"
+                  type="number"
+                  placeholder="정렬값(숫자)"
+                  {...(
+                    editForm as UseFormReturn<AdminUserEditFormData>
+                  ).register("customOrder", { valueAsNumber: true })}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className={s.actions}>
           <Button type="submit">{isEdit ? "수정하기" : "회원가입"}</Button>
-          <Button type="button" variant="tertiary" onClick={onBack}>
-            뒤로가기
-          </Button>
         </div>
       </form>
     </div>

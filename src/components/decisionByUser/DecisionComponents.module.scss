@@ -5,6 +5,12 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  .backBtn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+  }
   .title {
     font-size: 16px;
     margin-top: 20px;

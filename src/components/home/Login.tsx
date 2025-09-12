@@ -11,8 +11,7 @@ export const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      {isLoading && <Loading />}
+    <>
       <div className={s.formContainer}>
         <div>
           <Input
@@ -39,6 +38,7 @@ export const Login = () => {
           회원가입
         </Button>
       </div>
-    </div>
+      {isLoading && <Loading />}
+    </>
   );
 };

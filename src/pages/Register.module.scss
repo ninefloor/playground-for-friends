@@ -8,6 +8,13 @@
   padding: 16px;
 }
 
+.backBtn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}
+
 .formContainer {
   display: flex;
   flex-direction: column;

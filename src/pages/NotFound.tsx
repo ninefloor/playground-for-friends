@@ -6,8 +6,10 @@ export const NotFound = () => {
   const navigate = useNavigate();
   return (
     <div className={s.container}>
+      <Button className={s.backBtn} variant="black" onClick={() => navigate(-1)} inline>
+        BACK
+      </Button>
       <h2>Page Not Found!</h2>
-
       <Button onClick={() => navigate("/")}>Go to Home</Button>
     </div>
   );

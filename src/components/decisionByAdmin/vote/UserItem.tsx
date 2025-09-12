@@ -86,8 +86,9 @@ export const UserItem = ({ user, picks, setPicks, setAttend, push, kick }) => {
   );
 };
 
+type BasicUser = Pick<UserInfo, "nickname" | "photoURL" | "color">;
 interface UserItemPreviewProps {
-  user: UserInfo;
+  user: BasicUser;
 }
 
 export const UserItemPreview = ({ user }: UserItemPreviewProps) => {

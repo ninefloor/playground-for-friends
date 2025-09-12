@@ -39,6 +39,9 @@ export const Home = () => {
   const profileHandler = () => {
     navigate("/profile");
   };
+  const lobbyHandler = () => {
+    navigate("/lobby");
+  };
 
   return (
     <div className={s.container}>
@@ -72,6 +75,11 @@ export const Home = () => {
           inline
         >
           Logout
+        </Button>
+      )}
+      {userInfo && (
+        <Button variant="black" onClick={lobbyHandler} inline>
+          Rooms
         </Button>
       )}
       {userInfo && (

@@ -42,6 +42,32 @@ alwaysApply: false
 | ROOM-05 | 유저 입장/퇴장 실시간 반영   | Firebase의 onDisconnect 사용     |
 | ROOM-06 | 방 자동 만료 (선택적)        | 일정 시간 미활성 시 방 제거 가능 |
 
+#### 2.2.1 RTDB 데이터 구조 (제안)
+
+- `rooms/{roomId}`: 방 메타데이터
+  - `title: string` 방 제목
+  - `description: string` 방 설명(선택)
+  - `passwordHash: string | null` 비밀번호 해시(SHA-256, 비밀번호 없으면 null)
+  - `adminUid: string` 방 생성자 UID
+  - `createdAt: number` 타임스탬프(ms)
+  - `status: 'open' | 'closed'` 방 상태(기본 open)
+  - `expireAt?: number` 만료 시각(ms, 선택)
+
+- `roomsParticipants/{roomId}/{uid}`: 참가자 정보(프레즌스)
+  - `uid: string`
+  - `nickname: string`
+  - `photoURL: string`
+  - `color: string`
+  - `role: 'ADMIN' | 'PARTICIPANT'`
+  - `joinedAt: number`
+  - `decision: 'L' | 'R' | ''` 현재 선택값(초기값은 빈 문자열 "")
+
+운영 규칙
+- 방 목록은 `rooms` 하위 전체를 구독(간단 리스트)합니다.
+- 입장 시 `roomsParticipants/{roomId}/{uid}`에 참가자 문서를 `set`하고, `onDisconnect(...).remove()`로 퇴장 처리합니다.
+- 비밀번호 검사는 클라이언트에서 입력값을 SHA-256으로 해시해 `rooms/{roomId}.passwordHash`와 비교합니다.
+- 방 자동 만료(선택): 주기적으로 `expireAt < now`인 방을 정리하거나, 관리자 UI에서 닫기/삭제를 제공.
+
 ### 2.3 투표 기능
 
 | ID      | 기능                                    | 설명                                   |

@@ -1,41 +1,39 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import s from "./VoteBoard.module.scss";
 import { useEffect, useState } from "react";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
-import { CircleButton } from "@components/atoms/Buttons";
-import { useUserDecision } from "@utils/useUserDecision";
-import { useRealtimeDB } from "@utils/useRealtimeDB";
+import { Button, CircleButton } from "@components/atoms/Buttons";
 import { useGetUserData } from "@utils/useGetUserData";
+import { useRTDBList } from "@utils/useRTDBList";
+import { useRTDBWrite } from "@utils/useRTDBWrite";
 
 export const VoteBoard = () => {
+  const { roomId } = useParams();
   const { users, loading } = useGetUserData();
-  const [attendUserId, setAttendUserId] = useState<string[]>([]);
   const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState("");
   const [isFRVisible, setIsFRVisible] = useState(false);
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
-  const { data: attendUser, push: setAttendUser } = useRealtimeDB("/joinUser");
-  const { decisions, pushDecisions } = useUserDecision(attendUserId);
+  const { items: participants } = useRTDBList<RoomParticipant>(
+    roomId ? `/roomsParticipants/${roomId}` : ""
+  );
+  const { updateMulti } = useRTDBWrite();
 
   useEffect(() => {
-    console.log(users);
-    if (attendUser) {
-      const { join: curJoin, userId: curUserId } = attendUser;
-      if (curJoin)
-        setAttendUserId((prev) =>
-          prev.includes(curUserId) ? prev : [...prev, curUserId]
-        );
-      else
-        setAttendUserId((prev) =>
-          prev.filter((userId) => userId !== curUserId)
-        );
-    }
-  }, [attendUser, loading]);
+    // 참가자 decision 필드 기반으로 그래프 집계
+    const values = Object.values(participants ?? {}) as RoomParticipant[];
+    const L = values.filter((u) => u.decision === "L").length;
+    const R = values.filter((u) => u.decision === "R").length;
+    setResultValue({ L, R });
+  }, [participants]);
 
   return (
     <div className={s.container}>
+      <Button className={s.backBtn} variant="black" onClick={() => navigate(-1)} inline>
+        BACK
+      </Button>
       {isShowRoulette && isFRVisible && (
         <RouletteForDraw setResultValue={setResultValue} />
       )}
@@ -67,17 +65,26 @@ export const VoteBoard = () => {
           }}
         />
       </div>
-      <CircleButton className={s.refreshBtn} onClick={() => {}}>
-        refresh
-      </CircleButton>
       <CircleButton
-        className={s.prevBtn}
-        onClick={() => {
-          navigate("/");
+        className={s.refreshBtn}
+        onClick={async () => {
+          if (!roomId) return;
+          try {
+            const updates: Record<string, any> = {};
+            Object.keys(participants ?? {}).forEach((uid) => {
+              updates[`/roomsParticipants/${roomId}/${uid}/decision`] = "";
+            });
+            if (Object.keys(updates).length > 0) {
+              await updateMulti(updates);
+            }
+          } catch (e) {
+            alert("투표 초기화 중 오류가 발생했습니다.");
+          }
         }}
       >
-        prev
+        refresh
       </CircleButton>
+      
       {result && (
         <CircleButton
           className={s.visibleBtn}

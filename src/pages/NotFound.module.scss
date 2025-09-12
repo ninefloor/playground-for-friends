@@ -8,3 +8,10 @@
   gap: 24px;
   background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%);
 }
+
+.backBtn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}

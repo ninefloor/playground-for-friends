@@ -79,6 +79,13 @@
   left: 12px;
 }
 
+.backBtn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}
+
 .visibleBtn {
   top: 12px;
   right: 56px;
