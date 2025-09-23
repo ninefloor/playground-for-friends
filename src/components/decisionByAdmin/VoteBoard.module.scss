@@ -12,12 +12,14 @@
   overflow: hidden;
   position: relative;
   & > .users {
+    position: absolute;
+    left: 0;
+    bottom: 8px;
     width: 100%;
     display: flex;
     padding: 0 40px;
     justify-content: space-between;
     align-items: flex-end;
-    position: relative;
     > .decisionUsers {
       min-width: 136px;
       display: flex;

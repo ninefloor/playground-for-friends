@@ -1,10 +1,22 @@
 .container {
+  position: relative;
   width: 128px;
   height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   background-color: $neutral-200;
+}
+
+.decision {
+  cursor: default;
+
+  > .decisionChosen {
+    text-align: center;
+    font-family: "chaney";
+    font-size: 72px;
+    animation: 0.3s ease-in-out fade;
+  }
 }
 
 .user {
@@ -81,17 +93,6 @@
   &:hover {
     .decisionBtn {
       opacity: 1;
-    }
-  }
-
-  > .decision {
-    cursor: default;
-
-    > .decisionChosen {
-      text-align: center;
-      font-family: "chaney";
-      font-size: 72px;
-      animation: 0.3s ease-in-out fade;
     }
   }
 

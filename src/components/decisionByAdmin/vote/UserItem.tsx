@@ -53,6 +53,9 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
     `${basePath}/decision`
   );
   const writer = useRTDBWrite(basePath);
+  const { nickname } = user;
+
+  const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
 
   const setDecision = async (value: Decision) => {
     await writer.setAt("decision", value);
@@ -69,7 +72,31 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
 
   return (
     <div className={s.container}>
-      <div
+      <div className={s.decision}>
+        <DecisionBadge d={current} />
+      </div>
+      <div className={s.user}>
+        {user.photoURL ? (
+          <div
+            className={s.userImage}
+            style={{
+              backgroundImage: `url(${user.photoURL})`,
+            }}
+          />
+        ) : (
+          <img className={s.userImage} src={avatar} alt="avatar" />
+        )}
+        <div
+          className={s.textBg}
+          style={{
+            background: `linear-gradient(115deg, rgba(0, 0, 0, 0) 20%, ${user.color} 100%)`,
+          }}
+        />
+        <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
+          {nickname}
+        </div>
+      </div>
+      {/* <div
         className={`${s.user} ${
           current === "L"
             ? s.L
@@ -92,13 +119,17 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
         <button className={s.text} onClick={kick} id={uid}>
           {user.nickname}
         </button>
-        <div
-          className={s.userImage}
-          style={{
-            backgroundImage: `url(${user.photoURL})`,
-          }}
-        >
-          <div className={s.decisionBtn}>
+        {user.photoURL ? (
+          <div
+            className={s.userImage}
+            style={{
+              backgroundImage: `url(${user.photoURL})`,
+            }}
+          />
+        ) : (
+          <img className={s.userImage} src={avatar} alt="avatar" />
+        )}
+        <div className={s.decisionBtn}>
             <button
               id="L"
               className={`${s.btn} ${s.L}`}
@@ -121,8 +152,7 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
               CLEAR
             </button>
           </div>
-        </div>
-      </div>
+      </div> */}
     </div>
   );
 };
