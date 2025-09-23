@@ -9,19 +9,33 @@ import { useEffect, useState } from "react";
  */
 export const useRTDBValue = <T = unknown>(path?: string | null) => {
   const [value, setValue] = useState<T | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(!!path);
 
   useEffect(() => {
-    setLoaded(false);
-    if (!path) return;
+    if (!path) {
+      setIsLoading(false);
+      setValue(null);
+      return;
+    }
+
+    // path가 변경되면 즉시 로딩 상태로 전환
+    setIsLoading(true);
+    setValue(null);
+
     const reference = ref(realtimeDB, path);
     const handle = (snap: DataSnapshot) => {
       setValue((snap.val() as T) ?? null);
-      setLoaded(true);
+      setIsLoading(false);
     };
-    onValue(reference, handle);
+
+    const errorHandle = (err: Error) => {
+      console.error("RTDB Value Error:", err);
+      setIsLoading(false);
+    };
+
+    onValue(reference, handle, errorHandle);
     return () => off(reference, "value", handle);
   }, [path]);
 
-  return { value, loaded };
+  return { value, isLoading };
 };

@@ -26,7 +26,7 @@ export const VoteDecision = () => {
       ? `/roomsParticipants/${roomId}/${userInfo.uid}`
       : undefined
   );
-  const { value: roomMeta, loaded: roomLoaded } = useRTDBValue<RoomMeta | null>(
+  const { value: roomMeta, isLoading } = useRTDBValue<RoomMeta | null>(
     roomId ? `/rooms/${roomId}` : null
   );
 
@@ -77,8 +77,10 @@ export const VoteDecision = () => {
 
   // 방이 삭제되었거나 닫힌 경우 자동 퇴장 처리
   useEffect(() => {
+    console.log("isLoading", isLoading);
+    console.log("roomMeta", roomMeta);
     if (!roomId || !userInfo) return;
-    if (!roomLoaded) return;
+    if (isLoading) return;
     if (!roomMeta) {
       // 방 문서가 삭제됨
       void leaveRoom();
@@ -87,7 +89,7 @@ export const VoteDecision = () => {
     if (roomMeta.status === "closed") {
       void leaveRoom();
     }
-  }, [roomLoaded, roomMeta, roomId, userInfo, leaveRoom]);
+  }, [isLoading, roomMeta, roomId, userInfo, leaveRoom]);
 
   const decisionHandler = async ({
     currentTarget: { id },
