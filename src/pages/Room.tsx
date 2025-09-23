@@ -23,11 +23,10 @@ export const Room = () => {
   const [joined, setJoined] = useState(false);
 
   const participantsPath = useMemo(
-    () => (roomId ? `/roomsParticipants/${roomId}` : ""),
+    () => (roomId ? `/roomsParticipants/${roomId}` : null),
     [roomId]
   );
-  const { array: participants } =
-    useRTDBList<RoomParticipant>(participantsPath);
+  const { array: participants } = useRTDBList<RoomParticipant>(participantsPath);
 
   useEffect(() => {
     const loadRoom = async () => {

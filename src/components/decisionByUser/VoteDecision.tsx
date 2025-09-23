@@ -56,10 +56,11 @@ export const VoteDecision = () => {
 
     // 라우트 이탈(소프트 퇴장) 시에도 즉시 제거
     return () => {
-      // 비동기 처리: 대기하지 않고 요청만 시도
+      // 중복 제거: 다른 경로로 이미 퇴장 처리되었다면 skip
+      if (leavingRef.current) return;
       writer.remove().catch(() => undefined);
     };
-  }, [userInfo, roomId]);
+  }, [userInfo, roomId, writer]);
 
   const leavingRef = useRef(false);
 
@@ -72,7 +73,7 @@ export const VoteDecision = () => {
     } finally {
       navigate(`/lobby`);
     }
-  }, [userInfo, roomId]);
+  }, [userInfo, roomId, writer, navigate]);
 
   // 방이 삭제되었거나 닫힌 경우 자동 퇴장 처리
   useEffect(() => {

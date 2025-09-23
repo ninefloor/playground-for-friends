@@ -40,6 +40,8 @@ const Modal = ({ open, onClose, children }: { open: boolean; onClose: () => void
 const RoomsList = () => {
   const navigate = useNavigate();
   const { array: roomsArray } = useRTDBList<RoomMeta>("/rooms");
+  // 모든 방 참가자 맵을 한 번에 구독하여 방별 인원수 집계(구독 수 최소화)
+  const { items: participantsByRoom } = useRTDBList<RTDBMap<RoomParticipant>>("/roomsParticipants");
   const writer = useRTDBWrite();
 
   const sorted = useMemo(
@@ -52,37 +54,37 @@ const RoomsList = () => {
     await writer.updateMulti({ [`/rooms/${roomId}`]: null, [`/roomsParticipants/${roomId}`]: null });
   };
 
-  const RoomCount = ({ roomId }: { roomId: string }) => {
-    const { items } = useRTDBList<RoomParticipant>(`/roomsParticipants/${roomId}`);
-    return <span>{Object.keys(items).length} 명</span>;
-  };
-
   return (
     <div className={s.roomsContainer}>
       {sorted.length === 0 ? (
         <p>생성된 방이 없습니다.</p>
       ) : (
         <div className={s.roomsList}>
-          {sorted.map(({ key, value }) => (
-            <div key={key} className={s.roomRow}>
-              <div className={s.roomInfo}>
-                <div className={s.roomTitle}>{value.title}</div>
-                <div className={s.roomMeta}>
-                  <span>{new Date(value.createdAt).toLocaleString()}</span>
-                  <span className={s.dot}>•</span>
-                  <RoomCount roomId={key} />
+          {sorted.map(({ key, value }) => {
+            const count = participantsByRoom && participantsByRoom[key]
+              ? Object.keys(participantsByRoom[key] as RTDBMap<RoomParticipant>).length
+              : 0;
+            return (
+              <div key={key} className={s.roomRow}>
+                <div className={s.roomInfo}>
+                  <div className={s.roomTitle}>{value.title}</div>
+                  <div className={s.roomMeta}>
+                    <span>{new Date(value.createdAt).toLocaleString()}</span>
+                    <span className={s.dot}>•</span>
+                    <span>{count} 명</span>
+                  </div>
+                </div>
+                <div className={s.roomActions}>
+                  <Button variant="info" onClick={() => navigate(`/room/${key}/admin`)}>
+                    참여
+                  </Button>
+                  <Button variant="danger" onClick={() => removeRoom(key)}>
+                    삭제
+                  </Button>
                 </div>
               </div>
-              <div className={s.roomActions}>
-                <Button variant="info" onClick={() => navigate(`/room/${key}/admin`)}>
-                  참여
-                </Button>
-                <Button variant="danger" onClick={() => removeRoom(key)}>
-                  삭제
-                </Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -191,4 +193,3 @@ export const AdminRooms = () => {
     </div>
   );
 };
-

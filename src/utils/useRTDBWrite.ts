@@ -30,6 +30,28 @@ const sanitizeForWrite = <T>(input: T): T => {
   return input;
 };
 
+// update/updateAt용: undefined만 제거하고 null은 그대로 유지(삭제 의도 보존)
+const sanitizeForUpdate = <T>(input: T): T => {
+  const isObject = (v: unknown): v is Record<string, unknown> =>
+    typeof v === "object" && v !== null && !Array.isArray(v);
+
+  if (Array.isArray(input)) {
+    const mapped = (input as unknown[])
+      .map((item) => sanitizeForUpdate(item))
+      .filter((item) => item !== undefined);
+    return mapped as unknown as T;
+  }
+  if (isObject(input)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(input)) {
+      if (v === undefined) continue;
+      out[k] = sanitizeForUpdate(v as unknown);
+    }
+    return out as unknown as T;
+  }
+  return input;
+};
+
 /**
  * Realtime DB 쓰기 헬퍼(선택적 기본 경로 바인딩)
  * - `set(value)` / `update(patch)` / `push(value)`: 기본 경로에 직접 쓰기
@@ -54,7 +76,7 @@ export const useRTDBWrite = (basePath?: string) => {
     patch: Patch
   ): Promise<void> => {
     const r = ref(realtimeDB, buildPath());
-    const sanitized = sanitizeForWrite(patch) as Record<string, unknown>;
+    const sanitized = sanitizeForUpdate(patch) as Record<string, unknown>;
     await fbUpdate(r, sanitized);
   }, [buildPath]);
 
@@ -81,7 +103,7 @@ export const useRTDBWrite = (basePath?: string) => {
     patch: Patch
   ): Promise<void> => {
     const r = ref(realtimeDB, buildPath(path));
-    const sanitized = sanitizeForWrite(patch) as Record<string, unknown>;
+    const sanitized = sanitizeForUpdate(patch) as Record<string, unknown>;
     await fbUpdate(r, sanitized);
   }, [buildPath]);
 

@@ -15,7 +15,7 @@ export const VoteBoard = () => {
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
   const { items: participants } = useRTDBList<RoomParticipant>(
-    roomId ? `/roomsParticipants/${roomId}` : ""
+    roomId ? `/roomsParticipants/${roomId}` : null
   );
   const { updateMulti } = useRTDBWrite();
 
