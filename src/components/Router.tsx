@@ -6,7 +6,6 @@ import { Admin } from "@pages/Admin";
 import { AdminMemberEdit } from "@pages/AdminMemberEdit";
 import { AdminMembers } from "@pages/AdminMembers";
 import { AdminRooms } from "@pages/AdminRooms";
-import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { Home } from "@pages/Home";
 import { Lobby } from "@pages/Lobby";
 import { NotFound } from "@pages/NotFound";
@@ -38,8 +37,6 @@ const router = createBrowserRouter([
             children: [
               { path: "/admin", element: <Admin /> },
               { path: "/admin/rooms", element: <AdminRooms /> },
-              { path: "/admin/vote", element: <DecisionByAdmin /> },
-              { path: "/admin/tier", element: <DecisionByAdmin /> },
               { path: "/admin/members", element: <AdminMembers /> },
               { path: "/admin/members/:uid", element: <AdminMemberEdit /> },
               { path: "/room/:roomId/admin", element: <VoteBoard /> },
