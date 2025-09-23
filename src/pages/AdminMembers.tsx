@@ -1,5 +1,5 @@
 import { Button } from "@components/atoms/Buttons";
-import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
+import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useGetUserData } from "@utils/useGetUserData";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,12 @@ export const AdminMembers = () => {
 
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={() => navigate("/admin")} inline>
+      <Button
+        className={s.backBtn}
+        variant="black"
+        onClick={() => navigate("/admin")}
+        inline
+      >
         BACK
       </Button>
       <h2>회원 관리</h2>
@@ -28,7 +33,7 @@ export const AdminMembers = () => {
           return (
             <div key={uid} className={s.item}>
               <div className={s.left}>
-                <UserItemPreview user={info} />
+                <UserCard user={info} />
                 <div className={s.name}>{info.nickname}</div>
               </div>
               <Button onClick={() => navigate(`/admin/members/${uid}`)} inline>

@@ -23,8 +23,8 @@ type AdminUserEditFormData = UserEditFormData & {
   customOrder?: number;
 };
 
-// RTDB shared types
-type Decision = "L" | "R" | "";
+// RTDB 공용 타입
+type Decision = "L" | "R" | "GIVE_UP" | "";
 
 interface RoomMeta {
   title: string;
@@ -43,6 +43,7 @@ interface RoomParticipant {
   role: "ADMIN" | "PARTICIPANT";
   joinedAt: number;
   decision: Decision;
+  customOrder?: number;
 }
 
 type RTDBMap<T> = Record<string, T>;

@@ -1,7 +1,6 @@
 import logo from "@assets/images/pff.svg";
 import { Button } from "@components/atoms/Buttons";
-import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
-import { JoinSystem } from "@components/home/JoinSystem";
+import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { Login } from "@components/home/Login";
 import { auth } from "@utils/firebase";
 import { userInfoAtom } from "@utils/userInfoAtom";
@@ -45,11 +44,7 @@ export const Home = () => {
 
   return (
     <div className={s.container}>
-      {userInfo ? (
-        <UserItemPreview user={userInfo} />
-      ) : (
-        <img src={logo} alt="logo" />
-      )}
+      {userInfo ? <UserCard user={userInfo} /> : <img src={logo} alt="logo" />}
       <h1 className={s.title}>
         playground
         <br />
@@ -78,8 +73,8 @@ export const Home = () => {
         </Button>
       )}
       {userInfo && (
-        <Button variant="black" onClick={lobbyHandler} inline>
-          Rooms
+        <Button variant="primary" onClick={lobbyHandler} inline>
+          Join Rooms
         </Button>
       )}
       {userInfo && (
@@ -90,7 +85,7 @@ export const Home = () => {
       <Button className={s.pcBtn} variant="black" onClick={pcUserHander} inline>
         PC Ver.
       </Button>
-      {userInfo ? <JoinSystem userName={userInfo.nickname} /> : <Login />}
+      {!userInfo && <Login />}
     </div>
   );
 };

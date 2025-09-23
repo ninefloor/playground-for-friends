@@ -1,6 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
-import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
+import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
 import s from "@pages/Register.module.scss";
 import type { BaseSyntheticEvent, ChangeEvent } from "react";
@@ -125,7 +125,7 @@ export const UserProfileForm = (props: Props) => {
       <form className={s.formContainer} onSubmit={onSubmit} noValidate>
         <div className={s.uploaderContainer}>
           <label htmlFor="profile" className={s.uploaderLabel}>
-            <UserItemPreview
+            <UserCard
               user={{
                 nickname: nicknameValue || "nickname",
                 color: selectedColor,
@@ -274,11 +274,9 @@ export const UserProfileForm = (props: Props) => {
                     value="USER"
                     checked={roleValue === "USER"}
                     onChange={() =>
-                      (editForm as UseFormReturn<AdminUserEditFormData>).setValue(
-                        "role",
-                        "USER",
-                        { shouldDirty: true }
-                      )
+                      (
+                        editForm as UseFormReturn<AdminUserEditFormData>
+                      ).setValue("role", "USER", { shouldDirty: true })
                     }
                   />
                   <span style={{ marginLeft: 6 }}>USER</span>
@@ -290,11 +288,9 @@ export const UserProfileForm = (props: Props) => {
                     value="ADMIN"
                     checked={roleValue === "ADMIN"}
                     onChange={() =>
-                      (editForm as UseFormReturn<AdminUserEditFormData>).setValue(
-                        "role",
-                        "ADMIN",
-                        { shouldDirty: true }
-                      )
+                      (
+                        editForm as UseFormReturn<AdminUserEditFormData>
+                      ).setValue("role", "ADMIN", { shouldDirty: true })
                     }
                   />
                   <span style={{ marginLeft: 6 }}>ADMIN</span>

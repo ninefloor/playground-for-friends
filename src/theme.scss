@@ -9,7 +9,7 @@ $bColor: #4573d3;
 $cColor: #86bc64;
 $dColor: #939ea0;
 
-// Neutral scale
+// 중립 색상 단계
 $neutral-50: #f9fafb;
 $neutral-100: #f3f4f6;
 $neutral-200: #e5e7eb;
@@ -21,7 +21,7 @@ $neutral-700: #374151;
 $neutral-800: #1f2937;
 $neutral-900: #111827;
 
-// Semantic color aliases
+// 의미 기반 색상 별칭
 $primary: $basicYellow;
 $secondary: $bColor;
 $tertiary: $neutral-300;
@@ -29,7 +29,7 @@ $accent: $aColor;
 $danger: $sColor;
 $info: $rightBlue;
 
-// Surfaces and text
+// 표면 및 텍스트
 $surface: #ffffff;
 $surfaceMuted: #f8fafc;
 $overlay: rgba(0, 0, 0, 0.5);
@@ -38,6 +38,6 @@ $textPrimary: #111827;
 $textSecondary: #4b5563;
 $textInverse: #ffffff;
 
-// Borders and focus
+// 테두리 및 포커스
 $borderColor: $neutral-200;
 $focusRing: rgba($primary, 0.4);

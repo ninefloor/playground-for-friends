@@ -2,13 +2,13 @@ import { Button, DecisionButton } from "@components/atoms/Buttons";
 import { DecisionViewer } from "@components/decisionByUser/DecisionViewer";
 import { realtimeDB } from "@utils/firebase";
 import { useRTDBValue } from "@utils/useRTDBValue";
+import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { DataSnapshot, get, onDisconnect, ref } from "firebase/database";
 import { useAtomValue } from "jotai";
-import { type MouseEvent, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { type MouseEvent, useCallback, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import s from "./DecisionComponents.module.scss";
-import { useRTDBWrite } from "@utils/useRTDBWrite";
 
 export const VoteDecision = () => {
   const userInfo = useAtomValue(userInfoAtom);
@@ -18,9 +18,16 @@ export const VoteDecision = () => {
     userInfo && roomId
       ? `/roomsParticipants/${roomId}/${userInfo.uid}/decision`
       : undefined;
-  const { value: currentDecision } = useRTDBValue<Decision | null>(decisionPath);
+  const { value: currentDecision } = useRTDBValue<Decision | null>(
+    decisionPath
+  );
   const writer = useRTDBWrite(
-    userInfo && roomId ? `/roomsParticipants/${roomId}/${userInfo.uid}` : undefined
+    userInfo && roomId
+      ? `/roomsParticipants/${roomId}/${userInfo.uid}`
+      : undefined
+  );
+  const { value: roomMeta, loaded: roomLoaded } = useRTDBValue<RoomMeta | null>(
+    roomId ? `/rooms/${roomId}` : null
   );
 
   // 참가자 문서 생성 및 onDisconnect 설정
@@ -33,22 +40,53 @@ export const VoteDecision = () => {
     (async () => {
       const snap: DataSnapshot = await get(userRef);
       const prev = (snap.val() as RoomParticipant | null) ?? null;
-      const next: RoomParticipant =
-        prev ?? {
-          uid: userInfo.uid,
-          nickname: userInfo.nickname,
-          photoURL: userInfo.photoURL,
-          color: userInfo.color,
-          role: userInfo.role === "ADMIN" ? "ADMIN" : "PARTICIPANT",
-          joinedAt: Date.now(),
-          decision: "",
-        };
+      const next: RoomParticipant = prev ?? {
+        uid: userInfo.uid,
+        nickname: userInfo.nickname,
+        photoURL: userInfo.photoURL,
+        color: userInfo.color,
+        role: userInfo.role === "ADMIN" ? "ADMIN" : "PARTICIPANT",
+        joinedAt: Date.now(),
+        customOrder: userInfo.customOrder,
+        decision: "",
+      };
       await writer.set(next);
       onDisconnect(userRef).remove();
     })();
 
-    // onDisconnect는 연결 끊김에 반응하므로 추가적인 cleanup은 생략
+    // 라우트 이탈(소프트 퇴장) 시에도 즉시 제거
+    return () => {
+      // 비동기 처리: 대기하지 않고 요청만 시도
+      writer.remove().catch(() => undefined);
+    };
   }, [userInfo, roomId]);
+
+  const leavingRef = useRef(false);
+
+  const leaveRoom = useCallback(async () => {
+    if (leavingRef.current) return;
+    leavingRef.current = true;
+    if (!userInfo || !roomId) return;
+    try {
+      await writer.remove();
+    } finally {
+      navigate(`/lobby`);
+    }
+  }, [userInfo, roomId]);
+
+  // 방이 삭제되었거나 닫힌 경우 자동 퇴장 처리
+  useEffect(() => {
+    if (!roomId || !userInfo) return;
+    if (!roomLoaded) return;
+    if (!roomMeta) {
+      // 방 문서가 삭제됨
+      void leaveRoom();
+      return;
+    }
+    if (roomMeta.status === "closed") {
+      void leaveRoom();
+    }
+  }, [roomLoaded, roomMeta, roomId, userInfo, leaveRoom]);
 
   const decisionHandler = async ({
     currentTarget: { id },
@@ -59,12 +97,7 @@ export const VoteDecision = () => {
 
   return (
     <div className={s.container}>
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => (roomId ? navigate(`/room/${roomId}`) : navigate(-1))}
-        inline
-      >
+      <Button className={s.backBtn} variant="black" onClick={leaveRoom} inline>
         BACK
       </Button>
       <h1 className={s.title}>{userInfo?.nickname}'s decision</h1>

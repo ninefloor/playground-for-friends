@@ -5,6 +5,7 @@ import { AdminLayout, AuthLayout } from "@components/RouteGuards";
 import { Admin } from "@pages/Admin";
 import { AdminMemberEdit } from "@pages/AdminMemberEdit";
 import { AdminMembers } from "@pages/AdminMembers";
+import { AdminRooms } from "@pages/AdminRooms";
 import { DecisionByAdmin } from "@pages/DecisionByAdmin";
 import { Home } from "@pages/Home";
 import { Lobby } from "@pages/Lobby";
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
             element: <AdminLayout />, // ADMIN 전용 섹션
             children: [
               { path: "/admin", element: <Admin /> },
+              { path: "/admin/rooms", element: <AdminRooms /> },
               { path: "/admin/vote", element: <DecisionByAdmin /> },
               { path: "/admin/tier", element: <DecisionByAdmin /> },
               { path: "/admin/members", element: <AdminMembers /> },

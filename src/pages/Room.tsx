@@ -1,6 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
-import { UserItemPreview } from "@components/decisionByAdmin/vote/UserItem";
+import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
 import { sha256 } from "@utils/hash";
@@ -69,7 +69,12 @@ export const Room = () => {
 
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={() => navigate("/lobby")} inline>
+      <Button
+        className={s.backBtn}
+        variant="black"
+        onClick={() => navigate("/lobby")}
+        inline
+      >
         BACK
       </Button>
       <div className={s.card}>
@@ -103,7 +108,7 @@ export const Room = () => {
         <h3>참가자</h3>
         <div className={s.participants}>
           {participants.map(({ key, value }) => (
-            <UserItemPreview key={key} user={value} />
+            <UserCard key={key} user={value} />
           ))}
           {participants.length === 0 && <div>아직 참가자가 없습니다.</div>}
         </div>
@@ -114,8 +119,6 @@ export const Room = () => {
           투표하기
         </Button>
       )}
-
-      
     </div>
   );
 };

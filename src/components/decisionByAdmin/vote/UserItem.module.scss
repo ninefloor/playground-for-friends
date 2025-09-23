@@ -95,42 +95,6 @@
     }
   }
 
-  /* pick 상태에 따른 배경/텍스트 색상 */
-  &.pick-L > .decision {
-    background: linear-gradient(
-      180deg,
-      rgba(236, 71, 88, 0) 30%,
-      rgba(236, 71, 88, 0.07) 90%
-    );
-    > .decisionChosen {
-      color: #ec4758;
-      text-shadow: 0 0 12px rgba(236, 71, 88, 0.4);
-    }
-  }
-
-  &.pick-R > .decision {
-    background: linear-gradient(
-      180deg,
-      rgba(26, 123, 185, 0) 30%,
-      rgba(26, 123, 185, 0.07) 90%
-    );
-    > .decisionChosen {
-      color: #1a7bb9;
-      text-shadow: 0 0 12px rgba(26, 123, 185, 0.4);
-    }
-  }
-
-  &.pick-giveup > .decision {
-    background: linear-gradient(
-      180deg,
-      rgba(100, 100, 100, 0) 30%,
-      rgba(100, 100, 100, 0.07) 90%
-    );
-    > .decisionChosen {
-      opacity: 0.8;
-    }
-  }
-
   > .userImage {
     position: relative;
     width: 100%;

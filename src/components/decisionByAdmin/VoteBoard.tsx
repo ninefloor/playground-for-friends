@@ -1,16 +1,14 @@
-import { useNavigate, useParams } from "react-router-dom";
-import s from "./VoteBoard.module.scss";
-import { useEffect, useState } from "react";
-import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
 import { Button, CircleButton } from "@components/atoms/Buttons";
-import { useGetUserData } from "@utils/useGetUserData";
+import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
+import { AdminUserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import s from "./VoteBoard.module.scss";
 
 export const VoteBoard = () => {
   const { roomId } = useParams();
-  const { users, loading } = useGetUserData();
-  const [picks, setPicks] = useState({});
   const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
   const [result, setResult] = useState("");
   const [isFRVisible, setIsFRVisible] = useState(false);
@@ -29,9 +27,30 @@ export const VoteBoard = () => {
     setResultValue({ L, R });
   }, [participants]);
 
+  const refreshHandler = async () => {
+    if (!roomId) return;
+    try {
+      const updates: Record<string, string> = {};
+      Object.keys(participants ?? {}).forEach((uid) => {
+        updates[`/roomsParticipants/${roomId}/${uid}/decision`] = "";
+      });
+      if (Object.keys(updates).length > 0) {
+        await updateMulti(updates);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("투표 초기화 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={() => navigate(-1)} inline>
+      <Button
+        className={s.backBtn}
+        variant="black"
+        onClick={() => navigate(-1)}
+        inline
+      >
         BACK
       </Button>
       {isShowRoulette && isFRVisible && (
@@ -65,26 +84,17 @@ export const VoteBoard = () => {
           }}
         />
       </div>
-      <CircleButton
-        className={s.refreshBtn}
-        onClick={async () => {
-          if (!roomId) return;
-          try {
-            const updates: Record<string, any> = {};
-            Object.keys(participants ?? {}).forEach((uid) => {
-              updates[`/roomsParticipants/${roomId}/${uid}/decision`] = "";
-            });
-            if (Object.keys(updates).length > 0) {
-              await updateMulti(updates);
-            }
-          } catch (e) {
-            alert("투표 초기화 중 오류가 발생했습니다.");
-          }
-        }}
-      >
+      {/* 참가자 개별 카드(관리자용) */}
+      <div className={s.users}>
+        {roomId &&
+          Object.entries(participants ?? {}).map(([uid, user]) => (
+            <AdminUserCard key={uid} roomId={roomId} uid={uid} user={user} />
+          ))}
+      </div>
+      <CircleButton className={s.refreshBtn} onClick={refreshHandler}>
         refresh
       </CircleButton>
-      
+
       {result && (
         <CircleButton
           className={s.visibleBtn}
