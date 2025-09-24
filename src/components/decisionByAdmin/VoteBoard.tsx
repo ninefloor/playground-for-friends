@@ -1,6 +1,6 @@
 import { Button, CircleButton } from "@components/atoms/Buttons";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
-import { AdminUserCard } from "@components/decisionByAdmin/vote/UserItem";
+import { WaitingUserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { useEffect, useState } from "react";
@@ -14,16 +14,15 @@ export const VoteBoard = () => {
   const [isFRVisible, setIsFRVisible] = useState(false);
   const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
-  const { items: participants } = useRTDBList<RoomParticipant>(
+  const { array: participants } = useRTDBList<RoomParticipant>(
     roomId ? `/roomsParticipants/${roomId}` : null
   );
   const { updateMulti } = useRTDBWrite();
 
   useEffect(() => {
     // 참가자 decision 필드 기반으로 그래프 집계
-    const values = Object.values(participants ?? {}) as RoomParticipant[];
-    const L = values.filter((u) => u.decision === "L").length;
-    const R = values.filter((u) => u.decision === "R").length;
+    const L = participants.filter((u) => u.decision === "L").length;
+    const R = participants.filter((u) => u.decision === "R").length;
     setResultValue({ L, R });
   }, [participants]);
 
@@ -31,8 +30,8 @@ export const VoteBoard = () => {
     if (!roomId) return;
     try {
       const updates: Record<string, string> = {};
-      Object.keys(participants ?? {}).forEach((uid) => {
-        updates[`/roomsParticipants/${roomId}/${uid}/decision`] = "";
+      (participants ?? []).forEach((u) => {
+        updates[`/roomsParticipants/${roomId}/${u.uid}/decision`] = "";
       });
       if (Object.keys(updates).length > 0) {
         await updateMulti(updates);
@@ -69,27 +68,31 @@ export const VoteBoard = () => {
       </div>
 
       <div className={s.graph}>
-        <div
-          className={s.L}
-          style={{
-            width:
-              (resultValue.L / (resultValue.L + resultValue.R)) * 100 + "%",
-          }}
-        />
-        <div
-          className={s.R}
-          style={{
-            width:
-              (resultValue.R / (resultValue.L + resultValue.R)) * 100 + "%",
-          }}
-        />
+        {(() => {
+          const total = resultValue.L + resultValue.R;
+          const lw = total ? (resultValue.L / total) * 100 : 0;
+          const rw = total ? (resultValue.R / total) * 100 : 0;
+          return (
+            <>
+              <div className={s.L} style={{ width: lw + "%" }} />
+              <div className={s.R} style={{ width: rw + "%" }} />
+            </>
+          );
+        })()}
       </div>
       {/* 참가자 개별 카드(관리자용) */}
       <div className={s.users}>
         {roomId &&
-          Object.entries(participants ?? {}).map(([uid, user]) => (
-            <AdminUserCard key={uid} roomId={roomId} uid={uid} user={user} />
-          ))}
+          participants
+            .filter((user) => ["", "GIVE_UP"].includes(user.decision))
+            .map((user) => (
+              <WaitingUserCard
+                key={user.uid}
+                roomId={roomId}
+                uid={user.uid}
+                user={user}
+              />
+            ))}
       </div>
       <CircleButton className={s.refreshBtn} onClick={refreshHandler}>
         refresh

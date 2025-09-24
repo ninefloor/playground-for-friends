@@ -1,0 +1,41 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+
+.menu {
+  position: fixed;
+  min-width: 160px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #111827;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #f3f4f6;
+}
+
+.danger {
+  color: #b91c1c;
+}
+
+.disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+

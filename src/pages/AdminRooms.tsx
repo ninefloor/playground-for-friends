@@ -1,8 +1,8 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { sha256 } from "@utils/hash";
-import { useRTDBList } from "@utils/useRTDBList";
 import { userInfoAtom } from "@utils/userInfoAtom";
+import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
@@ -10,7 +10,15 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./Admin.module.scss";
 
-const Modal = ({ open, onClose, children }: { open: boolean; onClose: () => void; children: ReactNode }) => {
+const Modal = ({
+  open,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) => {
   if (!open) return null;
   return (
     <div
@@ -28,7 +36,13 @@ const Modal = ({ open, onClose, children }: { open: boolean; onClose: () => void
       onClick={onClose}
     >
       <div
-        style={{ background: "#fff", padding: 16, borderRadius: 8, minWidth: 320, maxWidth: 640 }}
+        style={{
+          background: "#fff",
+          padding: 16,
+          borderRadius: 8,
+          minWidth: 320,
+          maxWidth: 640,
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
@@ -39,19 +53,26 @@ const Modal = ({ open, onClose, children }: { open: boolean; onClose: () => void
 
 const RoomsList = () => {
   const navigate = useNavigate();
-  const { array: roomsArray } = useRTDBList<RoomMeta>("/rooms");
+  const { object: roomsObject } = useRTDBList<RoomMeta>("/rooms");
   // 모든 방 참가자 맵을 한 번에 구독하여 방별 인원수 집계(구독 수 최소화)
-  const { items: participantsByRoom } = useRTDBList<RTDBMap<RoomParticipant>>("/roomsParticipants");
+  const { object: participantsByRoom } =
+    useRTDBList<RTDBMap<RoomParticipant>>("/roomsParticipants");
   const writer = useRTDBWrite();
 
-  const sorted = useMemo(
-    () => [...roomsArray].sort((a, b) => (b.value.createdAt ?? 0) - (a.value.createdAt ?? 0)),
-    [roomsArray]
-  );
+  const sorted = useMemo(() => {
+    const entries = Object.entries(roomsObject) as [string, RoomMeta][];
+    return entries.sort(
+      (a, b) => (b[1].createdAt ?? 0) - (a[1].createdAt ?? 0)
+    );
+  }, [roomsObject]);
 
   const removeRoom = async (roomId: string) => {
-    if (!confirm("해당 방을 삭제할까요? (참여자 목록도 함께 삭제됩니다)")) return;
-    await writer.updateMulti({ [`/rooms/${roomId}`]: null, [`/roomsParticipants/${roomId}`]: null });
+    if (!confirm("해당 방을 삭제할까요? (참여자 목록도 함께 삭제됩니다)"))
+      return;
+    await writer.updateMulti({
+      [`/rooms/${roomId}`]: null,
+      [`/roomsParticipants/${roomId}`]: null,
+    });
   };
 
   return (
@@ -60,10 +81,13 @@ const RoomsList = () => {
         <p>생성된 방이 없습니다.</p>
       ) : (
         <div className={s.roomsList}>
-          {sorted.map(({ key, value }) => {
-            const count = participantsByRoom && participantsByRoom[key]
-              ? Object.keys(participantsByRoom[key] as RTDBMap<RoomParticipant>).length
-              : 0;
+          {sorted.map(([key, value]) => {
+            const count =
+              participantsByRoom && participantsByRoom[key]
+                ? Object.keys(
+                    participantsByRoom[key] as RTDBMap<RoomParticipant>
+                  ).length
+                : 0;
             return (
               <div key={key} className={s.roomRow}>
                 <div className={s.roomInfo}>
@@ -75,7 +99,10 @@ const RoomsList = () => {
                   </div>
                 </div>
                 <div className={s.roomActions}>
-                  <Button variant="info" onClick={() => navigate(`/room/${key}/admin`)}>
+                  <Button
+                    variant="info"
+                    onClick={() => navigate(`/room/${key}/admin`)}
+                  >
                     참여
                   </Button>
                   <Button variant="danger" onClick={() => removeRoom(key)}>

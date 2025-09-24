@@ -1,5 +1,5 @@
 import avatar from "@assets/images/avatar.svg";
-import { useRTDBValue } from "@utils/useRTDBValue";
+import { useContextMenu } from "@components/atoms/ContextMenu";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import s from "./UserItem.module.scss";
 
@@ -40,20 +40,21 @@ export const UserCard = ({ user }: UserCardProps) => {
   );
 };
 
-interface AdminUserCardProps {
+interface DecisionUserCardProps {
   roomId: string;
   uid: string;
   user: RoomParticipant;
 }
 
-// 방 참가자(관리자용): decision 구독 + 변경 + 킥
-export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
+export const WaitingUserCard = ({
+  roomId,
+  uid,
+  user,
+}: DecisionUserCardProps) => {
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
-  const { value: decision } = useRTDBValue<Decision | null>(
-    `${basePath}/decision`
-  );
   const writer = useRTDBWrite(basePath);
   const { nickname } = user;
+  const { openAtEvent, Menu } = useContextMenu();
 
   const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
 
@@ -64,17 +65,22 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
     await writer.remove();
   };
 
-  const current = decision ?? "";
-
-  const DecisionBadge = ({ d }: { d: Decision }) => (
-    <div className={s.decisionChosen}>{d === "" ? "" : d}</div>
-  );
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    openAtEvent(e, [
+      { key: "L", label: "L", onSelect: () => setDecision("L") },
+      { key: "R", label: "R", onSelect: () => setDecision("R") },
+      {
+        key: "GIVE_UP",
+        label: "GIVE_UP",
+        onSelect: () => setDecision("GIVE_UP"),
+      },
+      { key: "CLEAR", label: "CLEAR", onSelect: () => setDecision("") },
+      { key: "KICK", label: "KICK", onSelect: kick, danger: true },
+    ]);
+  };
 
   return (
-    <div className={s.container}>
-      <div className={s.decision}>
-        <DecisionBadge d={current} />
-      </div>
+    <div className={s.container} onClick={handleClick}>
       <div className={s.user}>
         {user.photoURL ? (
           <div
@@ -153,6 +159,69 @@ export const AdminUserCard = ({ roomId, uid, user }: AdminUserCardProps) => {
             </button>
           </div>
       </div> */}
+      <Menu />
+    </div>
+  );
+};
+
+export const DecisionUserCard = ({
+  roomId,
+  uid,
+  user,
+}: DecisionUserCardProps) => {
+  const basePath = `/roomsParticipants/${roomId}/${uid}`;
+  const writer = useRTDBWrite(basePath);
+  const { nickname } = user;
+  const { openAtEvent, Menu } = useContextMenu();
+
+  const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
+
+  const setDecision = async (value: Decision) => {
+    await writer.setAt("decision", value);
+  };
+  const kick = async () => {
+    await writer.remove();
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    openAtEvent(e, [
+      { key: "L", label: "L", onSelect: () => setDecision("L") },
+      { key: "R", label: "R", onSelect: () => setDecision("R") },
+      {
+        key: "GIVE_UP",
+        label: "GIVE_UP",
+        onSelect: () => setDecision("GIVE_UP"),
+      },
+      { key: "CLEAR", label: "CLEAR", onSelect: () => setDecision("") },
+      { key: "KICK", label: "KICK", onSelect: kick, danger: true },
+    ]);
+  };
+
+  // TODO: d3-force 시각화와 결합 시 이 메뉴 트리거를 적절한 노드에 연결
+  return (
+    <div className={s.container} onClick={handleClick}>
+      <div className={s.user}>
+        {user.photoURL ? (
+          <div
+            className={s.userImage}
+            style={{
+              backgroundImage: `url(${user.photoURL})`,
+            }}
+          />
+        ) : (
+          <img className={s.userImage} src={avatar} alt="avatar" />
+        )}
+        <div
+          className={s.textBg}
+          style={{
+            background: `linear-gradient(115deg, rgba(0, 0, 0, 0) 20%, ${user.color} 100%)`,
+          }}
+        />
+        <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
+          {nickname}
+        </div>
+      </div>
+      <Menu />
     </div>
   );
 };

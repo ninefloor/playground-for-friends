@@ -63,8 +63,7 @@ export const Room = () => {
   if (loading) return <Loading />;
   if (!room) return <div className={s.container}>존재하지 않는 방입니다.</div>;
 
-  const isMember =
-    joined || participants.some((p) => p.value.uid === user?.uid);
+  const isMember = joined || participants.some((p) => p.uid === user?.uid);
 
   return (
     <div className={s.container}>
@@ -106,8 +105,8 @@ export const Room = () => {
       <div className={s.card}>
         <h3>참가자</h3>
         <div className={s.participants}>
-          {participants.map(({ key, value }) => (
-            <UserCard key={key} user={value} />
+          {participants.map((p) => (
+            <UserCard key={p.uid} user={p} />
           ))}
           {participants.length === 0 && <div>아직 참가자가 없습니다.</div>}
         </div>
