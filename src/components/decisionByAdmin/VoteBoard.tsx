@@ -6,9 +6,62 @@ import {
 } from "@components/decisionByAdmin/vote/UserItem";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
-import { useEffect, useState } from "react";
+import { forceCenter, forceCollide, forceSimulation } from "d3-force";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import s from "./VoteBoard.module.scss";
+
+const DecisionUserBoard = ({
+  participants,
+  className,
+  roomId,
+}: {
+  participants: RoomParticipant[];
+  className?: string;
+  roomId: string;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes] = useState<
+    (RoomParticipant & { x?: number; y?: number })[]
+  >([]);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const width = ref.current.clientWidth;
+    const height = ref.current.clientHeight;
+    const simNodes = participants.map((participants) => ({
+      ...participants,
+      x: Math.random(),
+      y: Math.random(),
+    }));
+    const sim = forceSimulation(simNodes)
+      .force("center", forceCenter(width / 2, height / 2))
+      .force("collide", forceCollide(4))
+      .alpha(1)
+      .alphaDecay(0.03)
+      .on("tick", () => setNodes([...simNodes]));
+
+    return () => {
+      sim.stop();
+    };
+  }, [participants]);
+
+  return (
+    <div className={`${s.decisionUsers} ${className}`} ref={ref}>
+      {roomId &&
+        nodes.map((user) => (
+          <DecisionUserCard
+            key={user.uid}
+            roomId={roomId}
+            uid={user.uid}
+            user={user}
+            x={user.x ?? 0}
+            y={user.y ?? 0}
+          />
+        ))}
+    </div>
+  );
+};
 
 export const VoteBoard = () => {
   const { roomId } = useParams();
@@ -48,30 +101,22 @@ export const VoteBoard = () => {
   return (
     <div className={s.container}>
       <div className={`${s.decisionUsers} ${s.left}`}>
-        {roomId &&
-          participants
-            .filter((user) => user.decision === "L")
-            .map((user) => (
-              <DecisionUserCard
-                key={user.uid}
-                roomId={roomId}
-                uid={user.uid}
-                user={user}
-              />
-            ))}
+        {roomId && (
+          <DecisionUserBoard
+            participants={participants.filter((user) => user.decision === "L")}
+            roomId={roomId}
+            className={s.left}
+          />
+        )}
       </div>
       <div className={`${s.decisionUsers} ${s.right}`}>
-        {roomId &&
-          participants
-            .filter((user) => user.decision === "R")
-            .map((user) => (
-              <DecisionUserCard
-                key={user.uid}
-                roomId={roomId}
-                uid={user.uid}
-                user={user}
-              />
-            ))}
+        {roomId && (
+          <DecisionUserBoard
+            participants={participants.filter((user) => user.decision === "R")}
+            roomId={roomId}
+            className={s.right}
+          />
+        )}
       </div>
 
       {/* == absolute 영역 == */}

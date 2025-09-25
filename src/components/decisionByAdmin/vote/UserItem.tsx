@@ -51,7 +51,7 @@ export const UserCard = ({ user }: UserCardProps) => {
   );
 };
 
-interface DecisionUserCardProps {
+interface AdminBoardUserCardProps {
   roomId: string;
   uid: string;
   user: RoomParticipant;
@@ -61,7 +61,7 @@ export const WaitingUserCard = ({
   roomId,
   uid,
   user,
-}: DecisionUserCardProps) => {
+}: AdminBoardUserCardProps) => {
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
   const writer = useRTDBWrite(basePath);
   const { nickname } = user;
@@ -134,10 +134,17 @@ export const WaitingUserCard = ({
   );
 };
 
+interface DecisionUserCardProps extends AdminBoardUserCardProps {
+  x: number;
+  y: number;
+}
+
 export const DecisionUserCard = ({
   roomId,
   uid,
   user,
+  x,
+  y,
 }: DecisionUserCardProps) => {
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
   const writer = useRTDBWrite(basePath);
@@ -176,9 +183,11 @@ export const DecisionUserCard = ({
       : user.decision === "R"
       ? "#1a7bb9"
       : null;
-  // TODO: d3-force 시각화와 결합 시 이 메뉴 트리거를 적절한 노드에 연결
   return (
-    <div className={s.decisionContainer}>
+    <div
+      className={s.decisionContainer}
+      style={{ transform: `translate(${x}px, ${y}px)` }}
+    >
       <div
         className={s.user}
         style={{
