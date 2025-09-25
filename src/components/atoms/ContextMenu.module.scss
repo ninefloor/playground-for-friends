@@ -5,7 +5,6 @@
 }
 
 .menu {
-  position: fixed;
   min-width: 160px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -20,8 +19,9 @@
   gap: 8px;
   border-radius: 6px;
   padding: 8px 10px;
-  font-size: 14px;
-  line-height: 1.2;
+  font-family: "chaney";
+  font-weight: 900;
+  font-size: 12px;
   color: #111827;
   cursor: pointer;
 }
@@ -38,4 +38,3 @@
   color: #9ca3af;
   cursor: not-allowed;
 }
-

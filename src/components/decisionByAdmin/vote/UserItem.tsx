@@ -1,6 +1,7 @@
 import avatar from "@assets/images/avatar.svg";
-import { useContextMenu } from "@components/atoms/ContextMenu";
+import { ContextMenu } from "@components/atoms/ContextMenu";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
+import { useCallback, useMemo } from "react";
 import s from "./UserItem.module.scss";
 
 type BasicUser = Pick<UserInfo, "nickname" | "photoURL" | "color">;
@@ -54,33 +55,37 @@ export const WaitingUserCard = ({
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
   const writer = useRTDBWrite(basePath);
   const { nickname } = user;
-  const { openAtEvent, Menu } = useContextMenu();
 
   const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
 
-  const setDecision = async (value: Decision) => {
-    await writer.setAt("decision", value);
-  };
-  const kick = async () => {
-    await writer.remove();
-  };
+  const setDecision = useCallback(
+    async (value: Decision) => {
+      await writer.setAt("decision", value);
+    },
+    [writer]
+  );
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    openAtEvent(e, [
+  const kick = useCallback(async () => {
+    await writer.remove();
+  }, [writer]);
+
+  const menus = useMemo(
+    () => [
       { key: "L", label: "L", onSelect: () => setDecision("L") },
       { key: "R", label: "R", onSelect: () => setDecision("R") },
       {
         key: "GIVE_UP",
-        label: "GIVE_UP",
+        label: "GIVE UP",
         onSelect: () => setDecision("GIVE_UP"),
       },
       { key: "CLEAR", label: "CLEAR", onSelect: () => setDecision("") },
       { key: "KICK", label: "KICK", onSelect: kick, danger: true },
-    ]);
-  };
+    ],
+    [setDecision, kick]
+  );
 
   return (
-    <div className={s.container} onClick={handleClick}>
+    <div className={s.container}>
       <div className={s.user}>
         {user.photoURL ? (
           <div
@@ -102,6 +107,7 @@ export const WaitingUserCard = ({
           {nickname}
         </div>
       </div>
+      <ContextMenu menus={menus} className={s.contextMenu} />
       {/* <div
         className={`${s.user} ${
           current === "L"
@@ -159,7 +165,6 @@ export const WaitingUserCard = ({
             </button>
           </div>
       </div> */}
-      <Menu />
     </div>
   );
 };
@@ -172,35 +177,50 @@ export const DecisionUserCard = ({
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
   const writer = useRTDBWrite(basePath);
   const { nickname } = user;
-  const { openAtEvent, Menu } = useContextMenu();
 
-  const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
+  const setDecision = useCallback(
+    async (value: Decision) => {
+      await writer.setAt("decision", value);
+    },
+    [writer]
+  );
 
-  const setDecision = async (value: Decision) => {
-    await writer.setAt("decision", value);
-  };
-  const kick = async () => {
+  const kick = useCallback(async () => {
     await writer.remove();
-  };
+  }, [writer]);
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    openAtEvent(e, [
+  const menus = useMemo(
+    () => [
       { key: "L", label: "L", onSelect: () => setDecision("L") },
       { key: "R", label: "R", onSelect: () => setDecision("R") },
       {
         key: "GIVE_UP",
-        label: "GIVE_UP",
+        label: "GIVE UP",
         onSelect: () => setDecision("GIVE_UP"),
       },
       { key: "CLEAR", label: "CLEAR", onSelect: () => setDecision("") },
       { key: "KICK", label: "KICK", onSelect: kick, danger: true },
-    ]);
-  };
+    ],
+    [setDecision, kick]
+  );
 
+  const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
+  const decisionColor =
+    user.decision === "L"
+      ? "#ec4758"
+      : user.decision === "R"
+      ? "#1a7bb9"
+      : null;
   // TODO: d3-force 시각화와 결합 시 이 메뉴 트리거를 적절한 노드에 연결
   return (
-    <div className={s.container} onClick={handleClick}>
-      <div className={s.user}>
+    <div className={s.decisionContainer}>
+      <div
+        className={s.user}
+        style={{
+          borderColor: user.color,
+          boxShadow: `0 0 12px 0 ${decisionColor ?? user.color}`,
+        }}
+      >
         {user.photoURL ? (
           <div
             className={s.userImage}
@@ -211,17 +231,11 @@ export const DecisionUserCard = ({
         ) : (
           <img className={s.userImage} src={avatar} alt="avatar" />
         )}
-        <div
-          className={s.textBg}
-          style={{
-            background: `linear-gradient(115deg, rgba(0, 0, 0, 0) 20%, ${user.color} 100%)`,
-          }}
-        />
-        <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
-          {nickname}
-        </div>
       </div>
-      <Menu />
+      <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
+        {nickname}
+      </div>
+      <ContextMenu menus={menus} className={s.contextMenu} />
     </div>
   );
 };
