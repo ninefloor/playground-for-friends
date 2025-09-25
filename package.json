@@ -13,6 +13,7 @@
     "@radix-ui/react-context-menu": "^2.2.16",
     "@ssgoi/react": "^2.3.0",
     "browser-image-compression": "^2.0.2",
+    "d3-force": "^3.0.0",
     "firebase": "^12.1.0",
     "jotai": "^2.13.0",
     "react": "^19.1.1",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@types/d3-force": "^3.0.10",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",

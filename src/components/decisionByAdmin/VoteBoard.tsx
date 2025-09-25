@@ -1,6 +1,9 @@
 import { Button, CircleButton } from "@components/atoms/Buttons";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
-import { WaitingUserCard } from "@components/decisionByAdmin/vote/UserItem";
+import {
+  DecisionUserCard,
+  WaitingUserCard,
+} from "@components/decisionByAdmin/vote/UserItem";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { useEffect, useState } from "react";
@@ -44,6 +47,34 @@ export const VoteBoard = () => {
 
   return (
     <div className={s.container}>
+      <div className={`${s.decisionUsers} ${s.left}`}>
+        {roomId &&
+          participants
+            .filter((user) => user.decision === "L")
+            .map((user) => (
+              <DecisionUserCard
+                key={user.uid}
+                roomId={roomId}
+                uid={user.uid}
+                user={user}
+              />
+            ))}
+      </div>
+      <div className={`${s.decisionUsers} ${s.right}`}>
+        {roomId &&
+          participants
+            .filter((user) => user.decision === "R")
+            .map((user) => (
+              <DecisionUserCard
+                key={user.uid}
+                roomId={roomId}
+                uid={user.uid}
+                user={user}
+              />
+            ))}
+      </div>
+
+      {/* == absolute 영역 == */}
       <Button
         className={s.backBtn}
         variant="black"
@@ -61,12 +92,6 @@ export const VoteBoard = () => {
         <div className={s.right}>{resultValue.R}</div>
       </div>
 
-      <div className={s.users}>
-        <div className={`${s.decisionUsers} ${s.left}`}></div>
-        <div className={`${s.decisionUsers} ${s.draw}`}></div>
-        <div className={`${s.decisionUsers} ${s.right}`}></div>
-      </div>
-
       <div className={s.graph}>
         {(() => {
           const total = resultValue.L + resultValue.R;
@@ -80,7 +105,6 @@ export const VoteBoard = () => {
           );
         })()}
       </div>
-      {/* 참가자 개별 카드(관리자용) */}
       <div className={s.users}>
         {roomId &&
           participants
@@ -108,6 +132,7 @@ export const VoteBoard = () => {
           visivle
         </CircleButton>
       )}
+      {/* == absolute 영역 == */}
     </div>
   );
 };
