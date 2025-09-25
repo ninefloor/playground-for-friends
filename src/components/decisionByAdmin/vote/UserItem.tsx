@@ -1,5 +1,7 @@
 import avatar from "@assets/images/avatar.svg";
 import { ContextMenu } from "@components/atoms/ContextMenu";
+import { transition } from "@ssgoi/react";
+import { fly } from "@ssgoi/react/transitions";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { useCallback, useMemo } from "react";
 import s from "./UserItem.module.scss";
@@ -11,11 +13,19 @@ interface UserCardProps {
 
 export const UserCard = ({ user }: UserCardProps) => {
   const { nickname } = user;
+  const cardTransition = transition({
+    key: "user-card",
+    ...fly({
+      opacity: 0,
+      x: 0,
+      y: 10,
+    }),
+  });
 
   const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
 
   return (
-    <div className={s.container}>
+    <div className={s.container} ref={cardTransition}>
       <div className={s.user}>
         {user.photoURL ? (
           <div
@@ -55,6 +65,18 @@ export const WaitingUserCard = ({
   const basePath = `/roomsParticipants/${roomId}/${uid}`;
   const writer = useRTDBWrite(basePath);
   const { nickname } = user;
+  const cardTransition = transition({
+    key: "user-card",
+    ...fly({
+      opacity: 0,
+      x: 0,
+      y: 10,
+      spring: {
+        stiffness: 500,
+        damping: 30,
+      },
+    }),
+  });
 
   const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(nickname);
 
@@ -85,7 +107,7 @@ export const WaitingUserCard = ({
   );
 
   return (
-    <div className={s.container}>
+    <div className={s.container} ref={cardTransition}>
       <div className={s.user}>
         {user.photoURL ? (
           <div
@@ -108,63 +130,6 @@ export const WaitingUserCard = ({
         </div>
       </div>
       <ContextMenu menus={menus} className={s.contextMenu} />
-      {/* <div
-        className={`${s.user} ${
-          current === "L"
-            ? s.L
-            : current === "R"
-            ? s.R
-            : current === "GIVE_UP"
-            ? s.giveup
-            : ""
-        }`}
-      >
-        <div className={s.decision}>
-          <DecisionBadge d={current} />
-        </div>
-        <div
-          className={s.textBg}
-          style={{
-            background: `linear-gradient(115deg, rgba(0, 0, 0, 0) 20%, ${user.color} 100%)`,
-          }}
-        />
-        <button className={s.text} onClick={kick} id={uid}>
-          {user.nickname}
-        </button>
-        {user.photoURL ? (
-          <div
-            className={s.userImage}
-            style={{
-              backgroundImage: `url(${user.photoURL})`,
-            }}
-          />
-        ) : (
-          <img className={s.userImage} src={avatar} alt="avatar" />
-        )}
-        <div className={s.decisionBtn}>
-            <button
-              id="L"
-              className={`${s.btn} ${s.L}`}
-              onClick={() => setDecision("L")}
-            >
-              L
-            </button>
-            <button
-              id="R"
-              className={`${s.btn} ${s.R}`}
-              onClick={() => setDecision("R")}
-            >
-              R
-            </button>
-            <button
-              id="GIVE_UP"
-              className={`${s.btn} ${s.giveup}`}
-              onClick={() => setDecision("")}
-            >
-              CLEAR
-            </button>
-          </div>
-      </div> */}
     </div>
   );
 };

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@radix-ui/react-context-menu": "^2.2.16",
+    "@ssgoi/react": "^2.3.0",
     "browser-image-compression": "^2.0.2",
     "firebase": "^12.1.0",
     "jotai": "^2.13.0",

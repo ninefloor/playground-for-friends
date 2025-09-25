@@ -1,6 +1,6 @@
 import logo from "@assets/images/pff.svg";
 import { Button } from "@components/atoms/Buttons";
-import { DecisionUserCard } from "@components/decisionByAdmin/vote/UserItem";
+import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { Login } from "@components/home/Login";
 import { auth } from "@utils/firebase";
 import { userInfoAtom } from "@utils/userInfoAtom";
@@ -44,24 +44,7 @@ export const Home = () => {
 
   return (
     <div className={s.container}>
-      {/* {userInfo ? <UserCard user={userInfo} /> : <img src={logo} alt="logo" />} */}
-      {userInfo ? (
-        <DecisionUserCard
-          user={{
-            uid: userInfo.uid,
-            nickname: userInfo.nickname,
-            photoURL: userInfo.photoURL,
-            color: userInfo.color,
-            role: "PARTICIPANT",
-            joinedAt: Date.now(),
-            decision: "",
-          }}
-          roomId="test"
-          uid="test"
-        />
-      ) : (
-        <img src={logo} alt="logo" />
-      )}
+      {userInfo ? <UserCard user={userInfo} /> : <img src={logo} alt="logo" />}
       <h1 className={s.title}>
         playground
         <br />
