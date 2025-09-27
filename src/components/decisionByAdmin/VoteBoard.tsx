@@ -1,12 +1,14 @@
 import { Button, CircleButton } from "@components/atoms/Buttons";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
-import {
-  DecisionUserCard,
-  WaitingUserCard,
-} from "@components/decisionByAdmin/vote/UserItem";
+import { DecisionUserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
-import { forceCenter, forceCollide, forceSimulation } from "d3-force";
+import {
+  forceCenter,
+  forceCollide,
+  forceManyBody,
+  forceSimulation,
+} from "d3-force";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import s from "./VoteBoard.module.scss";
@@ -31,14 +33,20 @@ const DecisionUserBoard = ({
     const height = ref.current.clientHeight;
     const simNodes = participants.map((participants) => ({
       ...participants,
-      x: Math.random(),
-      y: Math.random(),
+      x: Math.random() * 2 - 1,
+      y: Math.random() * 2 - 1,
     }));
+    console.log(width, height);
     const sim = forceSimulation(simNodes)
-      .force("center", forceCenter(width / 2, height / 2))
-      .force("collide", forceCollide(4))
-      .alpha(1)
-      .alphaDecay(0.03)
+      .force("center", forceCenter(width / 2, height / 2).strength(0.5))
+      .force("collide", forceCollide(40).strength(0.8).iterations(2))
+      .force(
+        "charge",
+        forceManyBody().strength(-40).distanceMin(40).distanceMax(140)
+      )
+      .alpha(0.7)
+      .alphaDecay(0.018)
+      .velocityDecay(0.28)
       .on("tick", () => setNodes([...simNodes]));
 
     return () => {
@@ -100,7 +108,7 @@ export const VoteBoard = () => {
 
   return (
     <div className={s.container}>
-      <div className={`${s.decisionUsers} ${s.left}`}>
+      <div className={s.decisionUsersContainer}>
         {roomId && (
           <DecisionUserBoard
             participants={participants.filter((user) => user.decision === "L")}
@@ -108,8 +116,21 @@ export const VoteBoard = () => {
             className={s.left}
           />
         )}
-      </div>
-      <div className={`${s.decisionUsers} ${s.right}`}>
+
+        <div className={`${s.decisionUsers} ${s.center}`}>
+          {roomId &&
+            participants
+              .filter((user) => ["", "GIVE_UP"].includes(user.decision))
+              .map((user) => (
+                <DecisionUserCard
+                  key={user.uid}
+                  roomId={roomId}
+                  uid={user.uid}
+                  user={user}
+                />
+              ))}
+        </div>
+
         {roomId && (
           <DecisionUserBoard
             participants={participants.filter((user) => user.decision === "R")}
@@ -150,7 +171,7 @@ export const VoteBoard = () => {
           );
         })()}
       </div>
-      <div className={s.users}>
+      {/* <div className={s.users}>
         {roomId &&
           participants
             .filter((user) => ["", "GIVE_UP"].includes(user.decision))
@@ -162,7 +183,7 @@ export const VoteBoard = () => {
                 user={user}
               />
             ))}
-      </div>
+      </div> */}
       <CircleButton className={s.refreshBtn} onClick={refreshHandler}>
         refresh
       </CircleButton>

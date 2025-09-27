@@ -19,12 +19,30 @@
     justify-content: space-between;
     align-items: flex-end;
   }
-  .decisionUsers {
-    width: 50%;
-    height: 100%;
-    &.left {
-    }
-    &.right {
+  .decisionUsersContainer {
+    display: flex;
+    width: 100%;
+    .decisionUsers {
+      height: 100%;
+      &.left {
+        flex: 1;
+      }
+      &.center {
+        flex: 0.6;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        align-content: end;
+        gap: 4px;
+        padding: 0 8px 12px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(255, 255, 255, 0.12) 100%
+        );
+      }
+      &.right {
+        flex: 1;
+      }
     }
   }
 }

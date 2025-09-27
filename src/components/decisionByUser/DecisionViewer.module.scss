@@ -1,13 +1,16 @@
 .container {
-  font-family: "chaney";
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 140px;
-  font-size: 60px;
-  font-weight: bold;
-  text-shadow: 0px 0px 32px rgba(255, 255, 255, 0.15);
+  > span {
+    font-family: "chaney";
+    font-size: 60px;
+    font-weight: bold;
+    text-shadow: 0px 0px 32px rgba(255, 255, 255, 0.15);
+  }
 
   &.L,
   &.up {
@@ -58,19 +61,5 @@
       transparent,
       rgba(147, 158, 160, 1) 300%
     );
-  }
-
-  animation: fade 0.4s ease-in-out;
-
-  @keyframes fade {
-    0% {
-      visibility: none;
-      opacity: 0;
-      transform: translateY(5%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0%);
-    }
   }
 }

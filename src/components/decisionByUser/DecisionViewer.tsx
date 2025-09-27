@@ -1,3 +1,5 @@
+import { transition } from "@ssgoi/react";
+import { fly } from "@ssgoi/react/transitions";
 import s from "./DecisionViewer.module.scss";
 
 interface DecisionViewerProps {
@@ -5,10 +7,22 @@ interface DecisionViewerProps {
 }
 
 export const DecisionViewer = ({ decision }: DecisionViewerProps) => {
+  const cardTransition = transition({
+    key: "user-card",
+    ...fly({
+      opacity: 0,
+      x: 0,
+      y: 10,
+      spring: {
+        stiffness: 500,
+        damping: 30,
+      },
+    }),
+  });
   const decisionMaker = () => {
     switch (decision) {
-      case "giveup":
-        return "💀";
+      case "GIVE_UP":
+        return "🏳️";
       case "up":
         return "👍";
       case "down":
@@ -20,6 +34,8 @@ export const DecisionViewer = ({ decision }: DecisionViewerProps) => {
     }
   };
   return (
-    <div className={`${s.container} ${s[decision]}`}>{decisionMaker()}</div>
+    <div className={`${s.container} ${s[decision]}`}>
+      <span ref={cardTransition}>{decisionMaker()}</span>
+    </div>
   );
 };

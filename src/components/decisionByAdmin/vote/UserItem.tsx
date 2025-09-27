@@ -135,8 +135,8 @@ export const WaitingUserCard = ({
 };
 
 interface DecisionUserCardProps extends AdminBoardUserCardProps {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export const DecisionUserCard = ({
@@ -186,7 +186,7 @@ export const DecisionUserCard = ({
   return (
     <div
       className={s.decisionContainer}
-      style={{ transform: `translate(${x}px, ${y}px)` }}
+      style={x && y ? { transform: `translate(${x}px, ${y}px)` } : {}}
     >
       <div
         className={s.user}
@@ -205,6 +205,7 @@ export const DecisionUserCard = ({
         ) : (
           <img className={s.userImage} src={avatar} alt="avatar" />
         )}
+        {user.decision === "GIVE_UP" && <div className={s.giveUp}>GIVE UP</div>}
       </div>
       <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
         {nickname}

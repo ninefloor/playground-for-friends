@@ -77,8 +77,6 @@ export const VoteDecision = () => {
 
   // 방이 삭제되었거나 닫힌 경우 자동 퇴장 처리
   useEffect(() => {
-    console.log("isLoading", isLoading);
-    console.log("roomMeta", roomMeta);
     if (!roomId || !userInfo) return;
     if (isLoading) return;
     if (!roomMeta) {
@@ -94,7 +92,7 @@ export const VoteDecision = () => {
   const decisionHandler = async ({
     currentTarget: { id },
   }: MouseEvent<HTMLButtonElement>) => {
-    if (!userInfo || !roomId) return;
+    if (!userInfo || !roomId || currentDecision === "GIVE_UP") return;
     await writer.setAt("decision", id as Decision);
   };
 
@@ -106,10 +104,20 @@ export const VoteDecision = () => {
       <h1 className={s.title}>{userInfo?.nickname}'s decision</h1>
       <DecisionViewer decision={currentDecision ?? ""} />
       <div className={s.btns}>
-        <DecisionButton onClick={decisionHandler} id="L" className={s.L}>
+        <DecisionButton
+          onClick={decisionHandler}
+          id="L"
+          className={s.L}
+          disabled={currentDecision === "GIVE_UP"}
+        >
           L
         </DecisionButton>
-        <DecisionButton onClick={decisionHandler} id="R" className={s.R}>
+        <DecisionButton
+          onClick={decisionHandler}
+          id="R"
+          className={s.R}
+          disabled={currentDecision === "GIVE_UP"}
+        >
           R
         </DecisionButton>
       </div>
