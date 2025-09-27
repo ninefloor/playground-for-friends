@@ -9,7 +9,7 @@ import {
   forceManyBody,
   forceSimulation,
 } from "d3-force";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import s from "./VoteBoard.module.scss";
 
@@ -73,22 +73,23 @@ const DecisionUserBoard = ({
 
 export const VoteBoard = () => {
   const { roomId } = useParams();
-  const [resultValue, setResultValue] = useState({ L: 0, R: 0 });
-  const [result, setResult] = useState("");
+  const [rouletteBonus, setRouletteBonus] = useState({ L: 0, R: 0 });
   const [isFRVisible, setIsFRVisible] = useState(false);
-  const [isShowRoulette, setIsShowRoulette] = useState(false);
   const navigate = useNavigate();
   const { array: participants } = useRTDBList<RoomParticipant>(
     roomId ? `/roomsParticipants/${roomId}` : null
   );
   const { updateMulti } = useRTDBWrite();
 
-  useEffect(() => {
-    // 참가자 decision 필드 기반으로 그래프 집계
-    const L = participants.filter((u) => u.decision === "L").length;
-    const R = participants.filter((u) => u.decision === "R").length;
-    setResultValue({ L, R });
-  }, [participants]);
+  // 참가자 투표 결과 + 룰렛 보너스 합계
+  const resultValue = useMemo(() => {
+    const voteL = participants.filter((u) => u.decision === "L").length;
+    const voteR = participants.filter((u) => u.decision === "R").length;
+    return {
+      L: voteL + rouletteBonus.L,
+      R: voteR + rouletteBonus.R,
+    };
+  }, [participants, rouletteBonus]);
 
   const refreshHandler = async () => {
     if (!roomId) return;
@@ -100,11 +101,28 @@ export const VoteBoard = () => {
       if (Object.keys(updates).length > 0) {
         await updateMulti(updates);
       }
+      // 룰렛 보너스도 초기화
+      setRouletteBonus({ L: 0, R: 0 });
     } catch (e) {
       console.error(e);
       alert("투표 초기화 중 오류가 발생했습니다.");
     }
   };
+
+  const result = useMemo(() => {
+    const { L, R } = resultValue;
+
+    // 아직 투표하지 않은 사용자가 있으면 결과를 보여주지 않음
+    const undecidedCount = participants.filter(
+      (user) => user.decision === ""
+    ).length;
+
+    if (undecidedCount > 0) return "";
+    if (L > R) return "L";
+    if (L < R) return "R";
+    if (L === R) return "DRAW";
+    return "";
+  }, [resultValue, participants]);
 
   return (
     <div className={s.container}>
@@ -141,6 +159,7 @@ export const VoteBoard = () => {
       </div>
 
       {/* == absolute 영역 == */}
+      {result && <div className={s.result}>{result}</div>}
       <Button
         className={s.backBtn}
         variant="black"
@@ -149,9 +168,7 @@ export const VoteBoard = () => {
       >
         BACK
       </Button>
-      {isShowRoulette && isFRVisible && (
-        <RouletteForDraw setResultValue={setResultValue} />
-      )}
+      {isFRVisible && <RouletteForDraw setResultValue={setRouletteBonus} />}
 
       <div className={s.resultCount}>
         <div className={s.left}>{resultValue.L}</div>
@@ -171,23 +188,9 @@ export const VoteBoard = () => {
           );
         })()}
       </div>
-      {/* <div className={s.users}>
-        {roomId &&
-          participants
-            .filter((user) => ["", "GIVE_UP"].includes(user.decision))
-            .map((user) => (
-              <WaitingUserCard
-                key={user.uid}
-                roomId={roomId}
-                uid={user.uid}
-                user={user}
-              />
-            ))}
-      </div> */}
       <CircleButton className={s.refreshBtn} onClick={refreshHandler}>
         refresh
       </CircleButton>
-
       {result && (
         <CircleButton
           className={s.visibleBtn}

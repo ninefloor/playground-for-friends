@@ -27,6 +27,9 @@
       &.left {
         flex: 1;
       }
+      &.right {
+        flex: 1;
+      }
       &.center {
         flex: 0.6;
         display: grid;
@@ -39,9 +42,6 @@
           transparent,
           rgba(255, 255, 255, 0.12) 100%
         );
-      }
-      &.right {
-        flex: 1;
       }
     }
   }
@@ -62,11 +62,11 @@
     text-shadow: 0px 4px 24px rgba(255, 255, 255, 0.2);
     opacity: 0.3;
     &.left {
-      left: 46.5%;
+      left: 34.5%;
       color: #ec4758;
     }
     &.right {
-      right: 46.5%;
+      right: 34.5%;
       color: #1a7bb9;
     }
   }
@@ -90,6 +90,26 @@
   }
   & > .R {
     background-color: #1a7bb9;
+  }
+}
+
+.result {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "chaney";
+  font-size: 40px;
+  text-shadow: 0px 4px 24px rgba(255, 255, 255, 0.2);
+  opacity: 0.3;
+  &.L {
+    color: #ec4758;
+  }
+  &.R {
+    color: #1a7bb9;
+  }
+  &.DRAW {
+    color: #666;
   }
 }
 

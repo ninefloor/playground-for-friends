@@ -1,12 +1,14 @@
 import { CircleButton } from "@components/atoms/Buttons";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Wheel } from "react-custom-roulette-r19";
 import s from "./RouletteForDraw.module.scss";
 
 export const RouletteForDraw = ({
   setResultValue,
 }: {
-  setResultValue: (prev: { L: number; R: number }) => void;
+  setResultValue: React.Dispatch<
+    React.SetStateAction<{ L: number; R: number }>
+  >;
 }) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prize, setPrize] = useState<number | null>(null);
@@ -59,7 +61,7 @@ export const RouletteForDraw = ({
           onStopSpinning={() => {
             setMustSpin(false);
             // setResult(() => (prize % 2 === 0 ? 'left' : 'right'));
-            setResultValue((prev) => {
+            setResultValue((prev: { L: number; R: number }) => {
               const newObj = { ...prev };
               if (prize && prize % 2 === 0) newObj.L += 1;
               else newObj.R += 1;
