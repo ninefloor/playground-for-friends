@@ -6,9 +6,7 @@ import s from "./RouletteForDraw.module.scss";
 export const RouletteForDraw = ({
   setResultValue,
 }: {
-  setResultValue: React.Dispatch<
-    React.SetStateAction<{ L: number; R: number }>
-  >;
+  setResultValue: React.Dispatch<React.SetStateAction<"L" | "R" | null>>;
 }) => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prize, setPrize] = useState<number | null>(null);
@@ -60,13 +58,8 @@ export const RouletteForDraw = ({
           radiusLineColor="#fff"
           onStopSpinning={() => {
             setMustSpin(false);
-            // setResult(() => (prize % 2 === 0 ? 'left' : 'right'));
-            setResultValue((prev: { L: number; R: number }) => {
-              const newObj = { ...prev };
-              if (prize && prize % 2 === 0) newObj.L += 1;
-              else newObj.R += 1;
-              return newObj;
-            });
+            const result = prize && prize % 2 === 0 ? "L" : "R";
+            setResultValue(result);
           }}
         />
         <CircleButton className="spinBtn" onClick={handleSpinClick}>
