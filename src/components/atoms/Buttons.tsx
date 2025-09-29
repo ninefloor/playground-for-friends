@@ -20,9 +20,8 @@ export const Button: FC<ButtonProps> = ({
   inline = false,
   ...props
 }) => {
-  const isIncludeKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(
-    children?.toString() ?? ""
-  );
+  const isIncludeKorean =
+    typeof children === "string" && /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(children);
   return (
     <button
       className={`${s.button} ${s[variant]} ${inline ? s.inline : ""} ${
