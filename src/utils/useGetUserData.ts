@@ -11,9 +11,10 @@ export const useGetUserData = () => {
       try {
         const usersCollectionRef = collection(firestore, "users");
         const usersSnapshot = await getDocs(usersCollectionRef);
-        usersSnapshot.docs.forEach((doc) => {
-          setUsers((prev) => ({ ...prev, [doc.id]: doc.data() }));
-        });
+        const users = Object.fromEntries(
+          usersSnapshot.docs.map((doc) => [doc.id, doc.data()])
+        );
+        setUsers(users);
       } catch (err) {
         console.error(err);
       } finally {

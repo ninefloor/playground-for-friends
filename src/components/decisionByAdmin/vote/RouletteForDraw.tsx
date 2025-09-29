@@ -57,8 +57,9 @@ export const RouletteForDraw = ({
           radiusLineWidth={1}
           radiusLineColor="#fff"
           onStopSpinning={() => {
+            if (prize === null) return;
             setMustSpin(false);
-            const result = prize && prize % 2 === 0 ? "L" : "R";
+            const result = prize % 2 === 0 ? "L" : "R";
             setResultValue(result);
           }}
         />

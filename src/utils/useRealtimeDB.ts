@@ -1,13 +1,13 @@
 import { realtimeDB } from "@utils/firebase";
 import {
-  onValue,
-  ref,
-  push,
-  query,
-  orderByChild,
+  DataSnapshot,
   limitToLast,
   off,
-  DataSnapshot,
+  onValue,
+  orderByChild,
+  push,
+  query,
+  ref,
 } from "firebase/database";
 
 import { useCallback, useEffect, useState } from "react";
@@ -43,7 +43,7 @@ export const useRealtimeDB = (src: string, isLoad: boolean = true) => {
     return () => {
       off(lastOfOneQuery, "value", handleValueChange);
     };
-  }, []);
+  }, [isLoad, reference]);
 
   const pushData = useCallback(
     async (data: unknown) => {

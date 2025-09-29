@@ -47,11 +47,12 @@ const useLogin = (location?: string) => {
           role: userData.role,
           color: userData.color,
         });
-      setIsLoading(false);
+
       if (location) navigate(location);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert("아이디나 비밀번호가 잘못되었습니다.");
+    } finally {
       setIsLoading(false);
     }
   };

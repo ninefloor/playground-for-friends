@@ -15,7 +15,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export const Button: FC<ButtonProps> = ({
   children,
-  className,
+  className = "",
   variant = "primary",
   inline = false,
   ...props
@@ -37,7 +37,7 @@ export const Button: FC<ButtonProps> = ({
 
 export const BlackBtn: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   children,
-  className,
+  className = "",
   ...props
 }) => {
   return (
@@ -49,7 +49,7 @@ export const BlackBtn: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
 
 export const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   children,
-  className,
+  className = "",
   ...props
 }) => {
   return (
@@ -61,7 +61,7 @@ export const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
 
 export const DecisionButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   children,
-  className,
+  className = "",
   ...props
 }) => {
   return (

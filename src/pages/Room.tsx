@@ -20,13 +20,13 @@ export const Room = () => {
   const [loading, setLoading] = useState(true);
   const [pw, setPw] = useState("");
   const [joining, setJoining] = useState(false);
-  const [joined, setJoined] = useState(false);
 
   const participantsPath = useMemo(
     () => (roomId ? `/roomsParticipants/${roomId}` : null),
     [roomId]
   );
-  const { array: participants } = useRTDBList<RoomParticipant>(participantsPath);
+  const { array: participants } =
+    useRTDBList<RoomParticipant>(participantsPath);
 
   useEffect(() => {
     const loadRoom = async () => {
@@ -63,7 +63,7 @@ export const Room = () => {
   if (loading) return <Loading />;
   if (!room) return <div className={s.container}>존재하지 않는 방입니다.</div>;
 
-  const isMember = joined || participants.some((p) => p.uid === user?.uid);
+  const isMember = participants.some((p) => p.uid === user?.uid);
 
   return (
     <div className={s.container}>
@@ -114,7 +114,7 @@ export const Room = () => {
 
       {isMember && roomId && (
         <Button onClick={() => navigate(`/room/${roomId}/vote`)}>
-          투표하기
+          입장하기
         </Button>
       )}
     </div>
