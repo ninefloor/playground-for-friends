@@ -1,69 +1,14 @@
-# React + TypeScript + Vite
+# playground-for-honeyz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+지인들과의 놀이 공간을 위한 Web App입니다.
 
-Currently, two official plugins are available:
+- Firebase의 Realtime DB를 활용해 각자의 기기에서 실시간 투표
+- admin 페이지에서 실시간으로 결과 확인 및 투표 결과 시각화
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 실시간 투표 with [piku](https://piku.co.kr)
 
-## Expanding the ESLint configuration
+![vote](https://github.com/ninefloor/playground-for-honeyz/assets/77656241/c7304ff6-465c-45f7-bcd4-66ebfc80f30d)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 유저는 각자 자신의 계정으로 로그인 해 투표에 참여할 수 있습니다.
+- 유저가 로그인하면 admin 페이지에서 감지해 유저 목록에 추가합니다.
+- 투표한 결과는 admin 페이지에 즉시 반영되며, 모든 투표를 마치면 결과가 출력됩니다.
