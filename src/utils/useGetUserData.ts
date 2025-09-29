@@ -3,7 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export const useGetUserData = () => {
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState<Record<string, UserInfo>>({});
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -11,8 +11,8 @@ export const useGetUserData = () => {
       try {
         const usersCollectionRef = collection(firestore, "users");
         const usersSnapshot = await getDocs(usersCollectionRef);
-        const users = Object.fromEntries(
-          usersSnapshot.docs.map((doc) => [doc.id, doc.data()])
+        const users: Record<string, UserInfo> = Object.fromEntries(
+          usersSnapshot.docs.map((doc) => [doc.id, doc.data() as UserInfo])
         );
         setUsers(users);
       } catch (err) {

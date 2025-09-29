@@ -9,7 +9,7 @@ export const AdminMembers = () => {
   const { users, loading } = useGetUserData();
   const navigate = useNavigate();
 
-  const entries = useMemo(() => Object.entries(users ?? {}), [users]);
+  const entries = useMemo(() => Object.values(users), [users]);
 
   return (
     <div className={s.container}>
@@ -24,19 +24,17 @@ export const AdminMembers = () => {
       <h2>회원 관리</h2>
       <div className={s.list}>
         {!loading && entries.length === 0 && <div>등록된 회원이 없습니다.</div>}
-        {entries.map(([uid, u]) => {
-          const info: BasicUser = {
-            nickname: (u as any)?.nickname ?? "(미정)",
-            photoURL: (u as any)?.photoURL ?? "",
-            color: (u as any)?.color ?? "#2b2b2b",
-          };
+        {entries.map((user) => {
           return (
-            <div key={uid} className={s.item}>
+            <div key={user.uid} className={s.item}>
               <div className={s.left}>
-                <UserCard user={info} />
-                <div className={s.name}>{info.nickname}</div>
+                <UserCard user={user} />
+                <div className={s.name}>{user.nickname}</div>
               </div>
-              <Button onClick={() => navigate(`/admin/members/${uid}`)} inline>
+              <Button
+                onClick={() => navigate(`/admin/members/${user.uid}`)}
+                inline
+              >
                 수정
               </Button>
             </div>

@@ -1,5 +1,5 @@
 import { DefaultModal } from "@components/DefaultModal";
-import { memo, ReactNode, useState } from "react";
+import { memo, type ReactNode, useState } from "react";
 
 interface ModalProps {
   children: ReactNode;
