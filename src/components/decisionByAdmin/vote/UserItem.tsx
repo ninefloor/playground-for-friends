@@ -3,7 +3,7 @@ import { ContextMenu } from "@components/atoms/ContextMenu";
 import { transition } from "@ssgoi/react";
 import { fly } from "@ssgoi/react/transitions";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import s from "./UserItem.module.scss";
 
 type BasicUser = Pick<UserInfo, "nickname" | "photoURL" | "color">;
@@ -144,6 +144,54 @@ export const DecisionUserCard = memo(
     const basePath = `/roomsParticipants/${roomId}/${uid}`;
     const writer = useRTDBWrite(basePath);
     const { nickname } = user;
+    const reactionEntries = useMemo(() => {
+      return Object.entries(user.reactionQueue ?? {})
+        .filter(([, payload]) => payload?.emoji)
+        .sort((a, b) => a[1].createdAt - b[1].createdAt);
+    }, [user.reactionQueue]);
+    const [activeReaction, setActiveReaction] = useState<
+      [string, ReactionPayload] | null
+    >(null);
+    const reactionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+      if (activeReaction) return;
+      if (reactionEntries.length === 0) return;
+      setActiveReaction(reactionEntries[0]);
+    }, [reactionEntries, activeReaction]);
+
+    useEffect(() => {
+      if (!activeReaction) return;
+      const [key, payload] = activeReaction;
+      const elapsed = Date.now() - payload.createdAt;
+      const remaining = Math.max(payload.duration - elapsed, 0);
+
+      if (remaining === 0) {
+        void writer.removeAt(`reactionQueue/${key}`);
+        setActiveReaction(null);
+        return;
+      }
+
+      reactionTimerRef.current = setTimeout(() => {
+        void writer.removeAt(`reactionQueue/${key}`);
+        setActiveReaction(null);
+      }, remaining);
+
+      return () => {
+        if (reactionTimerRef.current) {
+          clearTimeout(reactionTimerRef.current);
+          reactionTimerRef.current = null;
+        }
+      };
+    }, [activeReaction, writer]);
+
+    useEffect(() => {
+      if (!activeReaction) return;
+      const [key] = activeReaction;
+      if (!user.reactionQueue || !user.reactionQueue[key]) {
+        setActiveReaction(null);
+      }
+    }, [activeReaction, user.reactionQueue]);
 
     const setDecision = useCallback(
       async (value: Decision) => {
@@ -178,6 +226,7 @@ export const DecisionUserCard = memo(
         : user.decision === "R"
         ? "#1a7bb9"
         : null;
+    const currentReaction = activeReaction?.[1] ?? null;
     return (
       <div
         className={s.decisionContainer}
@@ -206,6 +255,23 @@ export const DecisionUserCard = memo(
         </div>
         <div className={`${s.text} ${isIncludeKorean ? s.korean : ""}`}>
           {nickname}
+        </div>
+        <div
+          className={`${s.reactionBubble} ${
+            currentReaction ? s.reactionVisible : ""
+          }`}
+        >
+          {currentReaction && (
+            <>
+              <div
+                className={s.reactionAvatar}
+                style={{
+                  backgroundImage: `url(${user.photoURL || avatar})`,
+                }}
+              />
+              <span className={s.reactionEmoji}>{currentReaction.emoji}</span>
+            </>
+          )}
         </div>
         <ContextMenu menus={menus} className={s.contextMenu} />
       </div>

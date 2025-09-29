@@ -59,3 +59,29 @@
     }
   }
 }
+
+.reactions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+
+  .reactionBtn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

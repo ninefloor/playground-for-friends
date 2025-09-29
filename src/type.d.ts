@@ -26,6 +26,14 @@ type AdminUserEditFormData = UserEditFormData & {
 // RTDB 공용 타입
 type Decision = "L" | "R" | "GIVE_UP" | "";
 
+interface ReactionPayload {
+  emoji: string;
+  createdAt: number;
+  duration: number;
+}
+
+type ReactionQueue = Record<string, ReactionPayload>;
+
 interface RoomMeta {
   title: string;
   description?: string;
@@ -44,6 +52,7 @@ interface RoomParticipant {
   joinedAt: number;
   decision: Decision;
   customOrder?: number;
+  reactionQueue?: ReactionQueue;
 }
 
 type RTDBMap<T> = Record<string, T>;
