@@ -1,0 +1,58 @@
+.header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  height: calc(56px + env(safe-area-inset-top));
+  padding: 8px 12px;
+  padding-top: calc(8px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba($surface, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.backBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: $neutral-700;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: $surfaceMuted;
+  }
+
+  &:active {
+    background-color: $neutral-200;
+    transform: translateY(1px);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: currentColor;
+  }
+}
+
+.right {
+  width: 40px;
+  height: 40px;
+}

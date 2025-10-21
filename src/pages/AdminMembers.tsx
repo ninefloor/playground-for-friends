@@ -13,15 +13,6 @@ export const AdminMembers = () => {
 
   return (
     <div className={s.container}>
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => navigate(-1)}
-        inline
-      >
-        BACK
-      </Button>
-      <h2>회원 관리</h2>
       <div className={s.list}>
         {!loading && entries.length === 0 && <div>등록된 회원이 없습니다.</div>}
         {entries.map((user) => {

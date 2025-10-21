@@ -20,14 +20,6 @@ export const Lobby = () => {
   // 생성 기능 제거
   return (
     <div className={s.container}>
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => navigate("/")}
-        inline
-      >
-        BACK
-      </Button>
       <div className={s.list}>
         {sortedRooms.map(([key, value]) => (
           <div key={key} className={s.item}>

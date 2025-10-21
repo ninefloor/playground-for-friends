@@ -1,4 +1,4 @@
-import { Button, DecisionButton } from "@components/atoms/Buttons";
+import { DecisionButton } from "@components/atoms/Buttons";
 import { DecisionViewer } from "@components/decisionByUser/DecisionViewer";
 import { realtimeDB } from "@utils/firebase";
 import { useRTDBValue } from "@utils/useRTDBValue";
@@ -146,9 +146,6 @@ export const VoteDecision = () => {
 
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={leaveRoom} inline>
-        BACK
-      </Button>
       <h1 className={s.title}>{userInfo?.nickname}'s decision</h1>
       <DecisionViewer decision={currentDecision ?? ""} />
       <div className={s.btns}>

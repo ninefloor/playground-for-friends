@@ -89,15 +89,6 @@ export const AdminRooms = () => {
 
   return (
     <div className={s.container}>
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => navigate(-1)}
-        inline
-      >
-        BACK
-      </Button>
-      <h1>Rooms</h1>
       <div style={{ display: "flex", gap: 8 }}>
         <Button onClick={() => setOpenCreate(true)} variant="secondary">
           방 생성

@@ -1,8 +1,8 @@
 .container {
   width: 100%;
-  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  flex: 1;
   position: relative;
   background: $basicBackground;
   overflow-y: auto;

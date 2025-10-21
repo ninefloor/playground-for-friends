@@ -67,14 +67,6 @@ export const Room = () => {
 
   return (
     <div className={s.container}>
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => navigate("/lobby")}
-        inline
-      >
-        BACK
-      </Button>
       <div className={s.card}>
         <h2>{room.title}</h2>
         {room.description && <p>{room.description}</p>}

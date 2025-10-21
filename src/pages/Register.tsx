@@ -61,7 +61,7 @@ export const Register = () => {
         color: data.color,
       });
 
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (error: unknown) {
       const code =
         typeof error === "object" && error && "code" in error
