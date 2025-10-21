@@ -44,6 +44,7 @@ export const Register = () => {
       });
 
       await setDoc(doc(firestore, "users", userCred.user.uid), {
+        uid: userCred.user.uid,
         nickname: data.nickname,
         photoURL: photoURL ?? null,
         createdAt: Date.now(),
