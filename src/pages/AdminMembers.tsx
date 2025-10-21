@@ -16,7 +16,7 @@ export const AdminMembers = () => {
       <Button
         className={s.backBtn}
         variant="black"
-        onClick={() => navigate("/admin")}
+        onClick={() => navigate(-1)}
         inline
       >
         BACK

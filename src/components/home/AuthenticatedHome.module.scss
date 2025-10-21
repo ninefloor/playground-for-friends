@@ -1,0 +1,53 @@
+.title {
+  font-family: "chaney";
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0px 0px 32px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.adminBtn {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+}
+
+.logoutBtn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.pcBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.dropdownContent {
+  min-width: 120px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  z-index: 100;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: "chaney";
+  font-weight: 900;
+  font-size: 12px;
+  color: #111827;
+  cursor: pointer;
+  outline: none;
+}
+
+.dropdownItem:hover {
+  background: #f3f4f6;
+}

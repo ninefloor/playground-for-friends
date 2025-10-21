@@ -12,7 +12,7 @@ export const useModal = (initIsOpen: boolean = false) => {
   const close = () => setIsOpen(false);
 
   const Modal = memo(({ children }: ModalProps) => (
-    <DefaultModal isOpen={isOpen} close={close}>
+    <DefaultModal open={isOpen} close={close}>
       {children}
     </DefaultModal>
   ));

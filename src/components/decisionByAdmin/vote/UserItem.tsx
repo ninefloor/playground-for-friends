@@ -46,7 +46,6 @@ export const UserCard = ({ user }: UserCardProps) => {
         className={s.user}
         style={{
           borderColor: user.color,
-          boxShadow: `0 0 12px 0 ${user.color}`,
         }}
       >
         {user.photoURL ? (

@@ -1,55 +1,14 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
+import { DefaultModal } from "@components/DefaultModal";
 import { sha256 } from "@utils/hash";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
 import { useAtomValue } from "jotai";
-import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import s from "./Admin.module.scss";
-
-const Modal = ({
-  open,
-  onClose,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: ReactNode;
-}) => {
-  if (!open) return null;
-  return (
-    <div
-      role="dialog"
-      aria-modal
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.4)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    >
-      <div
-        style={{
-          background: "#fff",
-          padding: 16,
-          borderRadius: 8,
-          minWidth: 320,
-          maxWidth: 640,
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
+import s from "./AdminRooms.module.scss";
 
 const RoomsList = () => {
   const navigate = useNavigate();
@@ -133,7 +92,7 @@ export const AdminRooms = () => {
       <Button
         className={s.backBtn}
         variant="black"
-        onClick={() => navigate("/admin")}
+        onClick={() => navigate(-1)}
         inline
       >
         BACK
@@ -147,7 +106,7 @@ export const AdminRooms = () => {
 
       <RoomsList />
 
-      <Modal open={openCreate} onClose={() => setOpenCreate(false)}>
+      <DefaultModal open={openCreate} close={() => setOpenCreate(false)}>
         <h2 style={{ marginTop: 0 }}>방 생성</h2>
         <div className={s.formContainer}>
           <div className={s.field}>
@@ -216,7 +175,7 @@ export const AdminRooms = () => {
             </Button>
           </div>
         </div>
-      </Modal>
+      </DefaultModal>
     </div>
   );
 };
