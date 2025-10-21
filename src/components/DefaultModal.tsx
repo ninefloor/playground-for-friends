@@ -1,17 +1,17 @@
 import { type FC, type ReactNode } from "react";
 
 interface DefaultModalProps {
-  isOpen: boolean;
+  open: boolean;
   close: () => void;
   children: ReactNode;
 }
 
 export const DefaultModal: FC<DefaultModalProps> = ({
-  isOpen,
+  open,
   close,
   children,
 }) => {
-  if (!isOpen) return null;
+  if (!open) return null;
   return (
     <div
       role="dialog"

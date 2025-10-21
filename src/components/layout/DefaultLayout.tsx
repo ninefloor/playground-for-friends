@@ -1,3 +1,4 @@
+import { Header } from "@components/layout/Header";
 import { Loading } from "@components/Loading";
 import { authReadyAtom } from "@utils/authReadyAtom";
 import { auth, firestore } from "@utils/firebase";
@@ -6,13 +7,20 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAtomValue, useSetAtom } from "jotai/react";
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { matchPath, Outlet, useLocation } from "react-router-dom";
 import s from "./DefaultLayout.module.scss";
+
+const ignoreHeaderPatterns = ["/room/:roomId/admin"];
 
 export const DefaultLayout = () => {
   const setUserInfo = useSetAtom(userInfoAtom);
   const setAuthReady = useSetAtom(authReadyAtom);
   const ready = useAtomValue(authReadyAtom);
+  const location = useLocation();
+
+  const shouldShowHeader = !ignoreHeaderPatterns.some((pattern) =>
+    matchPath(pattern, location.pathname)
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -43,5 +51,12 @@ export const DefaultLayout = () => {
     return () => unsubscribe();
   }, [setUserInfo, setAuthReady]);
 
-  return <div className={s.container}>{ready ? <Outlet /> : <Loading />}</div>;
+  return (
+    <>
+      {shouldShowHeader && (
+        <Header hideBack={!matchPath("/", location.pathname)} />
+      )}
+      <div className={s.container}>{ready ? <Outlet /> : <Loading />}</div>
+    </>
+  );
 };

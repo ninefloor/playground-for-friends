@@ -61,16 +61,13 @@ type Props =
       initialPhotoURL?: string;
     };
 
-export const UserProfileForm = (props: Props) => {
-  const {
-    form,
-    onSubmit,
-    isLoading,
-    onBack,
-    // isEdit 으로 분기 처리
-    initialPhotoURL,
-  } = props;
-
+export const UserProfileForm = ({
+  form,
+  onSubmit,
+  isLoading,
+  initialPhotoURL,
+  ...props
+}: Props) => {
   const isEdit = props.isEdit;
   const isAdminMode = isEdit && props.adminMode === true;
   const regForm = isEdit ? null : (form as UseFormReturn<UserFormData>);
@@ -117,9 +114,6 @@ export const UserProfileForm = (props: Props) => {
 
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={onBack} inline>
-        BACK
-      </Button>
       {isLoading && <Loading />}
 
       <form className={s.formContainer} onSubmit={onSubmit} noValidate>

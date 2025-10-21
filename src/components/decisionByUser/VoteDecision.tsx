@@ -1,4 +1,4 @@
-import { Button, DecisionButton } from "@components/atoms/Buttons";
+import { DecisionButton } from "@components/atoms/Buttons";
 import { DecisionViewer } from "@components/decisionByUser/DecisionViewer";
 import { realtimeDB } from "@utils/firebase";
 import { useRTDBValue } from "@utils/useRTDBValue";
@@ -9,6 +9,9 @@ import { useAtomValue } from "jotai";
 import { type MouseEvent, useCallback, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import s from "./DecisionComponents.module.scss";
+
+const REACTION_DURATION = 3000;
+const REACTION_PRESETS = ["👍", "👎", "🔥", "🤦🏻‍♂️", "🤐"];
 
 export const VoteDecision = () => {
   const userInfo = useAtomValue(userInfoAtom);
@@ -29,6 +32,25 @@ export const VoteDecision = () => {
   const { value: roomMeta, isLoading } = useRTDBValue<RoomMeta | null>(
     roomId ? `/rooms/${roomId}` : null
   );
+  const reactionTimers = useRef<
+    { key: string; timer: ReturnType<typeof setTimeout> }[]
+  >([]);
+
+  const reactionWriter = useRTDBWrite(
+    userInfo && roomId ? `/roomsReactions/${roomId}/${userInfo.uid}` : undefined
+  );
+
+  useEffect(() => {
+    return () => {
+      reactionTimers.current.forEach(({ key, timer }) => {
+        clearTimeout(timer);
+        if (userInfo && roomId) {
+          reactionWriter.removeAt(key).catch(() => undefined);
+        }
+      });
+      reactionTimers.current = [];
+    };
+  }, [roomId, userInfo, reactionWriter]);
 
   // 참가자 문서 생성 및 onDisconnect 설정
   // 기존 데이터가 있으면 보존하고, 없으면 기본값으로 생성
@@ -96,11 +118,34 @@ export const VoteDecision = () => {
     await writer.setAt("decision", id as Decision);
   };
 
+  const sendReaction = useCallback(
+    async (emoji: string) => {
+      if (!userInfo || !roomId) return;
+      try {
+        const payload: ReactionPayload = {
+          emoji,
+          createdAt: Date.now(),
+          duration: REACTION_DURATION,
+        };
+        const key = await reactionWriter.push(payload);
+        if (!key) return;
+
+        const timer = setTimeout(() => {
+          reactionWriter.removeAt(key).catch(() => undefined);
+          reactionTimers.current = reactionTimers.current.filter(
+            (item) => item.key !== key
+          );
+        }, payload.duration);
+        reactionTimers.current.push({ key, timer });
+      } catch (error) {
+        console.error("failed to send reaction", error);
+      }
+    },
+    [roomId, userInfo, reactionWriter]
+  );
+
   return (
     <div className={s.container}>
-      <Button className={s.backBtn} variant="black" onClick={leaveRoom} inline>
-        BACK
-      </Button>
       <h1 className={s.title}>{userInfo?.nickname}'s decision</h1>
       <DecisionViewer decision={currentDecision ?? ""} />
       <div className={s.btns}>
@@ -120,6 +165,20 @@ export const VoteDecision = () => {
         >
           R
         </DecisionButton>
+      </div>
+      <div className={s.reactions}>
+        {REACTION_PRESETS.map((emoji) => (
+          <button
+            key={emoji}
+            type="button"
+            className={s.reactionBtn}
+            onClick={() => sendReaction(emoji)}
+            disabled={!userInfo || !roomId}
+            aria-label={`send reaction ${emoji}`}
+          >
+            {emoji}
+          </button>
+        ))}
       </div>
     </div>
   );
