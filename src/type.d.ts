@@ -52,7 +52,6 @@ interface RoomParticipant {
   joinedAt: number;
   decision: Decision;
   customOrder?: number;
-  reactionQueue?: ReactionQueue;
 }
 
 type RTDBMap<T> = Record<string, T>;

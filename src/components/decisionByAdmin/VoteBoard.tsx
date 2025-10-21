@@ -1,6 +1,12 @@
-import { Button, CircleButton } from "@components/atoms/Buttons";
+import { CircleButton } from "@components/atoms/Buttons";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
 import { DecisionUserCard } from "@components/decisionByAdmin/vote/UserItem";
+import { ArrowPathIcon } from "@heroicons/react/16/solid";
+import {
+  ArrowLeftIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/20/solid";
 import { transition } from "@ssgoi/react";
 import { fly } from "@ssgoi/react/transitions";
 import { useRTDBList } from "@utils/useRTDBList";
@@ -227,14 +233,9 @@ export const VoteBoard = () => {
       </div>
 
       {/* == absolute 영역 == */}
-      <Button
-        className={s.backBtn}
-        variant="black"
-        onClick={() => navigate(-1)}
-        inline
-      >
-        BACK
-      </Button>
+      <CircleButton className={s.backBtn} onClick={() => navigate(-1)}>
+        <ArrowLeftIcon width={20} />
+      </CircleButton>
 
       <div className={s.resultCount}>
         <div className={s.left}>{resultValue.L}</div>
@@ -255,7 +256,7 @@ export const VoteBoard = () => {
         })()}
       </div>
       <CircleButton className={s.refreshBtn} onClick={refreshHandler}>
-        refresh
+        <ArrowPathIcon width={20} />
       </CircleButton>
       {result && (
         <CircleButton
@@ -264,7 +265,11 @@ export const VoteBoard = () => {
             setIsResultVisible((prev) => !prev);
           }}
         >
-          visivle
+          {isResultVisible ? (
+            <EyeIcon width={20} />
+          ) : (
+            <EyeSlashIcon width={20} />
+          )}
         </CircleButton>
       )}
       {result && isResultVisible && (

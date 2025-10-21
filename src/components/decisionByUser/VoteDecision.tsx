@@ -10,8 +10,8 @@ import { type MouseEvent, useCallback, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import s from "./DecisionComponents.module.scss";
 
-const REACTION_DURATION = 4000;
-const REACTION_PRESETS = ["👏", "🔥", "😍", "💯"];
+const REACTION_DURATION = 3000;
+const REACTION_PRESETS = ["👍", "👎", "🔥", "🤦🏻‍♂️", "🤐"];
 
 export const VoteDecision = () => {
   const userInfo = useAtomValue(userInfoAtom);
@@ -36,17 +36,21 @@ export const VoteDecision = () => {
     { key: string; timer: ReturnType<typeof setTimeout> }[]
   >([]);
 
+  const reactionWriter = useRTDBWrite(
+    userInfo && roomId ? `/roomsReactions/${roomId}/${userInfo.uid}` : undefined
+  );
+
   useEffect(() => {
     return () => {
       reactionTimers.current.forEach(({ key, timer }) => {
         clearTimeout(timer);
         if (userInfo && roomId) {
-          writer.removeAt(`reactionQueue/${key}`).catch(() => undefined);
+          reactionWriter.removeAt(key).catch(() => undefined);
         }
       });
       reactionTimers.current = [];
     };
-  }, [roomId, userInfo, writer]);
+  }, [roomId, userInfo, reactionWriter]);
 
   // 참가자 문서 생성 및 onDisconnect 설정
   // 기존 데이터가 있으면 보존하고, 없으면 기본값으로 생성
@@ -123,11 +127,11 @@ export const VoteDecision = () => {
           createdAt: Date.now(),
           duration: REACTION_DURATION,
         };
-        const key = await writer.pushAt("reactionQueue", payload);
+        const key = await reactionWriter.push(payload);
         if (!key) return;
 
         const timer = setTimeout(() => {
-          writer.removeAt(`reactionQueue/${key}`).catch(() => undefined);
+          reactionWriter.removeAt(key).catch(() => undefined);
           reactionTimers.current = reactionTimers.current.filter(
             (item) => item.key !== key
           );
@@ -137,7 +141,7 @@ export const VoteDecision = () => {
         console.error("failed to send reaction", error);
       }
     },
-    [roomId, userInfo, writer]
+    [roomId, userInfo, reactionWriter]
   );
 
   return (
