@@ -1,4 +1,4 @@
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import { authReadyAtom } from "@utils/authReadyAtom";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { useAtomValue } from "jotai";
@@ -16,7 +16,7 @@ export const AuthLayout = () => {
 
   const headerCtx = useOutletContext<HeaderCtx>();
 
-  if (!ready) return <Loading />;
+  if (!ready) return <LayoutLoading />;
   if (!user) return <Navigate to="/" replace state={{ from: location }} />;
   return <Outlet context={headerCtx} />;
 };
@@ -27,7 +27,7 @@ export const AdminLayout = () => {
   const location = useLocation();
   const headerCtx = useOutletContext<HeaderCtx>();
 
-  if (!ready) return <Loading />;
+  if (!ready) return <LayoutLoading />;
   if (!user) return <Navigate to="/" replace state={{ from: location }} />;
   if (user.role !== "ADMIN") return <Navigate to="/" replace />;
   return <Outlet context={headerCtx} />;

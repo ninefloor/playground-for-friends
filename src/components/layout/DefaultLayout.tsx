@@ -1,11 +1,12 @@
 import { Header } from "@components/layout/Header";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import { authReadyAtom } from "@utils/authReadyAtom";
 import { auth, firestore } from "@utils/firebase";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useAtomValue, useSetAtom } from "jotai/react";
+import { OverlayProvider } from "overlay-kit";
 import { useEffect, useMemo, useState } from "react";
 import { matchPath, Outlet, useLocation } from "react-router-dom";
 import s from "./DefaultLayout.module.scss";
@@ -74,11 +75,11 @@ export const DefaultLayout = () => {
   }, [setUserInfo, setAuthReady]);
 
   return (
-    <>
+    <OverlayProvider>
       {shouldShowHeader && <Header config={headerConfig} />}
       <div className={s.container}>
-        {ready ? <Outlet context={headerCtx} /> : <Loading />}
+        {ready ? <Outlet context={headerCtx} /> : <LayoutLoading />}
       </div>
-    </>
+    </OverlayProvider>
   );
 };

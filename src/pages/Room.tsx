@@ -1,7 +1,7 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
 import { sha256 } from "@utils/hash";
 import { useHeader } from "@utils/useHeader";
@@ -65,7 +65,7 @@ export const Room = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <LayoutLoading />;
   if (!room) return <div className={s.container}>존재하지 않는 방입니다.</div>;
 
   const isMember = participants.some((p) => p.uid === user?.uid);

@@ -1,7 +1,7 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
 import { sha256 } from "@utils/hash";
 import { userInfoAtom } from "@utils/userInfoAtom";
@@ -10,9 +10,15 @@ import { get, ref } from "firebase/database";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import s from "./Room.module.scss";
+import s from "./RoomInfo.module.scss";
 
-export const RoomInfo = ({ roomId }: { roomId: string }) => {
+export const RoomInfo = ({
+  roomId,
+  close,
+}: {
+  roomId: string;
+  close: () => void;
+}) => {
   const navigate = useNavigate();
   const user = useAtomValue(userInfoAtom);
   const [room, setRoom] = useState<RoomMeta | null>(null);
@@ -38,8 +44,6 @@ export const RoomInfo = ({ roomId }: { roomId: string }) => {
     loadRoom();
   }, [roomId]);
 
-  // 참가자 생성/제거는 투표 화면에서 관리(onDisconnect)
-
   const tryJoin = async () => {
     if (!user || !roomId || !room) return;
     setJoining(true);
@@ -51,7 +55,7 @@ export const RoomInfo = ({ roomId }: { roomId: string }) => {
           return;
         }
       }
-      navigate(`/room/${roomId}/vote`);
+      handleJoin();
     } catch {
       alert("입장 처리 중 오류가 발생했습니다.");
     } finally {
@@ -59,55 +63,53 @@ export const RoomInfo = ({ roomId }: { roomId: string }) => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <LayoutLoading />;
   if (!room) return <div className={s.container}>존재하지 않는 방입니다.</div>;
 
-  const isMember = participants.some((p) => p.uid === user?.uid);
+  const handleJoin = () => {
+    navigate(`/room/${roomId}/vote`);
+    close();
+  };
 
   return (
     <div className={s.container}>
       <div className={s.card}>
-        <h2>{room.title}</h2>
+        <h2 aria-live="polite">{room.title}</h2>
         {room.description && <p>{room.description}</p>}
       </div>
 
-      {!isMember && (
-        <div className={s.card}>
-          {room.passwordHash ? (
-            <div className={s.pwRow}>
-              <Input
-                type="password"
-                placeholder="비밀번호를 입력하세요"
-                value={pw}
-                onChange={(e) => setPw(e.target.value)}
-              />
-              <Button onClick={tryJoin} disabled={joining}>
-                {joining ? "이동 중..." : "참가"}
-              </Button>
-            </div>
-          ) : (
-            <Button onClick={tryJoin} disabled={joining}>
-              {joining ? "이동 중..." : "참가"}
-            </Button>
-          )}
-        </div>
-      )}
-
       <div className={s.card}>
         <h3>참가자</h3>
-        <div className={s.participants}>
-          {participants.map((p) => (
-            <UserCard key={p.uid} user={p} />
-          ))}
-          {participants.length === 0 && <div>아직 참가자가 없습니다.</div>}
-        </div>
+        {participants.length > 0 ? (
+          <div className={s.participants}>
+            {participants.map((p) => (
+              <UserCard key={p.uid} user={p} />
+            ))}
+          </div>
+        ) : (
+          <div>아직 참가자가 없습니다.</div>
+        )}
       </div>
 
-      {isMember && roomId && (
-        <Button onClick={() => navigate(`/room/${roomId}/vote`)}>
-          입장하기
+      <div className={s.pwContainer}>
+        {room.passwordHash && (
+          <div className={s.pwRow}>
+            <Input
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              value={pw}
+              onChange={(e) => setPw(e.target.value)}
+            />
+          </div>
+        )}
+
+        <Button onClick={tryJoin} disabled={joining}>
+          {joining ? "이동 중..." : "입장하기"}
         </Button>
-      )}
+      </div>
+      <Button variant="tertiary" onClick={close}>
+        닫기
+      </Button>
     </div>
   );
 };
