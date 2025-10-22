@@ -2,6 +2,7 @@ import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { DefaultModal } from "@components/DefaultModal";
 import { sha256 } from "@utils/hash";
+import { useHeader } from "@utils/useHeader";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useRTDBWrite } from "@utils/useRTDBWrite";
@@ -86,6 +87,10 @@ export const AdminRooms = () => {
   const [password, setPassword] = useState("");
   const [creating, setCreating] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
+
+  useHeader({
+    title: "방 관리",
+  });
 
   return (
     <div className={s.container}>

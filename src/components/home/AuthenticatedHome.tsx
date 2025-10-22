@@ -1,76 +1,24 @@
 import { Button } from "@components/atoms/Buttons";
+import { DropdownMenu } from "@components/atoms/DropdownMenu";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
+import { HeaderButton } from "@components/layout/Header";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+  ArrowLeftStartOnRectangleIcon,
+  Bars3Icon,
+} from "@heroicons/react/24/solid";
 import { auth } from "@utils/firebase";
-import { userInfoAtom } from "@utils/userInfoAtom";
+import { useHeader } from "@utils/useHeader";
 import { signOut } from "firebase/auth";
-import { useAtomValue } from "jotai";
-import { useResetAtom } from "jotai/utils";
 import { useNavigate } from "react-router-dom";
 import s from "./AuthenticatedHome.module.scss";
 
-const AdminDropdown = () => {
+export const AuthenticatedHome = ({ userInfo }: { userInfo: UserInfo }) => {
   const navigate = useNavigate();
-
-  const adminMembersHandler = () => {
-    navigate("/admin/members");
-  };
-
-  const adminRoomsHandler = () => {
-    navigate("/admin/rooms");
-  };
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className={s.adminBtn} variant="black" inline>
-          ADMIN
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        sideOffset={4}
-        className={s.dropdownContent}
-      >
-        <DropdownMenuItem
-          className={s.dropdownItem}
-          onSelect={adminMembersHandler}
-        >
-          Members
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={s.dropdownItem}
-          onSelect={adminRoomsHandler}
-        >
-          Rooms
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
-export const AuthenticatedHome = () => {
-  const userInfo = useAtomValue(userInfoAtom);
-  const resetUserInfo = useResetAtom(userInfoAtom);
-  const navigate = useNavigate();
-
-  const pcUserHander = () => {
-    window.open(
-      window.location.href,
-      "_blank",
-      "popup=true, scrollbars=0, location=0"
-    );
-  };
+  const isTouchDevice = window?.matchMedia("(pointer: coarse)")?.matches;
 
   const logoutHandler = async () => {
     try {
       await signOut(auth);
-      resetUserInfo();
     } catch (error) {
       console.error("Error logging out: ", error);
     }
@@ -84,7 +32,43 @@ export const AuthenticatedHome = () => {
     navigate("/lobby");
   };
 
-  if (!userInfo) return null;
+  const adminMembersHandler = () => {
+    navigate("/admin/members");
+  };
+
+  const adminRoomsHandler = () => {
+    navigate("/admin/rooms");
+  };
+
+  const headerConfig = {
+    left: (
+      <HeaderButton onClick={logoutHandler}>
+        <ArrowLeftStartOnRectangleIcon width={24} height={24} />
+      </HeaderButton>
+    ),
+    right: isTouchDevice ? null : (
+      <DropdownMenu
+        trigger={
+          <HeaderButton>
+            <Bars3Icon width={24} height={24} />
+          </HeaderButton>
+        }
+        options={[
+          {
+            label: "새 창으로 열기",
+            onSelect: () =>
+              window.open(
+                window.location.href,
+                "_blank",
+                "popup=true, scrollbars=0, location=0"
+              ),
+          },
+        ]}
+      />
+    ),
+  };
+
+  useHeader(headerConfig);
 
   return (
     <>
@@ -96,23 +80,25 @@ export const AuthenticatedHome = () => {
         <br />
         friends
       </h1>
-      {userInfo.role === "ADMIN" && <AdminDropdown />}
-      <Button
-        className={s.logoutBtn}
-        variant="black"
-        onClick={logoutHandler}
-        inline
-      >
-        Logout
-      </Button>
+      {userInfo.role === "ADMIN" && (
+        <DropdownMenu
+          trigger={
+            <Button className={s.adminBtn} variant="black" inline>
+              ADMIN
+            </Button>
+          }
+          options={[
+            { label: "Members", onSelect: adminMembersHandler },
+            { label: "Rooms", onSelect: adminRoomsHandler },
+          ]}
+        />
+      )}
+
       <Button variant="primary" onClick={lobbyHandler} inline>
         Join Rooms
       </Button>
       <Button variant="black" onClick={profileHandler} inline>
         My Profile
-      </Button>
-      <Button className={s.pcBtn} variant="black" onClick={pcUserHander} inline>
-        PC Ver.
       </Button>
     </>
   );

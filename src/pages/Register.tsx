@@ -1,5 +1,6 @@
 import { UserProfileForm } from "@components/user/UserProfileForm";
 import { auth, firestore, storage } from "@utils/firebase";
+import { useHeader } from "@utils/useHeader";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import imageCompression from "browser-image-compression";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -11,6 +12,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
+  useHeader({
+    title: "회원가입",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setUserInfo = useSetAtom(userInfoAtom);

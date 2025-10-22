@@ -1,5 +1,6 @@
 import { UserProfileForm } from "@components/user/UserProfileForm";
 import { auth, firestore, storage } from "@utils/firebase";
+import { useHeader } from "@utils/useHeader";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import imageCompression from "browser-image-compression";
 import { updateProfile } from "firebase/auth";
@@ -11,6 +12,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 export const ProfileEdit = () => {
+  useHeader({
+    title: "프로필 수정",
+  });
+
   const navigate = useNavigate();
   const currentUser = useAtomValue(userInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);

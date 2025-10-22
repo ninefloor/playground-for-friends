@@ -1,11 +1,16 @@
 import { Button } from "@components/atoms/Buttons";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useGetUserData } from "@utils/useGetUserData";
+import { useHeader } from "@utils/useHeader";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./AdminMembers.module.scss";
 
 export const AdminMembers = () => {
+  useHeader({
+    title: "회원 관리",
+  });
+
   const { users, loading } = useGetUserData();
   const navigate = useNavigate();
 

@@ -4,27 +4,21 @@ import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { Loading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
 import { sha256 } from "@utils/hash";
-import { useHeader } from "@utils/useHeader";
 import { userInfoAtom } from "@utils/userInfoAtom";
 import { useRTDBList } from "@utils/useRTDBList";
 import { get, ref } from "firebase/database";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import s from "./Room.module.scss";
 
-export const Room = () => {
-  const { roomId } = useParams();
+export const RoomInfo = ({ roomId }: { roomId: string }) => {
   const navigate = useNavigate();
   const user = useAtomValue(userInfoAtom);
   const [room, setRoom] = useState<RoomMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [pw, setPw] = useState("");
   const [joining, setJoining] = useState(false);
-
-  useHeader({
-    title: "방 정보",
-  });
 
   const participantsPath = useMemo(
     () => (roomId ? `/roomsParticipants/${roomId}` : null),

@@ -1,11 +1,15 @@
 import { Button } from "@components/atoms/Buttons";
 import { Loading } from "@components/Loading";
+import { useHeader } from "@utils/useHeader";
 import { useRTDBList } from "@utils/useRTDBList";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./Lobby.module.scss";
 
 export const Lobby = () => {
+  useHeader({
+    title: "로비",
+  });
   const navigate = useNavigate();
   const { object: roomsObject, isLoading } = useRTDBList<RoomMeta>("/rooms");
 
