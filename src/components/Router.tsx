@@ -10,7 +10,6 @@ import { Lobby } from "@pages/Lobby";
 import { NotFound } from "@pages/NotFound";
 import { ProfileEdit } from "@pages/ProfileEdit";
 import { Register } from "@pages/Register";
-import { Room } from "@pages/Room";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -28,7 +27,6 @@ const router = createBrowserRouter([
             element: <ProfileEdit />,
           },
           { path: "/lobby", element: <Lobby /> },
-          { path: "/room/:roomId", element: <Room /> },
           { path: "/room/:roomId/vote", element: <VoteDecision /> },
           {
             element: <AdminLayout />, // ADMIN 전용 섹션

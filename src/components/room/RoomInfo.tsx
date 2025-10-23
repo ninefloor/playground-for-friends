@@ -1,5 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
+import { Panel } from "@components/atoms/Panel";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { LayoutLoading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
@@ -73,12 +74,12 @@ export const RoomInfo = ({
 
   return (
     <div className={s.container}>
-      <div className={s.card}>
+      <Panel className={s.card}>
         <h2 aria-live="polite">{room.title}</h2>
         {room.description && <p>{room.description}</p>}
-      </div>
+      </Panel>
 
-      <div className={s.card}>
+      <Panel className={s.card}>
         <h3>참가자</h3>
         {participants.length > 0 ? (
           <div className={s.participants}>
@@ -89,7 +90,7 @@ export const RoomInfo = ({
         ) : (
           <div>아직 참가자가 없습니다.</div>
         )}
-      </div>
+      </Panel>
 
       <div className={s.pwContainer}>
         {room.passwordHash && (

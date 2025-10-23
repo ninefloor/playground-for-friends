@@ -1,4 +1,5 @@
 import { Button } from "@components/atoms/Buttons";
+import { ItemList } from "@components/atoms/ItemList";
 import { DefaultModal } from "@components/DefaultModal";
 import { LayoutLoading } from "@components/Loading";
 import { RoomInfo } from "@components/room/RoomInfo";
@@ -30,12 +31,12 @@ export const Lobby = () => {
 
   return (
     <div className={s.container}>
-      <div className={s.list}>
+      <ItemList className={s.list}>
         {isLoading ? (
-          <LayoutLoading />
+          <LayoutLoading backgroundColor="dark" />
         ) : (
           sortedRooms.map(([key, value]) => (
-            <div key={key} className={s.item}>
+            <ItemList.Row key={key} className={s.item}>
               <div>
                 <div className={s.title}>{value.title}</div>
                 {value.description && <div>{value.description}</div>}
@@ -43,13 +44,13 @@ export const Lobby = () => {
               <Button onClick={() => openRoomInfo(key)} inline>
                 보기
               </Button>
-            </div>
+            </ItemList.Row>
           ))
         )}
         {!isLoading && sortedRooms.length === 0 && (
           <div>생성된 방이 없습니다.</div>
         )}
-      </div>
+      </ItemList>
     </div>
   );
 };

@@ -1,6 +1,11 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
+import { ItemList } from "@components/atoms/ItemList";
+import { Panel } from "@components/atoms/Panel";
 import { DefaultModal } from "@components/DefaultModal";
+import { HeaderButton } from "@components/layout/Header";
+import { LayoutLoading } from "@components/Loading";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import { sha256 } from "@utils/hash";
 import { useHeader } from "@utils/useHeader";
 import { userInfoAtom } from "@utils/userInfoAtom";
@@ -13,21 +18,20 @@ import { useNavigate } from "react-router-dom";
 import s from "./AdminRooms.module.scss";
 
 export const AdminRooms = () => {
-  useHeader({
-    title: "방 관리",
-  });
-
   const openHandler = () =>
     overlay.open((overlayProps) => <CreateRoomModal {...overlayProps} />);
 
+  useHeader({
+    title: "방 관리",
+    right: (
+      <HeaderButton onClick={openHandler}>
+        <PlusIcon />
+      </HeaderButton>
+    ),
+  });
+
   return (
     <div className={s.container}>
-      <div style={{ display: "flex", gap: 8 }}>
-        <Button onClick={() => openHandler()} variant="secondary">
-          방 생성
-        </Button>
-      </div>
-
       <RoomsList />
     </div>
   );
@@ -35,7 +39,7 @@ export const AdminRooms = () => {
 
 const RoomsList = () => {
   const navigate = useNavigate();
-  const { object: roomsObject } = useRTDBList<RoomMeta>("/rooms");
+  const { object: roomsObject, isLoading } = useRTDBList<RoomMeta>("/rooms");
   // 모든 방 참가자 맵을 한 번에 구독하여 방별 인원수 집계(구독 수 최소화)
   const { object: participantsByRoom } =
     useRTDBList<RTDBMap<RoomParticipant>>("/roomsParticipants");
@@ -58,11 +62,13 @@ const RoomsList = () => {
   };
 
   return (
-    <div className={s.roomsContainer}>
-      {sorted.length === 0 ? (
+    <Panel muted className={s.roomsContainer}>
+      {isLoading ? (
+        <LayoutLoading backgroundColor="dark" />
+      ) : sorted.length === 0 ? (
         <p>생성된 방이 없습니다.</p>
       ) : (
-        <div className={s.roomsList}>
+        <ItemList className={s.roomsList}>
           {sorted.map(([key, value]) => {
             const count =
               participantsByRoom && participantsByRoom[key]
@@ -71,7 +77,7 @@ const RoomsList = () => {
                   ).length
                 : 0;
             return (
-              <div key={key} className={s.roomRow}>
+              <ItemList.Row key={key} className={s.roomRow}>
                 <div className={s.roomInfo}>
                   <div className={s.roomTitle}>{value.title}</div>
                   <div className={s.roomMeta}>
@@ -91,12 +97,12 @@ const RoomsList = () => {
                     삭제
                   </Button>
                 </div>
-              </div>
+              </ItemList.Row>
             );
           })}
-        </div>
+        </ItemList>
       )}
-    </div>
+    </Panel>
   );
 };
 

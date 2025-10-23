@@ -1,0 +1,11 @@
+.panel {
+  border: 1px solid $borderColor;
+  border-radius: 12px;
+  background: $surface;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+}
+
+.muted {
+  background: rgba($surface, 0.6);
+}
