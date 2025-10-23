@@ -1,7 +1,9 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
+import { ItemGrid } from "@components/atoms/ItemGrid";
+import { Panel } from "@components/atoms/Panel";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import { realtimeDB } from "@utils/firebase";
 import { sha256 } from "@utils/hash";
 import { userInfoAtom } from "@utils/userInfoAtom";
@@ -9,11 +11,16 @@ import { useRTDBList } from "@utils/useRTDBList";
 import { get, ref } from "firebase/database";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import s from "./Room.module.scss";
+import { useNavigate } from "react-router-dom";
+import s from "./RoomInfo.module.scss";
 
-export const Room = () => {
-  const { roomId } = useParams();
+export const RoomInfo = ({
+  roomId,
+  close,
+}: {
+  roomId: string;
+  close: () => void;
+}) => {
   const navigate = useNavigate();
   const user = useAtomValue(userInfoAtom);
   const [room, setRoom] = useState<RoomMeta | null>(null);
@@ -39,8 +46,6 @@ export const Room = () => {
     loadRoom();
   }, [roomId]);
 
-  // 참가자 생성/제거는 투표 화면에서 관리(onDisconnect)
-
   const tryJoin = async () => {
     if (!user || !roomId || !room) return;
     setJoining(true);
@@ -52,7 +57,7 @@ export const Room = () => {
           return;
         }
       }
-      navigate(`/room/${roomId}/vote`);
+      handleJoin();
     } catch {
       alert("입장 처리 중 오류가 발생했습니다.");
     } finally {
@@ -60,55 +65,55 @@ export const Room = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <LayoutLoading />;
   if (!room) return <div className={s.container}>존재하지 않는 방입니다.</div>;
 
-  const isMember = participants.some((p) => p.uid === user?.uid);
+  const handleJoin = () => {
+    navigate(`/room/${roomId}/vote`);
+    close();
+  };
 
   return (
     <div className={s.container}>
-      <div className={s.card}>
-        <h2>{room.title}</h2>
+      <Panel className={s.card}>
+        <h2 aria-live="polite">{room.title}</h2>
         {room.description && <p>{room.description}</p>}
-      </div>
+      </Panel>
 
-      {!isMember && (
-        <div className={s.card}>
-          {room.passwordHash ? (
-            <div className={s.pwRow}>
-              <Input
-                type="password"
-                placeholder="비밀번호를 입력하세요"
-                value={pw}
-                onChange={(e) => setPw(e.target.value)}
-              />
-              <Button onClick={tryJoin} disabled={joining}>
-                {joining ? "이동 중..." : "참가"}
-              </Button>
-            </div>
-          ) : (
-            <Button onClick={tryJoin} disabled={joining}>
-              {joining ? "이동 중..." : "참가"}
-            </Button>
-          )}
-        </div>
-      )}
-
-      <div className={s.card}>
+      <Panel className={s.card}>
         <h3>참가자</h3>
-        <div className={s.participants}>
-          {participants.map((p) => (
-            <UserCard key={p.uid} user={p} />
-          ))}
-          {participants.length === 0 && <div>아직 참가자가 없습니다.</div>}
-        </div>
-      </div>
+        {participants.length > 0 ? (
+          <ItemGrid className={s.participants}>
+            {participants.map((p) => (
+              <ItemGrid.Item className={s.item} key={p.uid}>
+                <UserCard user={p} />
+              </ItemGrid.Item>
+            ))}
+          </ItemGrid>
+        ) : (
+          <div>아직 참가자가 없습니다.</div>
+        )}
+      </Panel>
 
-      {isMember && roomId && (
-        <Button onClick={() => navigate(`/room/${roomId}/vote`)}>
-          입장하기
+      <div className={s.pwContainer}>
+        {room.passwordHash && (
+          <div className={s.pwRow}>
+            <Input
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              value={pw}
+              onChange={(e) => setPw(e.target.value)}
+            />
+          </div>
+        )}
+
+        <Button onClick={tryJoin} disabled={joining}>
+          {joining ? "이동 중..." : "입장하기"}
         </Button>
-      )}
+      </div>
+      <Button variant="tertiary" onClick={close}>
+        닫기
+      </Button>
     </div>
   );
 };

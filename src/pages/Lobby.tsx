@@ -1,15 +1,20 @@
 import { Button } from "@components/atoms/Buttons";
-import { Loading } from "@components/Loading";
+import { ItemList } from "@components/atoms/ItemList";
+import { DefaultModal } from "@components/DefaultModal";
+import { LayoutLoading } from "@components/Loading";
+import { RoomInfo } from "@components/room/RoomInfo";
+import { useHeader } from "@utils/useHeader";
 import { useRTDBList } from "@utils/useRTDBList";
+import { overlay } from "overlay-kit";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import s from "./Lobby.module.scss";
 
 export const Lobby = () => {
-  const navigate = useNavigate();
+  useHeader({
+    title: "로비",
+  });
   const { object: roomsObject, isLoading } = useRTDBList<RoomMeta>("/rooms");
 
-  // 방 생성은 관리자 전용(Admin 페이지에서만 노출)
   const sortedRooms = useMemo(() => {
     const entries = Object.entries(roomsObject) as [string, RoomMeta][];
     return entries.sort(
@@ -17,26 +22,35 @@ export const Lobby = () => {
     );
   }, [roomsObject]);
 
-  // 생성 기능 제거
+  const openRoomInfo = (roomId: string) =>
+    overlay.open((props) => (
+      <DefaultModal {...props}>
+        <RoomInfo roomId={roomId} close={props.close} />
+      </DefaultModal>
+    ));
+
   return (
     <div className={s.container}>
-      <div className={s.list}>
-        {sortedRooms.map(([key, value]) => (
-          <div key={key} className={s.item}>
-            <div>
-              <div className={s.title}>{value.title}</div>
-              {value.description && <div>{value.description}</div>}
-            </div>
-            <Button onClick={() => navigate(`/room/${key}`)} inline>
-              보기
-            </Button>
-          </div>
-        ))}
+      <ItemList className={s.list}>
+        {isLoading ? (
+          <LayoutLoading backgroundColor="dark" />
+        ) : (
+          sortedRooms.map(([key, value]) => (
+            <ItemList.Row key={key} className={s.item}>
+              <div>
+                <div className={s.title}>{value.title}</div>
+                {value.description && <div>{value.description}</div>}
+              </div>
+              <Button onClick={() => openRoomInfo(key)} inline>
+                보기
+              </Button>
+            </ItemList.Row>
+          ))
+        )}
         {!isLoading && sortedRooms.length === 0 && (
           <div>생성된 방이 없습니다.</div>
         )}
-      </div>
-      {isLoading && <Loading />}
+      </ItemList>
     </div>
   );
 };

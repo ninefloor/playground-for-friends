@@ -1,12 +1,12 @@
 import { CircleButton } from "@components/atoms/Buttons";
 import { RouletteForDraw } from "@components/decisionByAdmin/vote/RouletteForDraw";
 import { DecisionUserCard } from "@components/decisionByAdmin/vote/UserItem";
-import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import {
   ArrowLeftIcon,
+  ArrowPathIcon,
   EyeIcon,
   EyeSlashIcon,
-} from "@heroicons/react/20/solid";
+} from "@heroicons/react/24/solid";
 import { transition } from "@ssgoi/react";
 import { fly } from "@ssgoi/react/transitions";
 import { useRTDBList } from "@utils/useRTDBList";

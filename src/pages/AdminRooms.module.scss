@@ -19,6 +19,13 @@
 .roomsContainer {
   width: 100%;
   max-width: 840px;
+  position: relative;
+  border: 1px solid $borderColor;
+  flex: 1;
+  border-radius: 12px;
+  background: rgba($surface, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px;
 }
 
 .roomsList {

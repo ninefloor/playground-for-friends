@@ -1,5 +1,6 @@
 import { UserProfileForm } from "@components/user/UserProfileForm";
 import { firestore, storage } from "@utils/firebase";
+import { useHeader } from "@utils/useHeader";
 import imageCompression from "browser-image-compression";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import {
@@ -12,6 +13,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const AdminMemberEdit = () => {
+  useHeader({
+    title: "회원 정보 수정",
+  });
   const navigate = useNavigate();
   const { uid } = useParams();
   const [initial, setInitial] = useState<Partial<UserInfo> | null>(null);

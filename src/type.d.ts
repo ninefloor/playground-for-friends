@@ -1,3 +1,15 @@
+type HeaderConfig = {
+  left?: React.ReactNode | null;
+  right?: React.ReactNode | null;
+  title?: string | null;
+  hideBack?: boolean;
+};
+
+type HeaderCtx = {
+  setHeader: (cfg: HeaderConfig) => void;
+  resetHeader: () => void;
+};
+
 interface UserInfo {
   uid: string;
   nickname: string;

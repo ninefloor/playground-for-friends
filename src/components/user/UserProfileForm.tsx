@@ -1,7 +1,7 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import s from "@pages/Register.module.scss";
 import type { BaseSyntheticEvent, ChangeEvent } from "react";
 import { useEffect, useState } from "react";
@@ -114,7 +114,7 @@ export const UserProfileForm = ({
 
   return (
     <div className={s.container}>
-      {isLoading && <Loading />}
+      {isLoading && <LayoutLoading />}
 
       <form className={s.formContainer} onSubmit={onSubmit} noValidate>
         <div className={s.uploaderContainer}>

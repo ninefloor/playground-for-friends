@@ -18,6 +18,7 @@
     "d3-force": "^3.0.0",
     "firebase": "^12.1.0",
     "jotai": "^2.13.0",
+    "overlay-kit": "^1.8.6",
     "react": "^19.1.1",
     "react-custom-roulette-r19": "^2.0.3",
     "react-dom": "^19.1.1",

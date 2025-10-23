@@ -1,6 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
-import { Loading } from "@components/Loading";
+import { LayoutLoading } from "@components/Loading";
 import useLogin from "@utils/useLogin";
 import { useNavigate } from "react-router-dom";
 import s from "./Login.module.scss";
@@ -38,7 +38,7 @@ export const Login = () => {
           회원가입
         </Button>
       </div>
-      {isLoading && <Loading />}
+      {isLoading && <LayoutLoading />}
     </>
   );
 };
