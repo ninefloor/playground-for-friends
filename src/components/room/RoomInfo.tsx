@@ -1,5 +1,6 @@
 import { Button } from "@components/atoms/Buttons";
 import { Input } from "@components/atoms/Input";
+import { ItemGrid } from "@components/atoms/ItemGrid";
 import { Panel } from "@components/atoms/Panel";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { LayoutLoading } from "@components/Loading";
@@ -82,11 +83,13 @@ export const RoomInfo = ({
       <Panel className={s.card}>
         <h3>참가자</h3>
         {participants.length > 0 ? (
-          <div className={s.participants}>
+          <ItemGrid className={s.participants}>
             {participants.map((p) => (
-              <UserCard key={p.uid} user={p} />
+              <ItemGrid.Item className={s.item} key={p.uid}>
+                <UserCard user={p} />
+              </ItemGrid.Item>
             ))}
-          </div>
+          </ItemGrid>
         ) : (
           <div>아직 참가자가 없습니다.</div>
         )}

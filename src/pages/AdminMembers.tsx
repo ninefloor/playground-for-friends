@@ -1,4 +1,5 @@
 import { Button } from "@components/atoms/Buttons";
+import { ItemGrid } from "@components/atoms/ItemGrid";
 import { UserCard } from "@components/decisionByAdmin/vote/UserItem";
 import { useGetUserData } from "@utils/useGetUserData";
 import { useHeader } from "@utils/useHeader";
@@ -18,25 +19,22 @@ export const AdminMembers = () => {
 
   return (
     <div className={s.container}>
-      <div className={s.list}>
+      <ItemGrid className={s.list}>
         {!loading && entries.length === 0 && <div>등록된 회원이 없습니다.</div>}
         {entries.map((user) => {
           return (
-            <div key={user.uid} className={s.item}>
-              <div className={s.left}>
-                <UserCard user={user} />
-                <div className={s.name}>{user.nickname}</div>
-              </div>
+            <ItemGrid.Item key={user.uid} className={s.item}>
+              <UserCard user={user} />
               <Button
                 onClick={() => navigate(`/admin/members/${user.uid}`)}
                 inline
               >
                 수정
               </Button>
-            </div>
+            </ItemGrid.Item>
           );
         })}
-      </div>
+      </ItemGrid>
     </div>
   );
 };
